@@ -358,7 +358,7 @@ function App() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.65, delay: 0.86, ease: [0.16, 1, 0.3, 1] }}
                 >
-                  <MagButton className="btn-primary" href="#lab" onClick={(event) => handleAnchorClick(event, '#lab')}>
+                  <MagButton className="btn-primary" href="#selected-work" onClick={(event) => handleAnchorClick(event, '#selected-work')}>
                     Projekte ansehen <ArrowUpRight size={16} />
                   </MagButton>
                   <MagButton className="btn-ghost" href="mailto:contact@ivo-tech.com">
@@ -429,7 +429,7 @@ function App() {
 
                 <Reveal delay={0.08}>
                   <p className="lab-intro">
-                    Vier Felder, ein roter Faden: lokale KI, robuste Heim-Infrastruktur, Brand-Systeme und Interfaces,
+                    Vier Felder, ein roter Faden: Automation, robuste Heim-Infrastruktur, Brand-Systeme und Interfaces,
                     die sich wie echte Produkte anfühlen. Kein Claim, sondern laufende Werkbank.
                   </p>
                 </Reveal>
@@ -452,7 +452,7 @@ function App() {
                       <span className="sec-label">Operating layer</span>
                       <h3>Ein persönliches Tech-System — nicht nur eine Website.</h3>
                       <p>
-                        Die Seite erzählt nicht „Portfolio", sondern zeigt ein Setup: lokale KI, Homelab, Design-Craft
+                        Die Seite erzählt nicht „Portfolio", sondern zeigt ein Setup: Automation, Homelab, Design-Craft
                         und Motion-Assets greifen ineinander.
                       </p>
                     </div>

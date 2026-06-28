@@ -15,7 +15,7 @@ export function useGsapPinHero(heroRef: RefObject<HTMLElement | null>, ready = t
       scrollTrigger: {
         trigger: el,
         start: 'top top',
-        end: '+=60%',
+        end: '+=32%',
         pin: true,
         scrub: 1.2,
         anticipatePin: 1,

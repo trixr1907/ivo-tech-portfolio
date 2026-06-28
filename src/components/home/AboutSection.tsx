@@ -49,7 +49,7 @@ export function AboutSection() {
               <div className="about-stats" aria-label="Kurzprofil">
                 {[
                   { label: 'Location', val: 'Mannheim' },
-                  { label: 'Focus', val: 'Web · AI · Motion' },
+                  { label: 'Focus', val: 'Web · Automation · Motion' },
                   { label: 'Signal', val: 'Cyan' },
                   { label: 'Status', val: 'Aktiv' },
                 ].map((s) => (
