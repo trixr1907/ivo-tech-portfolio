@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 246 149" role="img" aria-labelledby="title desc" shape-rendering="geometricPrecision">
+<title id="title">ivo-tech logo icon color</title>
+<desc id="desc">Phase 2.2 hand-reconstructed flat 2D vector geometry of the original ivo-tech Paperplane Precision icon. Straight polygon facets only; no 3D effects, glows, SVG effects or bitmap artifacts.</desc>
+<g><polygon id="left_top_silver" points="0,0 108,0 99,29 69,36 36,34" fill="#E8EDF3"/><polygon id="left_outer_dark" points="0,0 36,34 80,113 69,36" fill="#151B24"/><polygon id="left_inner_mid" points="69,36 99,29 80,113" fill="#6F7A88"/><polygon id="right_top_silver" points="124,0 216,0 118,36 104,36" fill="#EEF3F8"/><polygon id="central_light_fold" points="99,29 118,36 104,99 80,113" fill="#DCE6F2"/><polygon id="right_lower_silver" points="104,99 246,0 96,149 96,112" fill="#C8D0DA"/><polygon id="lower_shadow" points="80,113 104,99 96,149" fill="#1B222C"/><polygon id="cyan_core" points="122,46 246,0 104,99" fill="#00B7FF"/><polygon id="cyan_core_ice_edge" points="133,48 226,10 120,82" fill="#7BE7FF"/></g>
+</svg>

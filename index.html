@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#05070B" />
+    <meta
+      name="description"
+      content="Ivo — Full-Stack Engineer aus Mannheim. React, TypeScript, Supabase, Three.js. Produktionsreife Webapplikationen von der Architektur bis zum Deploy."
+    />
+    <meta property="og:title" content="ivo-tech — Full-Stack Engineer, Mannheim" />
+    <meta
+      property="og:description"
+      content="Full-Stack Engineer aus Mannheim. Ich entwickle produktionsreife Webapplikationen — von der Architektur bis zum Live-Deploy. React, TypeScript, Supabase, Three.js."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://ivo-tech.com/brand/social/ivo-tech-og-image.png" />
+    <meta property="og:url" content="https://ivo-tech.com/" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="ivo-tech — Full-Stack Engineer, Mannheim" />
+    <meta name="twitter:description" content="Full-Stack Engineer aus Mannheim. Produktionsreife Webapplikationen — React, TypeScript, Supabase, Three.js." />
+    <meta name="twitter:image" content="https://ivo-tech.com/brand/social/ivo-tech-og-image.png" />
+    <link rel="canonical" href="https://ivo-tech.com/" />
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <!-- Preload critical assets -->
+    <link rel="preload" as="image" href="/brand/logos/ivo-tech-logo-master.svg" type="image/svg+xml" />
+    <!-- Self-hosted Syne Variable Font (no Google Fonts round-trip, GDPR-safe) -->
+    <link rel="preload" as="font" href="/fonts/syne-latin.woff2" type="font/woff2" crossorigin />
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "ivo-tech",
+        "url": "https://ivo-tech.com/",
+        "description": "Ivo ist Full-Stack Engineer aus Mannheim und entwickelt produktionsreife Webapplikationen mit React, TypeScript, Supabase und Three.js.",
+        "author": {
+          "@type": "Person",
+          "name": "Ivo",
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Mannheim",
+            "addressCountry": "DE"
+          }
+        }
+      }
+    </script>
+    <title>ivo-tech — Full-Stack Engineer, Mannheim</title>
+    <style>
+      /* Block flash while fonts load */
+      html { background: #05070b; }
+      /* Self-hosted Syne variable font */
+      @font-face {
+        font-family: 'Syne';
+        font-style: normal;
+        font-weight: 400 800;
+        font-display: swap;
+        src: url('/fonts/syne-latin.woff2') format('woff2');
+        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

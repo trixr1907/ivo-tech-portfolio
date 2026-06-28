@@ -1,0 +1,75 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+hermes_conversation*.json
+
+# Playwright
+playwright-report/
+test-results/
+playwright/.cache/
+.venv-ai/
+.venv-img/
+.vercel
+.env*
+# Local audit/browser artifacts
+undefined:/
+undefined*/
+\\wsl.localhost*/
+*\\wsl.localhost*/
+*:Zone.Identifier
+_quarantine_path_artifacts/
+lighthouse.*
+lighthouse-report*.md
+audit/
+audit-report.md
+AUDIT-*.md
+TASKS.md
+point-to-quota-aware-combo.sh
+switch-to-quota-aware.sh
+AGENTS.md
+scripts/mobile-hero-audit.mjs
+
+# Generated / local test output
+node_modules/
+dist/
+playwright-report/
+test-results/
+qa-screenshots/
+*.log
+.agents_tmp/
+
+# Local development runtime artifacts
+bash_events/
+conversations/
+
+# Internal task briefs / audit reports / agent artifacts
+openhands_task_brief*.md
+openhands-result-*/
+AUDIT_REPORT.md
+AWARD_AUDIT_REPORT.md
+AGENT_ZERO_*.md
+LIGHTHOUSE_*.md
+PORTFOLIO_*.md
+docs/
+public/llms.txt

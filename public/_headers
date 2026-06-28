@@ -1,0 +1,30 @@
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  X-XSS-Protection: 1; mode=block
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), interest-cohort=()
+  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+
+# Hashed JS/CSS chunks — content-addressed, safe to cache forever
+/assets/*.js
+  Cache-Control: public, max-age=31536000, immutable
+
+/assets/*.css
+  Cache-Control: public, max-age=31536000, immutable
+
+# Fonts — stable, long cache
+/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Static brand assets — long cache
+/brand/*
+  Cache-Control: public, max-age=604800, stale-while-revalidate=86400
+
+# Images — moderate cache
+/images/*
+  Cache-Control: public, max-age=604800, stale-while-revalidate=86400
+
+# HTML — must revalidate (SPA entry)
+/index.html
+  Cache-Control: public, max-age=0, must-revalidate

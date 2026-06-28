@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 220" role="img" aria-labelledby="title desc" shape-rendering="geometricPrecision">
+<title id="title">ivo-tech horizontal logo vector lockup</title>
+<desc id="desc">Horizontal logo with reconstructed original icon geometry and custom vector wordmark. No live text dependency.</desc>
+<g transform="translate(40 36) scale(1)"><polygon id="left_top_silver" points="0,0 108,0 99,29 69,36 36,34" fill="#E8EDF3"/><polygon id="left_outer_dark" points="0,0 36,34 80,113 69,36" fill="#151B24"/><polygon id="left_inner_mid" points="69,36 99,29 80,113" fill="#6F7A88"/><polygon id="right_top_silver" points="124,0 216,0 118,36 104,36" fill="#EEF3F8"/><polygon id="central_light_fold" points="99,29 118,36 104,99 80,113" fill="#DCE6F2"/><polygon id="right_lower_silver" points="104,99 246,0 96,149 96,112" fill="#C8D0DA"/><polygon id="lower_shadow" points="80,113 104,99 96,149" fill="#1B222C"/><polygon id="cyan_core" points="122,46 246,0 104,99" fill="#00B7FF"/><polygon id="cyan_core_ice_edge" points="133,48 226,10 120,82" fill="#7BE7FF"/></g>
+<g transform="translate(340 48) scale(0.96)">
+<g id="ivo-tech-wordmark" fill="#DCE6F2">
+  <!-- i -->
+  <rect x="0" y="32" width="14" height="72" rx="7"/>
+  <rect x="0" y="8" width="14" height="14" rx="5" fill="#00B7FF"/>
+
+  <!-- v: angular cut mirrors icon geometry -->
+  <path d="M34 32 L50 32 L72 86 L94 32 L110 32 L80 104 L64 104 Z"/>
+
+  <!-- o: rounded techno ring -->
+  <path fill-rule="evenodd" d="M132 32 H184 Q204 32 204 52 V84 Q204 104 184 104 H132 Q112 104 112 84 V52 Q112 32 132 32 Z M139 46 Q127 46 127 58 V78 Q127 90 139 90 H177 Q189 90 189 78 V58 Q189 46 177 46 Z"/>
+
+  <!-- custom hyphen / connector -->
+  <path d="M224 63 H276 L266 77 H214 Z" fill="#00B7FF"/>
+
+  <!-- t: clipped crossbar, stronger than generic font t -->
+  <path d="M304 14 H318 V32 H350 L342 46 H318 V82 Q318 90 326 90 H344 V104 H321 Q304 104 304 87 V46 H284 V32 H304 Z"/>
+
+  <!-- e: geometric rounded bowl with open right cut and precision midbar -->
+  <path fill-rule="evenodd" d="M376 32 H426 Q446 32 446 52 V70 H387 V78 Q387 90 399 90 H442 V104 H392 Q372 104 372 84 V52 Q372 32 376 32 Z M399 46 Q387 46 387 58 V59 H431 V57 Q431 46 419 46 Z"/>
+
+  <!-- c: open rounded block -->
+  <path d="M486 32 H536 V46 H493 Q481 46 481 58 V78 Q481 90 493 90 H536 V104 H486 Q466 104 466 84 V52 Q466 32 486 32 Z"/>
+
+  <!-- h: straight tech stem + rounded shoulder -->
+  <path d="M558 8 H572 V40 Q580 32 594 32 H616 Q634 32 634 50 V104 H620 V56 Q620 46 610 46 H590 Q572 46 572 64 V104 H558 Z"/>
+</g></g>
+</svg>

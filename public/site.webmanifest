@@ -1,0 +1,21 @@
+{
+  "name": "ivo-tech — Ivos privates Tech-Lab",
+  "short_name": "ivo-tech",
+  "description": "Privates Tech-Lab von Ivo aus Mannheim: Webentwicklung, Homelab, 3D und Motion.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#05070B",
+  "theme_color": "#05070B",
+  "icons": [
+    {
+      "src": "/brand/logos/app-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}
