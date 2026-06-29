@@ -30,7 +30,7 @@ import { labItems, signalCards, marqueeTop, marqueeBottom } from './data/homeDat
 const HeroOrbitSystem = lazy(() => import('./components/HeroOrbitSystem'))
 
 const loadShowcase = () => import('./components/showcase/Showcase')
-const loadCryptoIndicatorShowcase = () => import('./components/CryptoIndicatorShowcase')
+const loadMarketDataShowcase = () => import('./components/MarketDataShowcase')
 const loadBrandSection = () => import('./components/BrandSection')
 const loadHobbySection = () => import('./components/HobbySection')
 const loadLayoutSections = () => import('./components/LayoutSections')
@@ -38,8 +38,8 @@ const loadSkillGraphSection = () => import('./components/SkillGraphSection')
 
 const Hero3DLogo = lazy(() => import('./components/Hero3DLogo'))
 const Showcase = lazy(() => loadShowcase().then((module) => ({ default: module.Showcase })))
-const CryptoIndicatorShowcase = lazy(() =>
-  loadCryptoIndicatorShowcase().then((module) => ({ default: module.CryptoIndicatorShowcase })),
+const MarketDataShowcase = lazy(() =>
+  loadMarketDataShowcase().then((module) => ({ default: module.MarketDataShowcase })),
 )
 const BrandSection = lazy(() => loadBrandSection().then((module) => ({ default: module.BrandSection })))
 const HobbySection = lazy(() => loadHobbySection().then((module) => ({ default: module.HobbySection })))
@@ -207,7 +207,7 @@ function App() {
     const preloadLowerSections = () => {
       void Promise.all([
         loadShowcase(),
-        loadCryptoIndicatorShowcase(),
+        loadMarketDataShowcase(),
         loadBrandSection(),
         loadHobbySection(),
         loadLayoutSections(),
@@ -335,7 +335,7 @@ function App() {
                   transition={{ duration: 0.6, delay: 0.2 }}
                 >
                   <MapPin size={12} aria-hidden="true" />
-                  <span>Mannheim, DE</span>
+                  <span>Remote Frontend / Full-Stack · Mannheim, DE</span>
                   <span className="eyebrow-div" />
                   <span>Full-Stack Engineer</span>
                 </motion.div>
@@ -349,7 +349,8 @@ function App() {
                   transition={{ duration: 0.7, delay: 0.72, ease: [0.16, 1, 0.3, 1] }}
                 >
                   React · TypeScript · Node.js · Three.js · Supabase ·<br />
-                  Ich entwickle produktionsreife Webapplikationen — von der Architektur bis zum Live-Deploy.
+                  Ich entwickle produktionsreife Webapplikationen — remote-first, mit React/TypeScript,
+                  sauberer Architektur und echtem Live-Betrieb.
                 </motion.p>
 
                 <motion.div
@@ -475,8 +476,8 @@ function App() {
               <Showcase />
             </Suspense>
 
-            <Suspense fallback={<LazySectionFallback label="Crypto Signal" />}>
-              <CryptoIndicatorShowcase />
+            <Suspense fallback={<LazySectionFallback label="Realtime Data" />}>
+              <MarketDataShowcase />
             </Suspense>
 
             <Suspense fallback={<LazySectionFallback label="Brand System" />}>

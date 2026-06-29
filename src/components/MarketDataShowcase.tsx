@@ -13,7 +13,7 @@ import {
   Target,
   AlertTriangle,
 } from 'lucide-react'
-import './crypto-indicator-showcase.css'
+import './market-data-showcase.css'
 
 // ── Types ────────────────────────────────────────────────────
 interface Candle {
@@ -533,7 +533,7 @@ function generateFallbackCandles(basePrice: number): Candle[] {
 }
 
 // ── Main Component ───────────────────────────────────────────
-export function CryptoIndicatorShowcase() {
+export function MarketDataShowcase() {
   const [activeCoin, setActiveCoin] = useState<CoinConfig>(COINS[0])
   const [data, setData]             = useState<MarketData | null>(null)
   const [metrics, setMetrics]       = useState<SignalMetrics | null>(null)
@@ -659,40 +659,39 @@ export function CryptoIndicatorShowcase() {
             <span className="sec-num">— 04</span>
           </div>
           <h2 id="cis-h">
-            Crypto Signal<br /><em>Indicator Suite</em>
+            Realtime Market<br /><em>Data Interface</em>
           </h2>
           <p>
-            Selbst entwickeltes TradingView-Indikator-System in Pine Script v6 —
-            aus dem Wunsch entstanden, Marktstruktur wirklich zu verstehen, nicht
-            nur zu beobachten. Live-Daten von Binance. Kein Finanzprodukt.
+            Technische Case Study für Echtzeitdaten, Chart-UI und gewichtete Signallogik:
+            Binance-Marktdaten werden geladen, normalisiert und als interaktives Dashboard
+            visualisiert. Kein Finanzprodukt.
           </p>
         </div>
 
         {/* ── Origin Story ── */}
         <div className="cis-origin">
           <div className="cis-origin-text">
-            <span className="cis-origin-label">Warum ich das gebaut habe</span>
-            <h3>Kein fertiges Tool hat das gemacht, was ich wollte.</h3>
+            <span className="cis-origin-label">Warum diese Case Study relevant ist</span>
+            <h3>Viele Datenpunkte werden erst nützlich, wenn das Interface sie erklärt.</h3>
             <p>
-              Standard-Indikatoren auf TradingView zeigen einzelne Signale isoliert — RSI hier, MACD da,
-              WaveTrend irgendwo. Ich wollte ein System, das <strong>alle Schichten zusammenführt</strong>:
-              Trend, Momentum, Volumen, Marktstruktur und Chartmuster zu einem einzigen gewichteten Score.
+              Das Projekt zeigt, wie ein Frontend rohe Marktdaten in eine lesbare Produktoberfläche übersetzt:
+              Live-Fetching, Fallback-Daten, SVG-Charts, Score-Berechnung, responsive Tabs und klare Zustände
+              für Loading, Simulation und aktive Signale.
             </p>
             <p>
-              Das Ergebnis ist ein Zwei-Komponenten-System: der <strong>Ivo Crypto Master</strong> als
-              Overlay-Indikator auf dem Chart und der <strong>Ivo Synergy Oscillator</strong> im
-              unteren Panel. Beide arbeiten zusammen, bestätigen sich gegenseitig und geben erst
-              dann ein Signal, wenn mehrere Schichten übereinstimmen.
+              Die fachliche Domäne ist Marktanalyse, der eigentliche Showcase ist aber die UI-Architektur:
+              mehrere technische Indikatoren laufen in einen gewichteten Score, ohne dass die Oberfläche
+              Nutzer mit Rohdaten allein lässt.
             </p>
             <p>
-              Anti-Repaint war Pflicht — alles läuft auf confirmed bars, kein Future-Lookahead.
-              Die Divergenz-Erkennung im Synergy Oscillator war das technisch aufwändigste Teil.
+              Wichtig war, die Demo nicht als Trading-Versprechen zu bauen, sondern als robuste Datenvisualisierung
+              mit verständlicher Risiko-/Disclaimer-Schicht.
             </p>
           </div>
           <div className="cis-origin-meta">
             <div className="cis-origin-stat">
               <span className="cis-origin-stat-val">2</span>
-              <span className="cis-origin-stat-label">Pine Script v6 Indikatoren</span>
+              <span className="cis-origin-stat-label">Daten- und Signal-Layer</span>
             </div>
             <div className="cis-origin-stat">
               <span className="cis-origin-stat-val">8</span>
@@ -700,18 +699,18 @@ export function CryptoIndicatorShowcase() {
             </div>
             <div className="cis-origin-stat">
               <span className="cis-origin-stat-val">0</span>
-              <span className="cis-origin-stat-label">Repaint — confirmed-bar only</span>
+              <span className="cis-origin-stat-label">Future-Lookahead in der Demo-Logik</span>
             </div>
             <div className="cis-origin-stat">
               <span className="cis-origin-stat-val">∞</span>
-              <span className="cis-origin-stat-label">Timeframes — auto-adaptiv</span>
+              <span className="cis-origin-stat-label">Responsive UI-Zustände</span>
             </div>
           </div>
         </div>
 
         {/* ── Coin Switcher ── */}
         <div className="cis-coin-switcher">
-          <span className="cis-coin-switcher-label">Live analysieren:</span>
+          <span className="cis-coin-switcher-label">Datensatz wählen:</span>
           <div className="cis-coin-pills">
             {COINS.map((coin) => (
               <button
@@ -901,23 +900,22 @@ export function CryptoIndicatorShowcase() {
           <div className="cis-cta-content">
             <AlertTriangle size={18} style={{ color: 'var(--cyan)', flexShrink: 0, marginTop: 2 }} />
             <div>
-              <h3>Deinen Coin analysieren lassen?</h3>
+              <h3>Realtime-Dashboard oder Daten-UI geplant?</h3>
               <p>
-                Der Indikator läuft auf jedem beliebigen Coin und Timeframe in TradingView.
-                Wenn du Interesse hast, schick mir einfach eine Mail mit deinem Coin-Pair und
-                Timeframe — ich schaue mir die Signallage gerne an und zeige dir, was das System sieht.
+                Wenn ein Produkt Live-Daten, komplexe Zustände oder erklärende Dashboards braucht,
+                kann ich Datenlogik, UI und Betriebsschicht sauber zusammenbringen.
               </p>
               <p className="cis-cta-disclaimer">
-                Kein Finanzprodukt, keine Anlageberatung — rein technische Research-Perspektive.
+                Diese Sektion ist eine technische Research-Demo — kein Finanzprodukt und keine Anlageberatung.
               </p>
             </div>
           </div>
           <a
-            href="mailto:contact@ivo-tech.com?subject=Coin%20Review%20Anfrage&body=Hallo%20Ivo%2C%0A%0AIch%20interessiere%20mich%20f%C3%BCr%20eine%20Analyse%20von%3A%0ACoin%2FPair%3A%20%0ATimeframe%3A%20%0A%0ADanke!"
+            href="mailto:contact@ivo-tech.com?subject=Realtime%20Data%20UI%20Anfrage&body=Hallo%20Ivo%2C%0A%0AIch%20habe%20ein%20Projekt%20mit%20Live-Daten%20oder%20Dashboard-UI%3A%0A%0AKurzbeschreibung%3A%20%0AStack%2FAPI%3A%20%0A%0ADanke!"
             className="cis-cta-btn"
           >
             <Mail size={15} />
-            Mail schicken — Coin Review anfragen
+            Mail schicken — Daten-UI anfragen
           </a>
         </div>
 

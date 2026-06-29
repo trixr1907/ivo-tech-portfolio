@@ -26,6 +26,14 @@ export function ProjectCard({ project, onOpen }: ProjectCardProps) {
           <span className="project-card__eyebrow">Selected Work</span>
           <span className="project-card__title">{project.title}</span>
           <span className="project-card__tagline">{project.tagline}</span>
+          <span className="project-card__facts" aria-label="Projektkurzprofil">
+            {project.facts.map((fact) => (
+              <span key={fact.label}>
+                <strong>{fact.label}</strong>
+                {fact.value}
+              </span>
+            ))}
+          </span>
           <span className="project-card__tags" aria-label="Technologien">
             {visibleTags.map((tag) => (
               <span key={tag}>{tag}</span>

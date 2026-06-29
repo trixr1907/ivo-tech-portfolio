@@ -27,12 +27,12 @@ interface ProjectNode {
 }
 
 const techNodes: TechNode[] = [
-  { id: 'react', label: 'React', projects: ['website', 'dld', 'crypto', 'brand'] },
-  { id: 'typescript', label: 'TypeScript', projects: ['website', 'dld', 'crypto', 'brand', 'ai'] },
+  { id: 'react', label: 'React', projects: ['website', 'dld', 'data-ui', 'brand'] },
+  { id: 'typescript', label: 'TypeScript', projects: ['website', 'dld', 'data-ui', 'brand', 'ai'] },
   { id: 'threejs', label: 'Three.js', projects: ['website', 'dld', 'brand'] },
   { id: 'motion', label: 'Motion', projects: ['website', 'brand'] },
   { id: 'lenis', label: 'Lenis', projects: ['website'] },
-  { id: 'supabase', label: 'Supabase', projects: ['website', 'crypto', 'ai'] },
+  { id: 'supabase', label: 'Supabase', projects: ['website', 'data-ui', 'ai'] },
   { id: 'docker', label: 'Docker', projects: ['homelab', 'ai'] },
   { id: 'homeassistant', label: 'Home Assistant', projects: ['homelab'] },
   { id: 'proxmox', label: 'Proxmox', projects: ['homelab'] },
@@ -43,7 +43,7 @@ const techNodes: TechNode[] = [
 const projectNodes: ProjectNode[] = [
   { id: 'website', label: 'ivo-tech', line2: 'Website' },
   { id: 'dld', label: 'DLD', line2: '3D Configurator' },
-  { id: 'crypto', label: 'Crypto', line2: 'Indicator' },
+  { id: 'data-ui', label: 'Realtime', line2: 'Data UI' },
   { id: 'brand', label: 'Brand', line2: 'System' },
   { id: 'homelab', label: 'Homelab', line2: 'Smart Home' },
   { id: 'ai', label: 'Automation', line2: 'Workflows' },
@@ -74,7 +74,7 @@ const techPositions: Record<string, Position> = {
 const projectPositions: Record<string, Position> = {
   website: { x: 580, y: 45 },
   dld: { x: 680, y: 110 },
-  crypto: { x: 580, y: 180 },
+  'data-ui': { x: 580, y: 180 },
   brand: { x: 680, y: 245 },
   homelab: { x: 580, y: 310 },
   ai: { x: 680, y: 370 },

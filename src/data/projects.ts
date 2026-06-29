@@ -3,6 +3,10 @@ export type Project = {
   title: string
   tagline: string
   problem: string
+  facts: Array<{
+    label: string
+    value: string
+  }>
   cover: string
   tags: string[]
   status?: 'live' | 'lab-prototype'
@@ -60,6 +64,11 @@ export const projects: Project[] = [
       'Eine sichere Full-Stack-Plattform für professionelle Eventplanung mit Gästemanagement, Budget, Agenda, Ticketing, Reporting, DSGVO-Export und HCP-Compliance. Gebaut mit React, TypeScript und Supabase — inklusive RLS, Audit-Trail, Edge Functions und produktionsnaher Dashboard-UX.',
     problem:
       'Komplexe Events erzeugen verteilte Daten, manuelle Nachverfolgung und Compliance-Risiken. Der Event Hub ersetzt Excel-/Mail-Chaos durch eine zentrale, sichere und auditierbare Arbeitsplattform.',
+    facts: [
+      { label: 'Problem', value: 'Eventdaten, Rollen und Compliance in einem System bündeln' },
+      { label: 'Lösung', value: 'Supabase-App mit RLS, Audit-Trail, Exporten und Dashboard-UX' },
+      { label: 'Rolle', value: 'Konzeption, Full-Stack-Architektur, UI und QA' },
+    ],
     cover: eventHubImages.cover,
     tags: [
       'React',
@@ -116,6 +125,11 @@ export const projects: Project[] = [
       'Live bei deinlieblingsdruck.de: ein WooCommerce-Konfigurator für 3D-Druck mit Datei-Upload, 3D-Vorschau, Material- und Farbauswahl, Preisberechnung, Warenkorb-Anbindung und eigenem WordPress-Adminbereich.',
     problem:
       '3D-Druck lässt sich online nur schwer sauber verkaufen: Dateien müssen geprüft, Maße erkannt, Material und Farbe gewählt, Preise nachvollziehbar berechnet und Sonderanfertigungen rechtlich abgesichert werden. Zusätzlich braucht der Betreiber ein Admin-Panel, um Preise, Druckerprofile, Farben und Engine-Verbindungen ohne Code-Änderung zu steuern.',
+    facts: [
+      { label: 'Problem', value: '3D-Dateien, Preise und Checkout müssen verständlich zusammenlaufen' },
+      { label: 'Lösung', value: 'WooCommerce-Plugin mit Upload, Three.js-Vorschau, Admin und Preislogik' },
+      { label: 'Status', value: 'Live im produktiven Shop deinlieblingsdruck.de' },
+    ],
     cover: dldImages.cover,
     status: 'live' as const,
     tags: [

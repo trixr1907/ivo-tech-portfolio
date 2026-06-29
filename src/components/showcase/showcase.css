@@ -184,6 +184,32 @@
   -webkit-line-clamp: 5;
 }
 
+.project-card__facts {
+  display: grid;
+  gap: 0.52rem;
+  margin-top: 1rem;
+  padding: 0.85rem;
+  border: 1px solid rgba(123, 231, 255, 0.12);
+  border-radius: 18px;
+  background: rgba(0, 183, 255, 0.035);
+}
+
+.project-card__facts span {
+  display: grid;
+  gap: 0.18rem;
+  color: rgba(246, 248, 251, 0.72);
+  font-size: 0.78rem;
+  line-height: 1.42;
+}
+
+.project-card__facts strong {
+  color: rgba(123, 231, 255, 0.9);
+  font-family: var(--font-display);
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
 .project-card__tags,
 .project-modal__tags {
   display: flex;
