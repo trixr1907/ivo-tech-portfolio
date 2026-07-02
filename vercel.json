@@ -1,4 +1,14 @@
 {
+  "rewrites": [
+    {
+      "source": "/goals",
+      "destination": "https://goals-optimizer.vercel.app/goals"
+    },
+    {
+      "source": "/goals/:path*",
+      "destination": "https://goals-optimizer.vercel.app/goals/:path*"
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",
