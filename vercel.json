@@ -2,11 +2,11 @@
   "rewrites": [
     {
       "source": "/goals",
-      "destination": "https://goals-optimizer.vercel.app/goals"
+      "destination": "https://ivo-goals-optimizer.vercel.app/goals"
     },
     {
       "source": "/goals/:path*",
-      "destination": "https://goals-optimizer.vercel.app/goals/:path*"
+      "destination": "https://ivo-goals-optimizer.vercel.app/goals/:path*"
     }
   ],
   "headers": [
