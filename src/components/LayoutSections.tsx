@@ -166,6 +166,8 @@ export function SiteFooter() {
           <a href="#selected-work">Projekte</a>
           <a href="mailto:contact@ivo-tech.com">Kontakt</a>
           <a href="https://github.com/trixr1907" target="_blank" rel="noreferrer">GitHub</a>
+          <a href="/impressum">Impressum</a>
+          <a href="/datenschutz">Datenschutz</a>
         </div>
       </div>
     </footer>

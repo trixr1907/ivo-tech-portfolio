@@ -7,6 +7,14 @@
     {
       "source": "/goals/:path*",
       "destination": "https://goals-optimizer.vercel.app/goals/:path*"
+    },
+    {
+      "source": "/impressum",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/datenschutz",
+      "destination": "/index.html"
     }
   ],
   "headers": [

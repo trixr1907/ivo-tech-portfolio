@@ -10,12 +10,12 @@ test.describe('Landingpage Sections', () => {
   })
 
   test('About Section renders correctly', async ({ page }) => {
-    // Scroll zur About-Sektion
+    // Scroll to About section
     const aboutSection = page.locator('#about')
     await aboutSection.scrollIntoViewIfNeeded()
     
-    // Prüfen, ob die korrekte Überschrift sichtbar ist
-    await expect(aboutSection.locator('h2')).toContainText(/Kein Startup/i)
+    // Verify current headline content
+    await expect(aboutSection.locator('h2')).toContainText(/Neue Probleme/i)
   })
 
   test('Lab Section contains feature cards', async ({ page }) => {

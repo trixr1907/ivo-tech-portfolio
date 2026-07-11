@@ -1,7 +1,7 @@
 {
-  "name": "ivo-tech — Ivos privates Tech-Lab",
+  "name": "ivo-tech — Full-Stack Engineer Portfolio",
   "short_name": "ivo-tech",
-  "description": "Privates Tech-Lab von Ivo aus Mannheim: Webentwicklung, Homelab, 3D und Motion.",
+  "description": "Ivo — Full-Stack Engineer aus Mannheim. React, TypeScript, Supabase, Three.js. Produktionsreife Webapplikationen von der Architektur bis zum Deploy.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#05070B",

@@ -1,0 +1,79 @@
+/* Legal pages — Impressum + Datenschutz */
+.legal-page {
+  min-height: 100dvh;
+  background: var(--bg, #05070b);
+  color: var(--text, #dce6f2);
+  font-family: 'Syne', system-ui, sans-serif;
+  padding: 6rem 1.5rem 4rem;
+}
+
+.legal-inner {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.legal-back {
+  display: inline-block;
+  color: var(--cyan, #00b7ff);
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  margin-bottom: 2.5rem;
+  opacity: 0.85;
+  transition: opacity 0.2s;
+}
+
+.legal-back:hover {
+  opacity: 1;
+}
+
+.legal-page h1 {
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-weight: 700;
+  margin: 0 0 0.35rem;
+  color: #f6f8fb;
+}
+
+.legal-subtitle {
+  font-size: 0.85rem;
+  opacity: 0.55;
+  margin: 0 0 3rem;
+}
+
+.legal-page section {
+  margin-bottom: 2.5rem;
+}
+
+.legal-page h2 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--cyan, #00b7ff);
+  margin: 0 0 0.6rem;
+}
+
+.legal-page p {
+  font-size: 0.95rem;
+  line-height: 1.75;
+  opacity: 0.8;
+  margin: 0 0 0.8rem;
+}
+
+.legal-page a {
+  color: var(--cyan, #00b7ff);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.legal-page a:hover {
+  opacity: 0.8;
+}
+
+.legal-page code {
+  font-size: 0.88em;
+  background: rgba(0, 183, 255, 0.1);
+  border: 1px solid rgba(0, 183, 255, 0.2);
+  border-radius: 4px;
+  padding: 0.1em 0.4em;
+}
