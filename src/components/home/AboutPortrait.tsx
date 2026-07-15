@@ -65,8 +65,8 @@ export const AboutPortrait = memo(function AboutPortrait() {
             alt="Portrait von Ivo"
             loading="eager"
             decoding="async"
-            width={400}
-            height={400}
+            width={600}
+            height={600}
             className="about-clean-img"
           />
         </motion.div>
