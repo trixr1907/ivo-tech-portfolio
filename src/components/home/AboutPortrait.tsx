@@ -41,23 +41,6 @@ export const AboutPortrait = memo(function AboutPortrait() {
         className="about-tilt-wrap"
         style={{ transformStyle: 'preserve-3d', transition: 'transform 0.1s linear', willChange: 'transform' }}
       >
-        <div className="about-sunset-card" aria-hidden="true">
-          <picture>
-            <source srcSet="/images/about/ivo-sunset.webp" type="image/webp" />
-            <img
-              src="/images/about/ivo-sunset.jpg"
-              alt="Ivo an der Küste bei Sonnenuntergang"
-              loading="eager"
-              decoding="async"
-              width={720}
-              height={723}
-              sizes="(max-width: 680px) 120px, 160px"
-              className="about-sunset-img"
-            />
-          </picture>
-          <span className="about-sunset-label">GOLDEN HOUR</span>
-        </div>
-
         <div className="about-portrait-inner">
           <div className="about-portrait-rim" aria-hidden="true" />
 
@@ -76,15 +59,6 @@ export const AboutPortrait = memo(function AboutPortrait() {
               />
             </picture>
           </motion.div>
-
-          <div className="about-portrait-corners" aria-hidden="true" />
-
-          <div className="about-badge" aria-hidden="true">
-            <span className="about-badge-dot" />
-            IRL · Mannheim
-          </div>
-
-          <div className="about-coords" aria-hidden="true">49.487° N · 8.466° E</div>
 
           <div className="about-portrait-overlay" aria-hidden="true" />
         </div>
