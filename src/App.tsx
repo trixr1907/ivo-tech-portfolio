@@ -29,7 +29,7 @@ import { AboutSection } from './components/home/AboutSection'
 import { ContactButtons } from './components/ui/ContactButtons'
 import { labItems, signalCards, marqueeTop, marqueeBottom } from './data/homeData'
 
-const HeroOrbitSystem = lazy(() => import('./components/HeroOrbitSystem'))
+// const HeroOrbitSystem = lazy(() => import('./components/HeroOrbitSystem'))
 
 const loadShowcase = () => import('./components/showcase/Showcase')
 const loadMarketDataShowcase = () => import('./components/MarketDataShowcase')
@@ -388,10 +388,6 @@ function App() {
                 aria-label="ivo-tech Brand Visual"
               >
                 <div className="hv-webgl-stage" ref={webglStageRef}>
-                  <Suspense fallback={<div className="hv-webgl-stage-placeholder" aria-hidden="true" />}>
-                    <HeroOrbitSystem />
-                  </Suspense>
-
                   <ErrorBoundary
                     fallback={<img src={HERO_3D_FALLBACK_SRC} alt="ivo-tech Logo" className="hv-fallback" decoding="async" />}
                   >

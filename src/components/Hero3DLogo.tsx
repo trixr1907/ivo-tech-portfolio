@@ -3,7 +3,7 @@ import { useReducedMotion } from 'motion/react'
 import {
   WebGLRenderer, Scene, PerspectiveCamera, Group, Mesh, EdgesGeometry,
   MeshStandardMaterial, MeshPhysicalMaterial, LineBasicMaterial,
-  DirectionalLight, AmbientLight, RectAreaLight, PointLight,
+  DirectionalLight, AmbientLight, RectAreaLight,
   Color, Vector2, Vector3, Box3, ExtrudeGeometry,
   MathUtils, BufferGeometry, PCFSoftShadowMap,
   ACESFilmicToneMapping, SRGBColorSpace, AdditiveBlending,
@@ -120,25 +120,27 @@ export default function Hero3DLogo({ fallbackSrc, alt = 'ivo-tech WebGL Logo' }:
     root.add(logoGroup)
 
     // SOTA Lighting (Cinematic Studio Setup)
-    const ambient = new AmbientLight(0xffffff, 2.5) // Brute force brightness
+    // Very dim ambient just to prevent pitch black
+    const ambient = new AmbientLight(0x0a101a, 0.4) 
     scene.add(ambient)
 
-    const keyLight = new DirectionalLight(0xffffff, 4.0)
+    // Key light (main directional) - sharp and slightly cool
+    const keyLight = new DirectionalLight(0xffffff, 2.0)
     keyLight.position.set(-2, 3, 5)
     scene.add(keyLight)
 
-    const fillLight = new DirectionalLight(0x7be7ff, 2.0)
+    // Fill light - soft cyan to lift the dark shadows
+    const fillLight = new DirectionalLight(0x7be7ff, 1.0)
     fillLight.position.set(4, -1, 3)
     scene.add(fillLight)
 
-    const rimLight = new RectAreaLight(0x00b7ff, 10.0, 10, 2)
-    rimLight.position.set(-2, -2, -3)
+    // Rim light (RectArea) - creates the ultra-premium long reflection streaks on the metal
+    const rimLight = new RectAreaLight(0x00b7ff, 8.0, 10, 2)
+    rimLight.position.set(-3, -2, -2)
     rimLight.lookAt(0, 0, 0)
     scene.add(rimLight)
 
-    const coreLight = new PointLight(0x7be7ff, 5.0, 10, 1.5)
-    coreLight.position.set(0, 0.5, 2)
-    root.add(coreLight)
+    // Remove the brutal coreLight point-light that washed everything out
 
     const dust = createDustField()
     root.add(dust)
@@ -236,7 +238,8 @@ export default function Hero3DLogo({ fallbackSrc, alt = 'ivo-tech WebGL Logo' }:
       // Fix SVG inversion FIRST
       logoGroup.rotation.x = Math.PI
       
-      const targetScale = 5.0 / Math.max(size.x, 1) // Massive scale up to be sure we see it
+      // Massive scale up to be sure we see it and it dominates the space
+      const targetScale = 6.8 / Math.max(size.x, 1) 
       logoGroup.scale.setScalar(targetScale)
       
       setLoading(false)
