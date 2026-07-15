@@ -7,10 +7,11 @@ import {
   Color, Vector2, Vector3, Box3, ExtrudeGeometry,
   MathUtils, BufferGeometry, PCFSoftShadowMap,
   ACESFilmicToneMapping, SRGBColorSpace, AdditiveBlending,
-  Float32BufferAttribute, Points, PointsMaterial, LineSegments
+  Float32BufferAttribute, Points, PointsMaterial, LineSegments, PMREMGenerator
 } from 'three'
 import { SVGLoader } from 'three/examples/jsm/loaders/SVGLoader.js'
 import { RectAreaLightUniformsLib } from 'three/examples/jsm/lights/RectAreaLightUniformsLib.js'
+import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js'
 
 type Hero3DLogoProps = {
   fallbackSrc?: string
@@ -101,10 +102,11 @@ export default function Hero3DLogo({ fallbackSrc, alt = 'ivo-tech WebGL Logo' }:
     renderer.shadowMap.enabled = true
     renderer.shadowMap.type = PCFSoftShadowMap
 
-    // Required for SOTA RectAreaLights
-    RectAreaLightUniformsLib.init()
-
+    // CRITICAL for SOTA metallic materials: they need an environment to reflect, otherwise they look like muddy plastic
+    const pmremGenerator = new PMREMGenerator(renderer)
+    pmremGenerator.compileEquirectangularShader()
     const scene = new Scene()
+    scene.environment = pmremGenerator.fromScene(new RoomEnvironment(), 0.04).texture
     const camera = new PerspectiveCamera(35, 1, 0.1, 100)
     camera.position.set(0, 0, 15) // Move camera back so we don't clip the depth
 
@@ -121,21 +123,29 @@ export default function Hero3DLogo({ fallbackSrc, alt = 'ivo-tech WebGL Logo' }:
 
     // SOTA Lighting (Cinematic Studio Setup)
     // Very dim ambient just to prevent pitch black
-    const ambient = new AmbientLight(0x0a101a, 0.4) 
+    const ambient = new AmbientLight(0xffffff, 0.5) 
     scene.add(ambient)
 
-    // Key light (main directional) - sharp and slightly cool
-    const keyLight = new DirectionalLight(0xffffff, 2.0)
-    keyLight.position.set(-2, 3, 5)
+    // Key light (main directional) - sharp and bright white to pop the logo out
+    const keyLight = new DirectionalLight(0xffffff, 4.0)
+    keyLight.position.set(-2, 5, 8)
     scene.add(keyLight)
 
-    // Fill light - soft cyan to lift the dark shadows
-    const fillLight = new DirectionalLight(0x7be7ff, 1.0)
+    // Fill light - soft cyan to lift the dark shadows on the front
+    const fillLight = new DirectionalLight(0x7be7ff, 2.5)
     fillLight.position.set(4, -1, 3)
     scene.add(fillLight)
 
-    // Rim light (RectArea) - creates the ultra-premium long reflection streaks on the metal
-    const rimLight = new RectAreaLight(0x00b7ff, 8.0, 10, 2)
+    // Intense Back/Rim Light - CRITICAL: separating the dark silhouette from the dark background
+    const backLight = new DirectionalLight(0x00b7ff, 6.0)
+    backLight.position.set(5, 5, -10)
+    scene.add(backLight)
+
+    // Required for SOTA RectAreaLights
+    RectAreaLightUniformsLib.init()
+
+    // Rim light (RectArea) - creates the ultra-premium long reflection streaks on the metal edges
+    const rimLight = new RectAreaLight(0x00b7ff, 15.0, 10, 4)
     rimLight.position.set(-3, -2, -2)
     rimLight.lookAt(0, 0, 0)
     scene.add(rimLight)
@@ -170,21 +180,21 @@ export default function Hero3DLogo({ fallbackSrc, alt = 'ivo-tech WebGL Logo' }:
             metalness: 0.4
           })
         } else if (isDark) {
-          // Premium Dark Anodized Metal
+          // Premium Dark Obsidian/Chrome Metal
           material = new MeshPhysicalMaterial({
-            color: new Color(0x0b111c),
-            roughness: 0.15,
-            metalness: 0.9,
-            clearcoat: 0.2,
-            clearcoatRoughness: 0.1
+            color: new Color(0x05080c), // Much darker, almost pure black
+            roughness: 0.1, // Super glossy
+            metalness: 1.0, // Full metal
+            clearcoat: 1.0, // Liquid clearcoat
+            clearcoatRoughness: 0.05
           })
         } else {
-          // Bright / White elements
+          // Bright / White Chrome elements
           material = new MeshPhysicalMaterial({
-            color: new Color(0xe8edf3),
-            roughness: 0.2,
-            metalness: 0.6,
-            clearcoat: 0.5,
+            color: new Color(0xffffff),
+            roughness: 0.05,
+            metalness: 0.8,
+            clearcoat: 1.0,
           })
         }
 
@@ -214,11 +224,12 @@ export default function Hero3DLogo({ fallbackSrc, alt = 'ivo-tech WebGL Logo' }:
           if (isIcon) {
             const edgeGeo = new EdgesGeometry(geometry, 20)
             const edgeMat = new LineBasicMaterial({
-              color: isCyan ? 0x7be7ff : 0x2a3d54,
+              color: isCyan ? 0x00b7ff : 0x7be7ff, // Much brighter neon cyan edges
               transparent: true,
-              opacity: isCyan ? 0.8 : 0.3,
+              opacity: isCyan ? 1.0 : 0.6,
               blending: AdditiveBlending,
-              depthWrite: false
+              depthWrite: false,
+              linewidth: 2 // Has no effect in WebGL natively, but standard definition
             })
             const edges = new LineSegments(edgeGeo, edgeMat)
             edges.position.copy(mesh.position)
