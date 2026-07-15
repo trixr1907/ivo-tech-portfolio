@@ -2,16 +2,14 @@ import { useEffect, useRef, useState } from 'react'
 import { useReducedMotion } from 'motion/react'
 import {
   WebGLRenderer, Scene, PerspectiveCamera, Group, Mesh, EdgesGeometry,
-  MeshStandardMaterial, MeshPhysicalMaterial, LineBasicMaterial, MeshBasicMaterial,
-  DirectionalLight, AmbientLight, RectAreaLight,
-  Color, Vector2, Vector3, Box3, ExtrudeGeometry,
+  LineBasicMaterial, MeshBasicMaterial,
+  Vector2, Vector3, Box3, ExtrudeGeometry,
   MathUtils, BufferGeometry, PCFSoftShadowMap,
   ACESFilmicToneMapping, SRGBColorSpace, AdditiveBlending,
   Float32BufferAttribute, Points, PointsMaterial, LineSegments, PMREMGenerator
 } from 'three'
 import { SVGLoader } from 'three/examples/jsm/loaders/SVGLoader.js'
-import { RectAreaLightUniformsLib } from 'three/examples/jsm/lights/RectAreaLightUniformsLib.js'
-import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js'
+// Removed RectAreaLightUniformsLib and RoomEnvironment to fix build errors in UNLIT test
 
 type Hero3DLogoProps = {
   fallbackSrc?: string
