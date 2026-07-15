@@ -895,14 +895,14 @@ body::before {
 .hero-3d-logo::before {
   content: '';
   position: absolute;
-  inset: 8% 4% 4%;
+  inset: -15%;
   z-index: -1;
-  border-radius: 999px;
+  border-radius: 50%;
   background:
-    radial-gradient(circle at 42% 50%, rgba(0, 183, 255, 0.24), transparent 52%),
-    radial-gradient(circle at 64% 45%, rgba(123, 231, 255, 0.11), transparent 58%);
-  filter: blur(44px);
-  opacity: 0.9;
+    radial-gradient(ellipse 80% 60% at 50% 50%, rgba(0, 183, 255, 0.08), transparent 70%),
+    radial-gradient(circle at 50% 50%, rgba(11, 24, 43, 0.4), transparent 80%);
+  filter: blur(80px);
+  opacity: 1;
 }
 
 .hero-3d-canvas {
