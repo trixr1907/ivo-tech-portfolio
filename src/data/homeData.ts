@@ -67,19 +67,19 @@ export const signalCards = [
     icon: Activity,
     label: 'Live tinkering',
     value: 'Tool workflows',
-    text: 'Lokale Modelle, Automation und Tooling als reales Arbeitssetup — nicht Demo-Folie.',
+    text: 'Lokale KI, Automatisierung und echtes Tooling. Wer sein eigenes Backend baut, versteht auch Edge-Cases im Produkt.',
   },
   {
     icon: Network,
     label: 'Infrastructure',
     value: 'Homelab layer',
-    text: 'Proxmox, Home Assistant, Docker und Monitoring als privates Nervensystem.',
+    text: 'Proxmox, Docker, Netzwerk-Security als Nervensystem. Stabile Architektur fängt beim eigenen Homeserver an.',
   },
   {
     icon: Layers,
     label: 'Identity',
     value: 'Brand system',
-    text: 'Logo, 3D, Motion, Social und Web aus einem konsistenten visuellen Kern.',
+    text: 'Logo, 3D, Motion und Frontend greifen ineinander. Konsistenz ist kein Zufall, sondern ein System.',
   },
 ]
 

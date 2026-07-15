@@ -13,6 +13,7 @@ import { ErrorBoundary } from './components/ErrorBoundary'
 import { bridgeGsapLenis } from './lib/gsap-lenis-bridge'
 import { useGsapPinHero } from './hooks/useGsapPinHero'
 import { useGsapReveal } from './hooks/useGsapReveal'
+import { useScrollspy } from './hooks/useScrollspy'
 
 import { Loader } from './components/ui/Loader'
 import { LazySectionFallback } from './components/ui/LazySectionFallback'
@@ -25,6 +26,7 @@ import { SplitTitle } from './components/ui/SplitTitle'
 import { Marquee } from './components/ui/Marquee'
 import { LabCard } from './components/home/LabCard'
 import { AboutSection } from './components/home/AboutSection'
+import { ContactButtons } from './components/ui/ContactButtons'
 import { labItems, signalCards, marqueeTop, marqueeBottom } from './data/homeData'
 
 const HeroOrbitSystem = lazy(() => import('./components/HeroOrbitSystem'))
@@ -63,6 +65,8 @@ function App() {
   const { scrollYProgress: heroProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] })
   const heroY = useTransform(heroProgress, [0, 1], ['0%', '18%'])
   const heroOpacity = useTransform(heroProgress, [0, 0.7], [1, 0])
+
+  const activeSectionId = useScrollspy(['about', 'lab', 'selected-work', 'brand'], 150)
 
   const scrollToSection = useCallback((hash: string) => {
     const targetId = hash.replace('#', '')
@@ -260,11 +264,14 @@ function App() {
                 { label: 'Lab', href: '#lab' },
                 { label: 'Work', href: '#selected-work' },
                 { label: 'Brand', href: '#brand' },
-              ].map(({ label, href }) => (
-                <a key={label} href={href} className="h-link" onClick={(event) => handleAnchorClick(event, href)}>
-                  <span>{label}</span>
-                </a>
-              ))}
+              ].map(({ label, href }) => {
+                const isActive = activeSectionId === href.replace('#', '')
+                return (
+                  <a key={label} href={href} className={`h-link ${isActive ? 'active' : ''}`} onClick={(event) => handleAnchorClick(event, href)}>
+                    <span>{label}</span>
+                  </a>
+                )
+              })}
             </nav>
 
             <div className="h-right">
@@ -359,12 +366,7 @@ function App() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.65, delay: 0.86, ease: [0.16, 1, 0.3, 1] }}
                 >
-                  <MagButton className="btn-primary" href="#selected-work" onClick={(event) => handleAnchorClick(event, '#selected-work')}>
-                    Projekte ansehen <ArrowUpRight size={16} />
-                  </MagButton>
-                  <MagButton className="btn-ghost" href="mailto:contact@ivo-tech.com">
-                    Kontakt aufnehmen
-                  </MagButton>
+                  <ContactButtons onNavigate={handleAnchorClick} />
                 </motion.div>
 
                 <motion.div

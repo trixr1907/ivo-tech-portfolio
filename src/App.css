@@ -313,10 +313,12 @@ body::before {
   transform-origin: right;
   transition: transform 0.3s var(--ease-expo);
 }
-.h-link:hover {
-  color: var(--white);
+.h-link:hover,
+.h-link.active {
+  color: var(--cyan);
 }
-.h-link:hover::after {
+.h-link:hover::after,
+.h-link.active::after {
   transform: scaleX(1);
   transform-origin: left;
 }
@@ -542,11 +544,55 @@ body::before {
   margin-bottom: 2.2rem;
 }
 
+.contact-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  background: rgba(220, 230, 242, 0.04);
+  border: 1px solid rgba(220, 230, 242, 0.16);
+  border-radius: 999px;
+  padding: 0.2rem;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+.contact-group:hover {
+  border-color: rgba(0, 183, 255, 0.5);
+  background: rgba(0, 183, 255, 0.04);
+}
+.contact-group .btn-ghost {
+  border: none;
+  background: transparent;
+  min-height: 38px;
+  padding: 0.45rem 1.1rem;
+}
+.contact-group .btn-ghost:hover {
+  background: rgba(0, 183, 255, 0.1);
+}
+.btn-copy {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(220, 230, 242, 0.78);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.btn-copy:hover {
+  background: rgba(0, 183, 255, 0.15);
+  color: var(--white);
+}
+.text-green {
+  color: #10b981;
+}
+
 .hero-ctas {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.8rem;
-  margin-bottom: 3rem;
+  gap: 1rem;
+  margin-top: 1.6rem;
+  pointer-events: auto;
 }
 
 .hero-scroll-hint {

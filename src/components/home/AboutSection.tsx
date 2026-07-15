@@ -39,8 +39,8 @@ export function AboutSection() {
                 </p>
                 <p>
                   Ich komme schnell in neue Themen rein, finde erste tragfähige Schritte und arbeite mich mit
-                  viel Ehrgeiz durch die Details. Was hier liegt, sind keine Übungen fürs Portfolio, sondern
-                  Projekte mit echten Entscheidungen, echten Kanten und echtem Output.
+                  viel Ehrgeiz durch die Details. Was hier liegt, sind keine reinen Sandkasten-Projekte — wie z.B. 
+                  der DLD Konfigurator, der aktiv Live-Kundenbestellungen verarbeitet.
                 </p>
               </div>
             </Reveal>
