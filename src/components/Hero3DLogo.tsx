@@ -7,10 +7,9 @@ import {
   Color, Vector2, Vector3, Box3, ExtrudeGeometry,
   MathUtils, BufferGeometry, PCFSoftShadowMap,
   ACESFilmicToneMapping, SRGBColorSpace, AdditiveBlending,
-  Float32BufferAttribute, Points, PointsMaterial, LineSegments, PMREMGenerator
+  Float32BufferAttribute, Points, PointsMaterial, LineSegments
 } from 'three'
 import { SVGLoader } from 'three/examples/jsm/loaders/SVGLoader.js'
-import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js'
 import { RectAreaLightUniformsLib } from 'three/examples/jsm/lights/RectAreaLightUniformsLib.js'
 
 type Hero3DLogoProps = {
@@ -102,12 +101,7 @@ export default function Hero3DLogo({ fallbackSrc, alt = 'ivo-tech WebGL Logo' }:
     renderer.shadowMap.enabled = true
     renderer.shadowMap.type = PCFSoftShadowMap
 
-    // CRITICAL for SOTA metallic materials: they need an environment to reflect, otherwise they look like muddy plastic
-    // Room Environment for soft subtle reflections on satin
-    const pmremGenerator = new PMREMGenerator(renderer)
-    pmremGenerator.compileEquirectangularShader()
     const scene = new Scene()
-    scene.environment = pmremGenerator.fromScene(new RoomEnvironment(), 0.04).texture
     const camera = new PerspectiveCamera(35, 1, 0.1, 100)
     camera.position.set(0, 0, 15) // Move camera back so we don't clip the depth
 
@@ -122,30 +116,27 @@ export default function Hero3DLogo({ fallbackSrc, alt = 'ivo-tech WebGL Logo' }:
     const logoGroup = new Group()
     root.add(logoGroup)
 
-    // SOTA Lighting (Satin/Matte Setup)
-    const ambient = new AmbientLight(0xffffff, 0.6) // Neutral soft ambient
+    // ULTRA DARK STEALTH LIGHTING
+    const ambient = new AmbientLight(0x0a101a, 0.2) // Barely visible dark blue
     scene.add(ambient)
 
-    // Soft Key Light from top-left (illuminates the front face gently)
-    const keyLight = new DirectionalLight(0xffffff, 1.2)
+    // Very weak key light just to show geometry edges
+    const keyLight = new DirectionalLight(0xffffff, 0.5)
     keyLight.position.set(-2, 5, 8)
     scene.add(keyLight)
 
-    // Soft Cyan Fill Light from bottom-right to bring out the dark corners
-    const fillLight = new DirectionalLight(0x00b7ff, 1.5)
-    fillLight.position.set(4, -2, 4)
-    scene.add(fillLight)
+    // No fill light (keep shadows pitch black)
 
-    // Intense Back/Rim Light - CRITICAL for separating from the background
-    const backLight = new DirectionalLight(0x7be7ff, 4.0)
+    // Strong Cyan Rim Light to carve the shape out of the blackness
+    const backLight = new DirectionalLight(0x00b7ff, 3.0)
     backLight.position.set(5, 5, -10)
     scene.add(backLight)
 
     // Required for RectAreaLights
     RectAreaLightUniformsLib.init()
 
-    // Neon Rim Tube from bottom left, creates long beautiful specular streaks on the edges
-    const rimLight = new RectAreaLight(0x00b7ff, 12.0, 10, 2)
+    // Neon Rim Tube from bottom left
+    const rimLight = new RectAreaLight(0x00b7ff, 8.0, 10, 2)
     rimLight.position.set(-3, -2, -2)
     rimLight.lookAt(0, 0, 0)
     scene.add(rimLight)
