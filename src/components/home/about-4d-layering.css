@@ -1,0 +1,131 @@
+/* 4D Interleaved Typography & Cutout Portrait Styles */
+
+.about-4d-wrap {
+  position: relative;
+  width: 100%;
+  height: 600px; /* Give it some vertical breathing room */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+  /* Add perspective to the parent to make translateZ pop */
+  perspective: 1200px;
+}
+
+.about-4d-tilt {
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Base text styling shared between back and front */
+.about-4d-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -250px;
+  margin-left: -300px;
+  width: 600px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 6.5rem;
+  font-weight: 900;
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  text-align: center;
+  pointer-events: none;
+}
+
+.about-4d-text span {
+  display: block;
+  white-space: nowrap;
+}
+
+/* Background Text: Solid color, slightly dimmed */
+.about-4d-text-bg {
+  color: rgba(255, 255, 255, 0.1); /* Very subtle white in the back */
+  z-index: 1;
+}
+
+.about-4d-text-bg .text-cyan {
+  color: rgba(0, 183, 255, 0.3); /* Dimmed cyan */
+}
+
+/* Foreground Text: Transparent with bright stroke */
+.about-4d-text-fg {
+  color: transparent; /* Invisible core so we can see the face */
+  -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.5); /* Thin white outline */
+  z-index: 3;
+}
+
+.about-4d-text-fg .text-cyan {
+  -webkit-text-stroke: 2px rgba(0, 183, 255, 0.9); /* Bright cyan outline */
+  filter: drop-shadow(0 0 12px rgba(0, 183, 255, 0.5)); /* Neon glow on the outline */
+}
+
+/* Cutout Image Layer (Middle) */
+.about-4d-img-wrap {
+  position: absolute;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: flex-end; /* Align the cutout to the bottom */
+  justify-content: center;
+  pointer-events: none;
+}
+
+.about-4d-img {
+  width: auto;
+  height: 90%; /* Scale the person to fit well within the text */
+  max-width: 100%;
+  object-fit: contain;
+  object-position: bottom center;
+  filter: grayscale(10%) contrast(1.1); /* Slight cinematic grading */
+}
+
+/* A soft shadow to ground the cutout if it floats */
+.about-4d-img-shadow {
+  position: absolute;
+  bottom: 5%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
+  height: 20px;
+  background: radial-gradient(ellipse at center, rgba(0,0,0,0.8) 0%, transparent 70%);
+  z-index: -1;
+}
+
+/* Mobile Adjustments */
+@media (max-width: 768px) {
+  .about-4d-wrap {
+    height: 450px;
+  }
+  
+  .about-4d-text {
+    font-size: 4rem;
+    margin-left: -200px;
+    margin-top: -150px;
+    width: 400px;
+  }
+}
+
+@media (max-width: 480px) {
+  .about-4d-wrap {
+    height: 380px;
+  }
+  
+  .about-4d-text {
+    font-size: 3rem;
+    margin-left: -150px;
+    margin-top: -100px;
+    width: 300px;
+  }
+}
