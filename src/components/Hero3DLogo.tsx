@@ -66,7 +66,11 @@ export default function Hero3DLogo({ fallbackSrc, alt = 'ivo-tech WebGL Logo' }:
   useEffect(() => {
     const wrapper = wrapRef.current
     const canvas = canvasRef.current
-    if (!wrapper || !canvas || reducedMotion || !webglOk || webglFailed) return undefined
+    console.log('[Hero3DLogo] effect running', { hasWrapper: !!wrapper, hasCanvas: !!canvas, reducedMotion, webglOk, webglFailed })
+    if (!wrapper || !canvas || reducedMotion || !webglOk || webglFailed) {
+      console.log('[Hero3DLogo] EARLY RETURN - one of the guards failed')
+      return undefined
+    }
 
     let frameId = 0
     let disposed = false
@@ -102,7 +106,7 @@ export default function Hero3DLogo({ fallbackSrc, alt = 'ivo-tech WebGL Logo' }:
 
     const scene = new Scene()
     const camera = new PerspectiveCamera(35, 1, 0.1, 100)
-    camera.position.set(0, 0, 7.5)
+    camera.position.set(0, 0, 15) // Move camera back so we don't clip the depth
 
     // Base Assembly Group
     const root = new Group()
@@ -116,10 +120,10 @@ export default function Hero3DLogo({ fallbackSrc, alt = 'ivo-tech WebGL Logo' }:
     root.add(logoGroup)
 
     // SOTA Lighting (Cinematic Studio Setup)
-    const ambient = new AmbientLight(0x1a2639, 1.2)
+    const ambient = new AmbientLight(0xffffff, 2.5) // Brute force brightness
     scene.add(ambient)
 
-    const keyLight = new DirectionalLight(0xffffff, 3.0)
+    const keyLight = new DirectionalLight(0xffffff, 4.0)
     keyLight.position.set(-2, 3, 5)
     scene.add(keyLight)
 
@@ -141,7 +145,9 @@ export default function Hero3DLogo({ fallbackSrc, alt = 'ivo-tech WebGL Logo' }:
 
     // Loading & Parsing SVG
     const loader = new SVGLoader()
+    console.log('[Hero3DLogo] Starting SVG load from', LOGO_SVG_URL)
     loader.load(LOGO_SVG_URL, (data) => {
+      console.log('[Hero3DLogo] SVG loaded, paths:', data.paths.length)
       if (disposed) return
 
       data.paths.forEach((path, pathIndex) => {
@@ -227,12 +233,12 @@ export default function Hero3DLogo({ fallbackSrc, alt = 'ivo-tech WebGL Logo' }:
       box.getSize(size)
       
       logoGroup.children.forEach(child => child.position.sub(center))
-      const targetScale = 2.8 / Math.max(size.x, 1)
+      // Fix SVG inversion FIRST
+      logoGroup.rotation.x = Math.PI
+      
+      const targetScale = 5.0 / Math.max(size.x, 1) // Massive scale up to be sure we see it
       logoGroup.scale.setScalar(targetScale)
       
-      // Fix SVG inversion
-      logoGroup.rotation.x = Math.PI
-
       setLoading(false)
       if (wrapper) wrapper.dataset.ready = 'true'
     }, undefined, (error) => {
@@ -353,11 +359,13 @@ export default function Hero3DLogo({ fallbackSrc, alt = 'ivo-tech WebGL Logo' }:
   }
 
   return (
-    <canvas
-      ref={canvasRef}
-      className={`hero-3d-canvas ${loading ? 'loading' : 'ready'}`}
-      style={{ width: '100%', height: '100%', touchAction: 'none' }}
-      aria-label={alt}
-    />
+    <div ref={wrapRef} className="hero-3d-logo" role="img" aria-label={alt} style={{ width: '100%', height: '100%' }}>
+      <canvas
+        ref={canvasRef}
+        className={`hero-3d-canvas ${loading ? 'loading' : 'ready'}`}
+        style={{ width: '100%', height: '100%', touchAction: 'none' }}
+        aria-hidden="true"
+      />
+    </div>
   )
 }
