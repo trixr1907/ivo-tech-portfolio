@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useReducedMotion } from 'motion/react'
 import {
   WebGLRenderer, Scene, PerspectiveCamera, Group, Mesh, EdgesGeometry,
-  MeshStandardMaterial, MeshPhysicalMaterial, LineBasicMaterial,
+  MeshStandardMaterial, MeshPhysicalMaterial, LineBasicMaterial, MeshBasicMaterial,
   DirectionalLight, AmbientLight, RectAreaLight,
   Color, Vector2, Vector3, Box3, ExtrudeGeometry,
   MathUtils, BufferGeometry, PCFSoftShadowMap,
@@ -106,7 +106,7 @@ export default function Hero3DLogo({ fallbackSrc, alt = 'ivo-tech WebGL Logo' }:
     const pmremGenerator = new PMREMGenerator(renderer)
     pmremGenerator.compileEquirectangularShader()
     const scene = new Scene()
-    scene.environment = pmremGenerator.fromScene(new RoomEnvironment(), 0.04).texture
+    // scene.environment = pmremGenerator.fromScene(new RoomEnvironment(), 0.04).texture
     const camera = new PerspectiveCamera(35, 1, 0.1, 100)
     camera.position.set(0, 0, 15) // Move camera back so we don't clip the depth
 
@@ -122,33 +122,28 @@ export default function Hero3DLogo({ fallbackSrc, alt = 'ivo-tech WebGL Logo' }:
     root.add(logoGroup)
 
     // SOTA Lighting (Cinematic Studio Setup)
-    // Very dim ambient just to prevent pitch black
+    // ALL LIGHTS DISABLED FOR COLOR TEST
+    /*
     const ambient = new AmbientLight(0xffffff, 0.5) 
     scene.add(ambient)
 
-    // Key light (main directional) - sharp and bright white to pop the logo out
     const keyLight = new DirectionalLight(0xffffff, 4.0)
     keyLight.position.set(-2, 5, 8)
     scene.add(keyLight)
 
-    // Fill light - soft cyan to lift the dark shadows on the front
     const fillLight = new DirectionalLight(0x7be7ff, 2.5)
     fillLight.position.set(4, -1, 3)
     scene.add(fillLight)
 
-    // Intense Back/Rim Light - CRITICAL: separating the dark silhouette from the dark background
     const backLight = new DirectionalLight(0x00b7ff, 6.0)
     backLight.position.set(5, 5, -10)
     scene.add(backLight)
 
-    // Required for SOTA RectAreaLights
-    RectAreaLightUniformsLib.init()
-
-    // Rim light (RectArea) - creates the ultra-premium long reflection streaks on the metal edges
     const rimLight = new RectAreaLight(0x00b7ff, 15.0, 10, 4)
     rimLight.position.set(-3, -2, -2)
     rimLight.lookAt(0, 0, 0)
     scene.add(rimLight)
+    */
 
     // Remove the brutal coreLight point-light that washed everything out
 
@@ -168,34 +163,14 @@ export default function Hero3DLogo({ fallbackSrc, alt = 'ivo-tech WebGL Logo' }:
         const isDark = hexColor === '151b24' || hexColor === '1b222c' || hexColor === '0b111c'
         const isIcon = pathIndex < 9 // The Origami mark
 
-        // SOTA Materials: MeshPhysicalMaterial for premium glass/metal feel
+        // SOTA Materials: UNLIT TEST TO CHECK COLORS WITHOUT LIGHTING
         let material
         if (isCyan) {
-          // Emissive / Glowing Cyan
-          material = new MeshStandardMaterial({
-            color: new Color(0x7be7ff),
-            emissive: new Color(0x00b7ff),
-            emissiveIntensity: 1.2,
-            roughness: 0.1,
-            metalness: 0.4
-          })
+          material = new MeshBasicMaterial({ color: 0x00b7ff })
         } else if (isDark) {
-          // Premium Dark Obsidian/Chrome Metal
-          material = new MeshPhysicalMaterial({
-            color: new Color(0x05080c), // Much darker, almost pure black
-            roughness: 0.1, // Super glossy
-            metalness: 1.0, // Full metal
-            clearcoat: 1.0, // Liquid clearcoat
-            clearcoatRoughness: 0.05
-          })
+          material = new MeshBasicMaterial({ color: 0x111111 }) // Dark grey so we can see it against black
         } else {
-          // Bright / White Chrome elements
-          material = new MeshPhysicalMaterial({
-            color: new Color(0xffffff),
-            roughness: 0.05,
-            metalness: 0.8,
-            clearcoat: 1.0,
-          })
+          material = new MeshBasicMaterial({ color: 0xffffff })
         }
 
         const shapes = SVGLoader.createShapes(path)
