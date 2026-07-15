@@ -1267,6 +1267,14 @@ body::before {
   object-fit: cover;
   filter: grayscale(15%) contrast(1.05);
   transition: filter 0.4s ease;
+  
+  /* SOTA Fix: Fade the hard image background smoothly into the site background */
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%), 
+                      linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%), 
+              linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%);
+  mask-composite: intersect;
 }
 .about-tilt-wrap:hover .about-portrait-img {
   filter: grayscale(0%) contrast(1.02);
@@ -1280,8 +1288,9 @@ body::before {
   z-index: 5;
   border-radius: 28px;
   background:
-    linear-gradient(to top, var(--black) 0%, transparent 28%),
-    linear-gradient(to bottom, var(--black) 0%, transparent 12%);
+    linear-gradient(to right, var(--black) 0%, transparent 15%, transparent 85%, var(--black) 100%),
+    linear-gradient(to top, var(--black) 0%, transparent 25%),
+    linear-gradient(to bottom, var(--black) 0%, transparent 15%);
 }
 
 /* Rim glow aura (outer glow, behind the card) */
