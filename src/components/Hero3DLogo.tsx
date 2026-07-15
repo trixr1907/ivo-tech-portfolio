@@ -3,7 +3,7 @@ import { useReducedMotion } from 'motion/react'
 import {
   WebGLRenderer, Scene, PerspectiveCamera, Group, Mesh, EdgesGeometry,
   MeshStandardMaterial, MeshPhysicalMaterial, LineBasicMaterial,
-  DirectionalLight, AmbientLight, RectAreaLight,
+  DirectionalLight, AmbientLight, RectAreaLight, PointLight,
   Color, Vector2, Vector3, Box3, ExtrudeGeometry,
   MathUtils, BufferGeometry, PCFSoftShadowMap,
   ACESFilmicToneMapping, SRGBColorSpace, AdditiveBlending,
@@ -116,22 +116,25 @@ export default function Hero3DLogo({ fallbackSrc, alt = 'ivo-tech WebGL Logo' }:
     root.add(logoGroup)
 
     // SOTA Lighting (Cinematic Studio Setup)
-    const ambient = new AmbientLight(0x1a2639, 0.6)
+    const ambient = new AmbientLight(0x1a2639, 1.2)
     scene.add(ambient)
 
-    const keyLight = new DirectionalLight(0xffffff, 2.5)
+    const keyLight = new DirectionalLight(0xffffff, 3.0)
     keyLight.position.set(-2, 3, 5)
     scene.add(keyLight)
 
-    const fillLight = new DirectionalLight(0x7be7ff, 1.2)
+    const fillLight = new DirectionalLight(0x7be7ff, 2.0)
     fillLight.position.set(4, -1, 3)
     scene.add(fillLight)
 
-    // RectAreaLight gives those beautiful, soft, realistic rim-light reflections on metal
-    const rimLight = new RectAreaLight(0x00b7ff, 6.0, 10, 2)
+    const rimLight = new RectAreaLight(0x00b7ff, 10.0, 10, 2)
     rimLight.position.set(-2, -2, -3)
     rimLight.lookAt(0, 0, 0)
     scene.add(rimLight)
+
+    const coreLight = new PointLight(0x7be7ff, 5.0, 10, 1.5)
+    coreLight.position.set(0, 0.5, 2)
+    root.add(coreLight)
 
     const dust = createDustField()
     root.add(dust)
@@ -191,7 +194,7 @@ export default function Hero3DLogo({ fallbackSrc, alt = 'ivo-tech WebGL Logo' }:
           geometry.computeVertexNormals()
 
           const mesh = new Mesh(geometry, material)
-          mesh.position.z = isIcon ? -6 : 0
+          mesh.position.z = isIcon ? -13 : 0
           
           // Cast/Receive soft shadows
           mesh.castShadow = true
