@@ -2,14 +2,16 @@ import { useEffect, useRef, useState } from 'react'
 import { useReducedMotion } from 'motion/react'
 import {
   WebGLRenderer, Scene, PerspectiveCamera, Group, Mesh, EdgesGeometry,
-  LineBasicMaterial, MeshBasicMaterial,
-  Vector2, Vector3, Box3, ExtrudeGeometry,
+  MeshStandardMaterial, MeshPhysicalMaterial, LineBasicMaterial,
+  DirectionalLight, AmbientLight, RectAreaLight,
+  Color, Vector2, Vector3, Box3, ExtrudeGeometry,
   MathUtils, BufferGeometry, PCFSoftShadowMap,
   ACESFilmicToneMapping, SRGBColorSpace, AdditiveBlending,
   Float32BufferAttribute, Points, PointsMaterial, LineSegments, PMREMGenerator
 } from 'three'
 import { SVGLoader } from 'three/examples/jsm/loaders/SVGLoader.js'
-// Removed RectAreaLightUniformsLib and RoomEnvironment to fix build errors in UNLIT test
+import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js'
+import { RectAreaLightUniformsLib } from 'three/examples/jsm/lights/RectAreaLightUniformsLib.js'
 
 type Hero3DLogoProps = {
   fallbackSrc?: string
@@ -101,10 +103,11 @@ export default function Hero3DLogo({ fallbackSrc, alt = 'ivo-tech WebGL Logo' }:
     renderer.shadowMap.type = PCFSoftShadowMap
 
     // CRITICAL for SOTA metallic materials: they need an environment to reflect, otherwise they look like muddy plastic
+    // Room Environment for soft subtle reflections on satin
     const pmremGenerator = new PMREMGenerator(renderer)
     pmremGenerator.compileEquirectangularShader()
     const scene = new Scene()
-    // scene.environment = pmremGenerator.fromScene(new RoomEnvironment(), 0.04).texture
+    scene.environment = pmremGenerator.fromScene(new RoomEnvironment(), 0.04).texture
     const camera = new PerspectiveCamera(35, 1, 0.1, 100)
     camera.position.set(0, 0, 15) // Move camera back so we don't clip the depth
 
@@ -119,31 +122,33 @@ export default function Hero3DLogo({ fallbackSrc, alt = 'ivo-tech WebGL Logo' }:
     const logoGroup = new Group()
     root.add(logoGroup)
 
-    // SOTA Lighting (Cinematic Studio Setup)
-    // ALL LIGHTS DISABLED FOR COLOR TEST
-    /*
-    const ambient = new AmbientLight(0xffffff, 0.5) 
+    // SOTA Lighting (Satin/Matte Setup)
+    const ambient = new AmbientLight(0xffffff, 0.6) // Neutral soft ambient
     scene.add(ambient)
 
-    const keyLight = new DirectionalLight(0xffffff, 4.0)
+    // Soft Key Light from top-left (illuminates the front face gently)
+    const keyLight = new DirectionalLight(0xffffff, 1.2)
     keyLight.position.set(-2, 5, 8)
     scene.add(keyLight)
 
-    const fillLight = new DirectionalLight(0x7be7ff, 2.5)
-    fillLight.position.set(4, -1, 3)
+    // Soft Cyan Fill Light from bottom-right to bring out the dark corners
+    const fillLight = new DirectionalLight(0x00b7ff, 1.5)
+    fillLight.position.set(4, -2, 4)
     scene.add(fillLight)
 
-    const backLight = new DirectionalLight(0x00b7ff, 6.0)
+    // Intense Back/Rim Light - CRITICAL for separating from the background
+    const backLight = new DirectionalLight(0x7be7ff, 4.0)
     backLight.position.set(5, 5, -10)
     scene.add(backLight)
 
-    const rimLight = new RectAreaLight(0x00b7ff, 15.0, 10, 4)
+    // Required for RectAreaLights
+    RectAreaLightUniformsLib.init()
+
+    // Neon Rim Tube from bottom left, creates long beautiful specular streaks on the edges
+    const rimLight = new RectAreaLight(0x00b7ff, 12.0, 10, 2)
     rimLight.position.set(-3, -2, -2)
     rimLight.lookAt(0, 0, 0)
     scene.add(rimLight)
-    */
-
-    // Remove the brutal coreLight point-light that washed everything out
 
     const dust = createDustField()
     root.add(dust)
@@ -161,14 +166,33 @@ export default function Hero3DLogo({ fallbackSrc, alt = 'ivo-tech WebGL Logo' }:
         const isDark = hexColor === '151b24' || hexColor === '1b222c' || hexColor === '0b111c'
         const isIcon = pathIndex < 9 // The Origami mark
 
-        // SOTA Materials: UNLIT TEST TO CHECK COLORS WITHOUT LIGHTING
+        // SOTA Materials: Premium Matte/Satin Finish (avoiding blown out mirror reflections)
         let material
         if (isCyan) {
-          material = new MeshBasicMaterial({ color: 0x00b7ff })
+          // Emissive / Glowing Cyan
+          material = new MeshStandardMaterial({
+            color: new Color(0x7be7ff),
+            emissive: new Color(0x00b7ff),
+            emissiveIntensity: 1.2,
+            roughness: 0.2,
+            metalness: 0.1 // Less metallic so the neon cyan stays pure
+          })
         } else if (isDark) {
-          material = new MeshBasicMaterial({ color: 0x111111 }) // Dark grey so we can see it against black
+          // Premium Dark Satin Obsidian
+          material = new MeshPhysicalMaterial({
+            color: new Color(0x0b131e), // Very dark blue/grey, not pure black
+            roughness: 0.45, // Much rougher! This stops the mirror effect that causes the white blowout
+            metalness: 0.7, // Solid metal core
+            clearcoat: 0.0, // REMOVED the clearcoat which was acting as a pure mirror for the white key light
+          })
         } else {
-          material = new MeshBasicMaterial({ color: 0xffffff })
+          // Bright / White elements
+          material = new MeshPhysicalMaterial({
+            color: new Color(0xd9e2ec), // Off-white/silver, not pure white
+            roughness: 0.3,
+            metalness: 0.6,
+            clearcoat: 0.2,
+          })
         }
 
         const shapes = SVGLoader.createShapes(path)
