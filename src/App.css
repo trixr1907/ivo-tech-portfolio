@@ -1182,6 +1182,9 @@ body::before {
 /* Text kommt zuerst im DOM → order 2 auf Desktop (rechts) */
 .about-text-col {
   order: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 /* Portrait kommt zweites im DOM → order 1 auf Desktop (links) */
@@ -1189,8 +1192,11 @@ body::before {
   order: 1;
   display: flex;
   flex-direction: column;
-  gap: 1.4rem;
+  align-items: center;
+  justify-content: center;
   position: relative;
+  /* Geben wir der Portrait-Spalte eine feste Minimalhöhe, damit sie den Text ausbalanciert */
+  min-height: 500px;
 }
 
 .about-portrait-wrap {
