@@ -892,21 +892,9 @@ body::before {
 
 /* drag-to-rotate removed — cinematic scroll is primary interaction pattern */
 
+/* Background glow removed entirely */
 .hero-3d-logo::before {
-  content: '';
-  position: absolute;
-  inset: 0%;
-  z-index: -1;
-  border-radius: 32px;
-  background: transparent;
-  /* Licht aus einem Quadrat von außen nach innen (inset shadow) */
-  box-shadow: 
-    inset 0 0 120px 20px rgba(0, 183, 255, 0.12),
-    inset 0 0 40px 5px rgba(0, 183, 255, 0.08),
-    0 0 60px 0 rgba(0, 183, 255, 0.05);
-  border: 1px solid rgba(0, 183, 255, 0.2);
-  filter: blur(6px); /* Weichzeichner für die indirekte, diffuse Wirkung */
-  opacity: 1;
+  display: none;
 }
 
 .hero-3d-canvas {
