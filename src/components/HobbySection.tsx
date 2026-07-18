@@ -1,5 +1,6 @@
 import type { CSSProperties, ReactNode } from 'react'
 import { motion, useReducedMotion } from 'motion/react'
+import { SectionTitle } from './ui/SectionTitle'
 
 function Reveal({ children, delay = 0, className }: { children: ReactNode; delay?: number; className?: string }) {
   const reduceMotion = useReducedMotion()
@@ -28,9 +29,13 @@ export function HobbySection() {
         <span className="sec-label">Hobby Lab</span>
         <span className="sec-num">— 06</span>
       </div>
-      <h2 id="hobby-h">
-        Dinge, die ich tue,<br /><em>weil ich es kann.</em>
-      </h2>
+      <SectionTitle
+        id="hobby-h"
+        lines={[
+          { text: 'Dinge, die ich tue,' },
+          { text: 'weil ich es kann.', em: true },
+        ]}
+      />
     </Reveal>
 
     {/* ── Helium Mining ─────────────────────── */}
@@ -54,13 +59,17 @@ export function HobbySection() {
             </div>
           </div>
           <p className="hobby-intro-text">
-            Schon 2021 das dezentrale LoRaWAN-Funknetz von Helium entdeckt — zu einer Zeit,
-            als die meisten noch fragten "Helium was?". Hotspots an vier verschiedenen
-            Standorten aufgebaut. Jeder Standort strategisch gewählt: Höhe, Antennengewinn
-            und freies Sichtfeld bestimmen die Coverage-Reichweite und damit den HNT-Ertrag.
+            Seit 2021 LoRaWAN-Hotspots an bis zu vier Standorten — Coverage über Höhe,
+            Antenne und Sichtfeld. Early-Adopter-Setup, heute vor allem Lernprojekt.
           </p>
         </div>
 
+        <details className="hobby-details">
+          <summary className="hobby-details-summary">
+            <span>Outdoor/Indoor-Setups · Coverage · Hardware</span>
+            <span className="hobby-details-hint">Details</span>
+          </summary>
+          <div className="hobby-details-body">
         {/* Visuelle Setup-Darstellung: zwei animierte Karten */}
         <div className="helium-setups">
 
@@ -216,13 +225,13 @@ export function HobbySection() {
         <div className="helium-humor">
           <span className="helium-humor-icon">💡</span>
           <p>
-            <strong>Disclaimer für Investoren:</strong> War mal ein potenziell lukratives Projekt —
-            Early Adopter, gute Coverage, solide HNT-Rewards. Dann hat Helium die Tokenomics
-            überarbeitet, der HNT-Preis hat sich... kreativ entwickelt, und der ROI hat sich
-            verabschiedet wie ein Hotspot ohne Witness. Stand heute: technisch faszinierend,
-            finanziell eher ein Lernprojekt. <em>10/10 würde wieder früh dabei sein.</em>
+            <strong>Disclaimer:</strong> Early Adopter, gute Coverage — Tokenomics und HNT-Preis
+            haben den ROI beendet. Technisch spannend, finanziell Lernprojekt.
+            <em> 10/10 würde wieder früh dabei sein.</em>
           </p>
         </div>
+          </div>
+        </details>
 
       </div>
     </Reveal>
@@ -248,54 +257,15 @@ export function HobbySection() {
             </div>
           </div>
           <p className="hobby-intro-text">
-            Kein blindes Spec-Sheet-Racing. Der Sweetspot liegt da, wo Preis-Leistung
-            wirklich trifft — ohne Overhead für Komponenten, die im Alltag keinen
-            Unterschied machen. Ich baue Systeme nach dem, was jemand wirklich braucht:
-            individuell abgestimmt auf Use-Case, Budget und Langlebigkeit.
+            Kein Spec-Sheet-Racing: Builds am echten Use-Case, Budget und Langlebigkeit —
+            ohne Marketing-Overhead.
           </p>
         </div>
 
         {/* Sweetspot-Philosophie Visual + Tier-Grid */}
         <div className="pc-body">
 
-          {/* Philosophie-Kachel */}
-          <div className="pc-philosophy">
-            <div className="pc-philosophy-core">
-              <div className="sweetspot-dial">
-                <div className="sd-ring sd-outer"><span>Overhead</span></div>
-                <div className="sd-ring sd-mid"><span>Sweet<br/>spot</span></div>
-                <div className="sd-ring sd-inner" />
-              </div>
-              <div className="sweetspot-axis">
-                <div className="sa-bar">
-                  <span className="sa-label">Leistung</span>
-                  <div className="sa-track">
-                    <div className="sa-fill" style={{ width: '72%' }} />
-                    <span className="sa-marker">✓</span>
-                  </div>
-                </div>
-                <div className="sa-bar">
-                  <span className="sa-label">Kosten</span>
-                  <div className="sa-track">
-                    <div className="sa-fill sa-fill-cost" style={{ width: '52%' }} />
-                    <span className="sa-marker">✓</span>
-                  </div>
-                </div>
-                <div className="sa-bar">
-                  <span className="sa-label">Zukunftssicher</span>
-                  <div className="sa-track">
-                    <div className="sa-fill sa-fill-future" style={{ width: '65%' }} />
-                    <span className="sa-marker">✓</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <p className="pc-philosophy-quote">
-              "Was brauchst du wirklich — und was ist nur Marketing?"
-            </p>
-          </div>
-
-          {/* Tier-Grid */}
+          {/* Tier-Grid first — core value */}
           <div className="pc-tiers">
             {[
               {
@@ -338,6 +308,49 @@ export function HobbySection() {
             ))}
           </div>
 
+          <details className="hobby-details">
+            <summary className="hobby-details-summary">
+              <span>Sweetspot-Logik · Entscheidungs-Matrix</span>
+              <span className="hobby-details-hint">Details</span>
+            </summary>
+            <div className="hobby-details-body">
+          {/* Philosophie-Kachel */}
+          <div className="pc-philosophy">
+            <div className="pc-philosophy-core">
+              <div className="sweetspot-dial">
+                <div className="sd-ring sd-outer"><span>Overhead</span></div>
+                <div className="sd-ring sd-mid"><span>Sweet<br/>spot</span></div>
+                <div className="sd-ring sd-inner" />
+              </div>
+              <div className="sweetspot-axis">
+                <div className="sa-bar">
+                  <span className="sa-label">Leistung</span>
+                  <div className="sa-track">
+                    <div className="sa-fill" style={{ width: '72%' }} />
+                    <span className="sa-marker">✓</span>
+                  </div>
+                </div>
+                <div className="sa-bar">
+                  <span className="sa-label">Kosten</span>
+                  <div className="sa-track">
+                    <div className="sa-fill sa-fill-cost" style={{ width: '52%' }} />
+                    <span className="sa-marker">✓</span>
+                  </div>
+                </div>
+                <div className="sa-bar">
+                  <span className="sa-label">Zukunftssicher</span>
+                  <div className="sa-track">
+                    <div className="sa-fill sa-fill-future" style={{ width: '65%' }} />
+                    <span className="sa-marker">✓</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <p className="pc-philosophy-quote">
+              "Was brauchst du wirklich — und was ist nur Marketing?"
+            </p>
+          </div>
+
           {/* Entscheidungs-Matrix */}
           <div className="pc-matrix">
             <p className="pc-matrix-label">Was wirklich zählt — und was nicht</p>
@@ -359,6 +372,8 @@ export function HobbySection() {
               ))}
             </div>
           </div>
+            </div>
+          </details>
 
         </div>
       </div>

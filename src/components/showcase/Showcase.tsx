@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { projects, type Project } from '../../data/projects'
 import { ProjectCard } from './ProjectCard'
 import { ProjectModal } from './ProjectModal'
+import { SectionTitle } from '../ui/SectionTitle'
 import './showcase.css'
 
 export function Showcase() {
@@ -15,10 +16,10 @@ export function Showcase() {
             <span className="sec-label">Selected Work</span>
             <span className="sec-num">— 03</span>
           </div>
-          <h2 id="showcase-h">Projekte mit echter Produkt-Tiefe.</h2>
+          <SectionTitle id="showcase-h" lines={[{ text: 'Projekte mit echter Produkt-Tiefe.' }]} />
           <p>
-            Zwei Projekte mit echter Produkt-Tiefe: ein Full-Stack Event-Hub mit Supabase-RLS und
-            ein 3D-Druck-Konfigurator mit Docker-Slicer-Integration und Live-Preislogik.
+            Drei Cases mit echter Produkt-Tiefe: GOALS Optimizer (Live Squad/Fit/Formation),
+            Event Hub mit Supabase-RLS und DLD 3D-Konfigurator mit Docker-Slicer und Live-Preislogik.
           </p>
         </div>
 

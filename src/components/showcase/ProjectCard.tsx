@@ -17,7 +17,7 @@ export function ProjectCard({ project, onOpen }: ProjectCardProps) {
         onClick={() => onOpen(project)}
       >
         <span className="project-card__media">
-          <img src={project.cover} alt={`${project.title} — Vorschau`} loading="lazy" decoding="async" />
+          <img src={project.cover} alt={`${project.title} — Vorschau`} width={1440} height={900} sizes="(max-width: 680px) 100vw, (max-width: 1100px) 50vw, 560px" loading="lazy" decoding="async" />
           <span className={`project-card__status ${isLabPrototype ? 'project-card__status--lab' : ''}`}>
             {isLabPrototype ? 'Lab Prototype' : 'Case Study'}
           </span>

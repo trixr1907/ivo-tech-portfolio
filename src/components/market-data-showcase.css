@@ -7,7 +7,7 @@
 .cis-section {
   position: relative;
   overflow: hidden;
-  padding-block: clamp(4rem, 8vw, 8rem);
+  padding-block: clamp(2.2rem, 4vw, 3.8rem);
   scroll-margin-top: 7.25rem;
 }
 
@@ -26,16 +26,16 @@
 /* ── Header ──────────────────────────────────────────────── */
 .cis-head {
   display: grid;
-  grid-template-columns: minmax(0, 0.5fr) minmax(0, 1fr);
-  gap: clamp(1rem, 3vw, 3rem);
+  grid-template-columns: minmax(0, 0.45fr) minmax(0, 1fr);
+  gap: clamp(0.75rem, 2vw, 1.5rem);
   align-items: end;
-  margin-bottom: clamp(2rem, 5vw, 4rem);
+  margin-bottom: clamp(0.9rem, 2vw, 1.35rem);
 }
 
 .cis-head h2 {
   max-width: 600px;
   font-family: var(--font-display);
-  font-size: clamp(2.4rem, 5.5vw, 5rem);
+  font-size: clamp(2rem, 4.2vw, 3.4rem);
   line-height: 0.91;
   letter-spacing: -0.066em;
   color: var(--white);
@@ -56,12 +56,66 @@
 }
 
 /* ── Origin Story ────────────────────────────────────────── */
+
+/* Compact origin (details/summary) */
+.cis-origin > summary {
+  list-style: none;
+  cursor: pointer;
+}
+.cis-origin > summary::-webkit-details-marker { display: none; }
+.cis-origin-summary {
+  display: grid;
+  gap: 0.55rem;
+}
+.cis-origin-summary-title {
+  font-size: clamp(1.05rem, 2vw, 1.35rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: rgba(232, 240, 250, 0.92);
+}
+.cis-origin-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+.cis-origin-chips span {
+  padding: 0.28rem 0.6rem;
+  border-radius: 999px;
+  border: 1px solid rgba(123, 231, 255, 0.16);
+  background: rgba(0, 183, 255, 0.06);
+  font-size: 0.72rem;
+  color: rgba(220, 230, 242, 0.72);
+}
+.cis-origin-body {
+  margin-top: 1rem;
+  display: grid;
+  gap: 1rem;
+}
+.cis-origin:not([open]) {
+  padding-block: 1.1rem;
+}
+.cis-metrics-more {
+  border-top: 1px solid rgba(123, 231, 255, 0.08);
+  background: rgba(5, 7, 11, 0.55);
+  padding: 0.75rem 1.2rem 1rem;
+}
+.cis-metrics-more > summary {
+  cursor: pointer;
+  color: rgba(123, 231, 255, 0.85);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  list-style: none;
+}
+.cis-metrics-more > summary::-webkit-details-marker { display: none; }
+.cis-metrics-more[open] > summary { margin-bottom: 0.75rem; }
+
 .cis-origin {
   display: grid;
   grid-template-columns: 1fr minmax(0, 320px);
   gap: clamp(2rem, 5vw, 5rem);
   align-items: start;
-  padding: clamp(1.8rem, 3.5vw, 3rem);
+  padding: clamp(1.2rem, 2.4vw, 1.8rem);
   margin-bottom: clamp(1.6rem, 3vw, 2.8rem);
   border: 1px solid rgba(123, 231, 255, 0.1);
   border-radius: 22px;
@@ -270,7 +324,7 @@
 
 /* ── Chart ───────────────────────────────────────────────── */
 .cis-chart-wrap {
-  margin-bottom: clamp(1.4rem, 2.5vw, 2.2rem);
+  margin-bottom: clamp(0.9rem, 1.8vw, 1.4rem);
   border: 1px solid rgba(123, 231, 255, 0.12);
   border-top: none;
   border-radius: 0 0 16px 16px;
@@ -286,7 +340,7 @@
   align-items: center;
   justify-content: center;
   gap: 1rem;
-  height: 340px;
+  height: 200px;
   color: rgba(220, 230, 242, 0.35);
   font-size: 0.86rem;
 }
@@ -313,7 +367,7 @@
   border-radius: 18px;
   overflow: hidden;
   background: rgba(123, 231, 255, 0.05);
-  margin-bottom: clamp(2rem, 4vw, 3.5rem);
+  margin-bottom: clamp(1.2rem, 2.5vw, 2rem);
 }
 
 /* ── Score Blocks ────────────────────────────────────────── */
@@ -322,8 +376,8 @@
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
   background: rgba(5, 7, 11, 0.9);
-  padding: 1.4rem 1.6rem;
-  gap: 1.5rem;
+  padding: 0.9rem 1.1rem;
+  gap: 1rem;
 }
 
 .cis-score-block {
@@ -401,7 +455,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.3rem;
-  padding: 1.1rem 1.25rem;
+  padding: 0.8rem 1rem;
   background: rgba(5, 7, 11, 0.88);
   border-top: 1px solid transparent;
   transition: background 0.22s ease, border-color 0.22s ease;
@@ -448,7 +502,7 @@
   display: flex;
   align-items: center;
   gap: 1rem;
-  padding: 1.1rem 1.4rem;
+  padding: 0.85rem 1.1rem;
   background: rgba(5, 7, 11, 0.88);
   transition: background 0.3s ease;
 }
@@ -489,12 +543,58 @@
 
 /* ── Architecture Breakdown ──────────────────────────────── */
 .cis-arch {
-  margin-bottom: clamp(2rem, 4vw, 3.5rem);
+  margin-bottom: clamp(0.9rem, 2vw, 1.4rem);
+  border: 1px solid rgba(123, 231, 255, 0.1);
+  border-radius: 16px;
+  background: rgba(5, 7, 11, 0.55);
+  overflow: hidden;
+}
+.cis-arch > summary {
+  list-style: none;
+  cursor: pointer;
+}
+.cis-arch > summary::-webkit-details-marker { display: none; }
+.cis-arch-summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.55rem 1rem;
+  padding: 0.85rem 1.15rem;
+}
+.cis-arch-summary-title {
+  flex: 1;
+  min-width: 12rem;
+  font-family: var(--font-display);
+  font-size: clamp(1rem, 1.8vw, 1.25rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--white);
+}
+.cis-arch-summary-hint {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(123, 231, 255, 0.75);
+  border: 1px solid rgba(123, 231, 255, 0.28);
+  border-radius: 999px;
+  padding: 0.28rem 0.7rem;
+}
+.cis-arch:not([open]) .cis-arch-summary-hint::after { content: ' öffnen'; }
+.cis-arch[open] .cis-arch-summary-hint::after { content: ' schließen'; }
+.cis-arch-body-wrap {
+  padding: 0 1.15rem 1.1rem;
+  border-top: 1px solid rgba(123, 231, 255, 0.08);
+}
+.cis-arch-intro {
+  margin: 0.85rem 0 0.9rem;
+  color: rgba(220, 230, 242, 0.55);
+  font-size: 0.9rem;
+  line-height: 1.55;
+  max-width: 52rem;
 }
 
-.cis-arch-head {
-  margin-bottom: clamp(1.4rem, 3vw, 2.5rem);
-}
+.cis-arch-head { margin-bottom: 0.8rem; }
 
 .cis-arch-label {
   display: block;
@@ -597,8 +697,8 @@
   align-items: flex-start;
   gap: 1.5rem;
   flex-wrap: wrap;
-  padding: clamp(1.6rem, 3vw, 2.4rem);
-  margin-bottom: clamp(1.6rem, 3vw, 2.8rem);
+  padding: clamp(1.1rem, 2.2vw, 1.6rem);
+  margin-bottom: clamp(1rem, 2vw, 1.6rem);
   border: 1px solid rgba(0, 183, 255, 0.18);
   border-radius: 20px;
   background:
@@ -929,15 +1029,15 @@
   display: flex;
   align-items: center;
   gap: 0;
-  padding: 1.5rem 1.25rem 1rem;
+  padding: 0.85rem 1rem 0.7rem;
   border-bottom: 1px solid rgba(220,230,242,0.06);
 }
 
 .cis-score-divider {
   width: 1px;
-  height: 80px;
+  height: 64px;
   background: rgba(220,230,242,0.08);
-  margin: 0 1rem;
+  margin: 0 0.75rem;
   flex-shrink: 0;
 }
 

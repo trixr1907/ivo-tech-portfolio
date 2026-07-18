@@ -1,5 +1,6 @@
 import { useState, type ReactNode } from 'react'
 import { motion, useReducedMotion } from 'motion/react'
+import { SectionTitle } from './ui/SectionTitle'
 
 /* ────────────────────────────────────────────────────────────────
    Skill Node Graph — interactive SVG-based tech-stack explorer
@@ -311,7 +312,7 @@ export function SkillGraphSection() {
             <span className="sec-label">Stack</span>
             <span className="sec-num">— 07</span>
           </div>
-          <h2 id="stack-h">Mein Tech-Ökosystem</h2>
+          <SectionTitle id="stack-h" lines={[{ text: 'Mein Tech-Ökosystem' }]} />
         </Reveal>
 
         <Reveal delay={0.08}>

@@ -50,6 +50,12 @@ const eventHubImages = {
   registration: '/brand/projects/event-hub-3.webp',
 }
 
+const goalsImages = {
+  cover: '/brand/projects/goals-optimizer-cover.webp',
+  squad: '/brand/projects/goals-optimizer-1.webp',
+  lineup: '/brand/projects/goals-optimizer-2.webp',
+}
+
 const dldImages = {
   cover: '/brand/projects/dld-cover.webp',
   calculated: '/brand/projects/dld-dev-portfolio.webp',
@@ -57,6 +63,20 @@ const dldImages = {
 }
 
 export const projects: Project[] = [
+  {
+    id: 'goals-optimizer', title: 'GOALS Optimizer',
+    tagline: 'Live unter goals.ivo-tech.com: Squad-Import, Fit-Scores, Formation-Optimizer, Matchup und Development-Tracker — Next.js 14, TypeScript, Zustand, 371 Tests.',
+    problem: 'GOALS-Spieler müssen Kader, Position-Fit und Lineups aus mehreren Community-Datenquellen zusammensetzen.',
+    facts: [{ label: 'Problem', value: 'Kader, Position-Fit und Lineups aus mehreren Quellen bündeln' }, { label: 'Lösung', value: 'Live-Optimizer mit Squad-Import, Matchup und Development-Tracker' }, { label: 'Status', value: 'Live auf goals.ivo-tech.com · 371 Tests' }],
+    cover: goalsImages.cover, status: 'live',
+    tags: ['Next.js 14', 'TypeScript', 'Zustand', 'Tailwind', 'Vitest', 'Playwright', 'Squad Optimizer', 'Matchup', 'Mobile-first'],
+    overview: { built: 'Ein live nutzbarer GOALS-Optimizer für Squad-Import, Position-Fit, Formation, Matchup und Spielerentwicklung.', challenge: 'Community-Datenquellen und viele Kaderentscheidungen mussten in eine schnelle, mobile-first Oberfläche mit nachvollziehbaren Scores überführt werden.', role: 'Konzeption, Produktarchitektur, Next.js-/TypeScript-Umsetzung, State-Management, responsive UI und Testabdeckung.' },
+    highlights: ['Formation + Pitch: Lineups visuell prüfen und optimieren.', 'Matchup und Development: relevante Entscheidungen in einem Flow.', '371 Tests + Live: Vitest/Playwright und produktiver Betrieb.'],
+    screenshots: [{ src: goalsImages.cover, caption: 'GOALS Optimizer mit Squad-Import und zentralem Kader-Überblick' }, { src: goalsImages.squad, caption: 'Squad-Ansicht mit Position-Fit und Spielerinformationen' }, { src: goalsImages.lineup, caption: 'Formation und Pitch für die Lineup-Optimierung' }],
+    impact: [{ value: '371', label: 'Tests' }, { value: 'Live', label: 'goals.ivo-tech.com' }, { value: 'Mobile', label: 'Mobile-first' }],
+    result: 'Aus verteilten Community-Daten wird ein nutzbares Entscheidungs-Tool: Import, Fit, Formation, Matchup und Development in einer App.',
+    links: { demo: 'https://goals.ivo-tech.com', repo: '' },
+  },
   {
     id: 'event-hub',
     title: 'Event Management Hub',

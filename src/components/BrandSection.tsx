@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { motion, useReducedMotion } from 'motion/react'
+import { SectionTitle } from './ui/SectionTitle'
 
 const motionReveals = [
   {
@@ -52,9 +53,13 @@ export function BrandSection() {
             <span className="sec-label">Brand System</span>
             <span className="sec-num">— 05</span>
           </div>
-          <h2 id="brand-h">
-            9 Facetten.<br /><em>Ein System.</em>
-          </h2>
+          <SectionTitle
+            id="brand-h"
+            lines={[
+              { text: '9 Facetten.' },
+              { text: 'Ein System.', em: true },
+            ]}
+          />
           <p className="brand-intro">
             Das ivo-tech Brand-System entstand aus dem Wunsch nach einem konsistenten visuellen Kern
             über Web, Motion und Print hinweg. Logo in Adobe Illustrator konstruiert,

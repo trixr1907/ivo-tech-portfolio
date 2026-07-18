@@ -6,19 +6,22 @@ export function Loader({ onDone }: { onDone: () => void }) {
   const [phase, setPhase] = useState<'counting' | 'done'>('counting')
 
   useEffect(() => {
-    let v = 0
-    const tick = () => {
-      v += Math.random() * 7 + 3
-      if (v >= 100) {
-        setProgress(100)
-        setPhase('done')
-        setTimeout(onDone, 700)
-        return
-      }
-      setProgress(Math.round(v))
-      setTimeout(tick, 30 + Math.random() * 50)
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || sessionStorage.getItem('ivo-loaded') === 'true') {
+      onDone()
+      return
     }
-    tick()
+    const started = performance.now()
+    const timer = window.setInterval(() => {
+      const next = Math.min(100, Math.round(((performance.now() - started) / 500) * 100))
+      setProgress(next)
+      if (next >= 100) {
+        window.clearInterval(timer)
+        sessionStorage.setItem('ivo-loaded', 'true')
+        setPhase('done')
+        window.setTimeout(onDone, 80)
+      }
+    }, 24)
+    return () => window.clearInterval(timer)
   }, [onDone])
 
   return (

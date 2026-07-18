@@ -1,6 +1,7 @@
 import { useCallback, useRef, type ReactNode } from 'react'
 import { ExternalLink } from 'lucide-react'
 import { motion, useReducedMotion } from 'motion/react'
+import { SectionTitle } from './ui/SectionTitle'
 
 function Reveal({ children, delay = 0, className }: { children: ReactNode; delay?: number; className?: string }) {
   const reduceMotion = useReducedMotion()
@@ -81,46 +82,6 @@ function MagButton({
   )
 }
 
-const stackRows = [
-  ['Automation', 'Local tooling', 'React', 'TypeScript', 'Three.js'],
-  ['Home Assistant', 'Proxmox', 'Docker', 'Motion Design', 'WebGL'],
-  ['Local LLMs', 'Vite', 'Node.js', 'SQLite', 'GSAP'],
-]
-
-export function StackSection() {
-  return (
-    <section id="stack" className="section stack-section" aria-labelledby="stack-h">
-      <div className="section-inner">
-        <Reveal className="sec-head">
-          <div>
-            <span className="sec-label">Stack</span>
-            <span className="sec-num">— 07</span>
-          </div>
-          <h2 id="stack-h">Tools auf meinem Radar</h2>
-        </Reveal>
-        <div className="stack-rows">
-          {stackRows.map((row, ri) => (
-            <Reveal key={ri} delay={ri * 0.06}>
-              <div className="stack-row">
-                {row.map((item) => (
-                  <motion.span
-                    key={item}
-                    className="stack-tag"
-                    whileHover={{ borderColor: 'rgba(0,183,255,0.55)', color: '#fff', y: -3 }}
-                    transition={{ duration: 0.16 }}
-                  >
-                    {item}
-                  </motion.span>
-                ))}
-              </div>
-            </Reveal>
-          ))}
-        </div>
-      </div>
-    </section>
-  )
-}
-
 export function ContactSection() {
   return (
     <section id="kontakt" className="section contact-section" aria-labelledby="contact-h">
@@ -130,11 +91,14 @@ export function ContactSection() {
             <span className="sec-label">Kontakt</span>
             <span className="sec-num">— 08</span>
           </div>
-          <h2 id="contact-h" className="cw-headline">
-            Lass uns etwas bauen,
-            <br />
-            das sich <em>echt anfühlt.</em>
-          </h2>
+          <SectionTitle
+            id="contact-h"
+            className="cw-headline"
+            lines={[
+              { text: 'Lass uns etwas bauen,' },
+              { text: 'das sich echt anfühlt.', em: true },
+            ]}
+          />
           <p className="cw-body">
             Offen für Festanstellung als Frontend-/Full-Stack Developer und ausgewählte Freelance-Projekte.
             Schreib mir mit Rolle, Projekt oder Frage — ich antworte.

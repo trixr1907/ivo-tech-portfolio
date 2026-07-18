@@ -1,23 +1,24 @@
 import { useEffect, useRef, useState } from 'react'
 import { useReducedMotion } from 'motion/react'
 import {
-  WebGLRenderer, Scene, PerspectiveCamera, Group, Mesh, EdgesGeometry,
-  MeshStandardMaterial, MeshPhysicalMaterial, LineBasicMaterial,
-  DirectionalLight, AmbientLight, RectAreaLight,
-  Color, Vector2, Vector3, Box3, ExtrudeGeometry,
-  MathUtils, BufferGeometry, PCFSoftShadowMap,
+  WebGLRenderer, Scene, PerspectiveCamera, Group, Mesh,
+  MeshPhysicalMaterial, MeshStandardMaterial,
+  DirectionalLight, AmbientLight, HemisphereLight, RectAreaLight,
+  Vector2, Vector3, Box3, Color, PMREMGenerator,
+  MathUtils, BufferGeometry,
   ACESFilmicToneMapping, SRGBColorSpace, AdditiveBlending,
-  Float32BufferAttribute, Points, PointsMaterial, LineSegments
+  Float32BufferAttribute, Points, PointsMaterial
 } from 'three'
-import { SVGLoader } from 'three/examples/jsm/loaders/SVGLoader.js'
-import { RectAreaLightUniformsLib } from 'three/examples/jsm/lights/RectAreaLightUniformsLib.js'
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
+import { RectAreaLightUniformsLib } from 'three/addons/lights/RectAreaLightUniformsLib.js'
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js'
 
 type Hero3DLogoProps = {
   fallbackSrc?: string
   alt?: string
 }
 
-const LOGO_SVG_URL = '/brand/logos/ivo-tech-logo-master.svg'
+const LOGO_GLB_URL = '/brand/3d/ivo-tech-logo-icon-3d-master.glb'
 
 function supportsWebGL() {
   if (typeof document === 'undefined') return false
@@ -55,20 +56,81 @@ function createDustField() {
   return new Points(geo, mat)
 }
 
+
+/** Keep multi-material brand facets; only boost cyan + lift silver so the mark reads. */
+function enhanceBrandMaterials(root: Group) {
+  root.traverse((object) => {
+    const mesh = object as Mesh
+    if (!mesh.isMesh) return
+
+    const list = Array.isArray(mesh.material) ? mesh.material : [mesh.material]
+    for (const raw of list) {
+      if (!(raw instanceof MeshStandardMaterial || raw instanceof MeshPhysicalMaterial)) continue
+      const mat = raw as MeshPhysicalMaterial
+      const name = (mat.name || '').toLowerCase()
+
+      if (
+        name.includes('cyan') ||
+        name.includes('ice') ||
+        name.includes('energy') ||
+        name.includes('glass')
+      ) {
+        // Brand core — emissive cyan so the right wing always reads
+        mat.color.set(0x00b7ff)
+        mat.emissive = new Color(0x00b7ff)
+        mat.emissiveIntensity = 1.85
+        mat.metalness = 0
+        mat.roughness = 0.12
+        mat.transparent = false
+        mat.opacity = 1
+        if ('clearcoat' in mat) mat.clearcoat = 0.15
+        if ('transmission' in mat) mat.transmission = 0
+        mat.envMapIntensity = 0.25
+      } else if (name.includes('black') || name.includes('recess')) {
+        // Deep folds — keep contrast, not pure void
+        mat.color.set(0x121820)
+        mat.metalness = 0.85
+        mat.roughness = 0.42
+        if ('clearcoat' in mat) mat.clearcoat = 0
+        mat.envMapIntensity = 0.15
+        mat.emissiveIntensity = 0
+      } else if (name.includes('dark') || name.includes('fold') || name.includes('smoked')) {
+        mat.color.set(0x4a5563)
+        mat.metalness = 0.82
+        mat.roughness = 0.34
+        if ('clearcoat' in mat) mat.clearcoat = 0
+        mat.envMapIntensity = 0.4
+      } else {
+        // Silver / chrome facets — need front light + soft env to read as metal
+        mat.color.set(0xe8eef6)
+        mat.metalness = 0.88
+        mat.roughness = 0.28
+        if ('clearcoat' in mat) mat.clearcoat = 0.08
+        mat.envMapIntensity = 0.65
+        mat.emissiveIntensity = 0
+      }
+      mat.needsUpdate = true
+    }
+
+    // Floating hero mark — shadows add cost without brand value
+    mesh.castShadow = false
+    mesh.receiveShadow = false
+  })
+}
+
 export default function Hero3DLogo({ fallbackSrc, alt = 'ivo-tech WebGL Logo' }: Hero3DLogoProps) {
   const wrapRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const reducedMotion = useReducedMotion()
   const [webglOk] = useState(supportsWebGL)
   const [webglFailed, setWebglFailed] = useState(false)
+  const [showDragHint, setShowDragHint] = useState(true)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const wrapper = wrapRef.current
     const canvas = canvasRef.current
-    console.log('[Hero3DLogo] effect running', { hasWrapper: !!wrapper, hasCanvas: !!canvas, reducedMotion, webglOk, webglFailed })
     if (!wrapper || !canvas || reducedMotion || !webglOk || webglFailed) {
-      console.log('[Hero3DLogo] EARLY RETURN - one of the guards failed')
       return undefined
     }
 
@@ -83,7 +145,8 @@ export default function Hero3DLogo({ fallbackSrc, alt = 'ivo-tech WebGL Logo' }:
         antialias: true,
         alpha: true,
         powerPreference: 'high-performance',
-        precision: 'highp'
+        precision: 'highp',
+        preserveDrawingBuffer: true,
       })
     } catch (e) {
       console.error("WebGL Setup Failed:", e)
@@ -97,9 +160,8 @@ export default function Hero3DLogo({ fallbackSrc, alt = 'ivo-tech WebGL Logo' }:
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
     renderer.outputColorSpace = SRGBColorSpace
     renderer.toneMapping = ACESFilmicToneMapping
-    renderer.toneMappingExposure = 1.15
-    renderer.shadowMap.enabled = true
-    renderer.shadowMap.type = PCFSoftShadowMap
+    renderer.toneMappingExposure = 1.32
+    renderer.shadowMap.enabled = false
 
     const scene = new Scene()
     const camera = new PerspectiveCamera(35, 1, 0.1, 100)
@@ -108,145 +170,86 @@ export default function Hero3DLogo({ fallbackSrc, alt = 'ivo-tech WebGL Logo' }:
     // Base Assembly Group
     const root = new Group()
     // Initial hero stance
-    root.rotation.x = MathUtils.degToRad(-8)
-    root.rotation.y = MathUtils.degToRad(-15)
-    root.rotation.z = MathUtils.degToRad(1)
+    root.rotation.x = MathUtils.degToRad(-6)
+    root.rotation.y = MathUtils.degToRad(-22)  // cyan right-wing toward camera
+    root.rotation.z = MathUtils.degToRad(2)
     scene.add(root)
 
     const logoGroup = new Group()
     root.add(logoGroup)
 
-    // ULTRA DARK STEALTH LIGHTING
-    const ambient = new AmbientLight(0x0a101a, 0.2) // Barely visible dark blue
+    // Soft studio env — chrome facets need reflections; keep intensity low (no white-out)
+    const pmrem = new PMREMGenerator(renderer)
+    const envTex = pmrem.fromScene(new RoomEnvironment(), 0.04).texture
+    scene.environment = envTex
+    // r163+: scales all material env reflections without white-out
+    if ('environmentIntensity' in scene) {
+      ;(scene as Scene & { environmentIntensity: number }).environmentIntensity = 0.28
+    }
+    pmrem.dispose()
+
+    // Readable brand lighting: front key + soft fill + cyan rim (not pure stealth blackout)
+    const ambient = new AmbientLight(0x2a3a50, 0.75)
     scene.add(ambient)
 
-    // Very weak key light just to show geometry edges
-    const keyLight = new DirectionalLight(0xffffff, 0.5)
-    keyLight.position.set(-2, 5, 8)
+    const hemi = new HemisphereLight(0xa8d8ff, 0x101820, 0.85)
+    scene.add(hemi)
+
+    // Front key — silver facets must catch light or brand dies
+    const keyLight = new DirectionalLight(0xffffff, 2.2)
+    keyLight.position.set(-3.2, 4.2, 9.5)
     scene.add(keyLight)
 
-    // No fill light (keep shadows pitch black)
+    // Soft fill from right (cyan wing side)
+    const fillLight = new DirectionalLight(0x7be7ff, 0.55)
+    fillLight.position.set(5.5, 1.5, 6)
+    scene.add(fillLight)
 
-    // Strong Cyan Rim Light to carve the shape out of the blackness
-    const backLight = new DirectionalLight(0x00b7ff, 3.0)
-    backLight.position.set(5, 5, -10)
+    // Cyan rim from back-right — silhouette without crushing front faces
+    const backLight = new DirectionalLight(0x00b7ff, 2.1)
+    backLight.position.set(4.5, 3.5, -9)
     scene.add(backLight)
 
-    // Required for RectAreaLights
     RectAreaLightUniformsLib.init()
-
-    // Neon Rim Tube from bottom left
-    const rimLight = new RectAreaLight(0x00b7ff, 8.0, 10, 2)
-    rimLight.position.set(-3, -2, -2)
+    const rimLight = new RectAreaLight(0x00b7ff, 5.5, 9, 2.2)
+    rimLight.position.set(-2.5, -1.5, -3)
     rimLight.lookAt(0, 0, 0)
     scene.add(rimLight)
 
     const dust = createDustField()
     root.add(dust)
 
-    // Loading & Parsing SVG
-    const loader = new SVGLoader()
-    console.log('[Hero3DLogo] Starting SVG load from', LOGO_SVG_URL)
-    loader.load(LOGO_SVG_URL, (data) => {
-      console.log('[Hero3DLogo] SVG loaded, paths:', data.paths.length)
+    const loader = new GLTFLoader()
+    loader.load(LOGO_GLB_URL, (gltf) => {
       if (disposed) return
-
-      data.paths.forEach((path, pathIndex) => {
-        const hexColor = path.color.getHexString().toLowerCase()
-        const isCyan = hexColor === '00b7ff' || hexColor === '7be7ff'
-        const isDark = hexColor === '151b24' || hexColor === '1b222c' || hexColor === '0b111c'
-        const isIcon = pathIndex < 9 // The Origami mark
-
-        // SOTA Materials: Premium Matte/Satin Finish (avoiding blown out mirror reflections)
-        let material
-        if (isCyan) {
-          // Emissive / Glowing Cyan
-          material = new MeshStandardMaterial({
-            color: new Color(0x7be7ff),
-            emissive: new Color(0x00b7ff),
-            emissiveIntensity: 1.2,
-            roughness: 0.2,
-            metalness: 0.1 // Less metallic so the neon cyan stays pure
-          })
-        } else if (isDark) {
-          // Premium Dark Satin Obsidian
-          material = new MeshPhysicalMaterial({
-            color: new Color(0x0b131e), // Very dark blue/grey, not pure black
-            roughness: 0.45, // Much rougher! This stops the mirror effect that causes the white blowout
-            metalness: 0.7, // Solid metal core
-            clearcoat: 0.0, // REMOVED the clearcoat which was acting as a pure mirror for the white key light
-          })
-        } else {
-          // Bright / White elements
-          material = new MeshPhysicalMaterial({
-            color: new Color(0xd9e2ec), // Off-white/silver, not pure white
-            roughness: 0.3,
-            metalness: 0.6,
-            clearcoat: 0.2,
-          })
+      const model = gltf.scene
+      // CRITICAL: keep multi-material brand facets (silver left / cyan right)
+      enhanceBrandMaterials(model)
+      const matNames: string[] = []
+      model.traverse((o) => {
+        const m = o as Mesh
+        if (!m.isMesh) return
+        const mats = Array.isArray(m.material) ? m.material : [m.material]
+        for (const mat of mats) {
+          if (mat && 'name' in mat) matNames.push(String((mat as { name?: string }).name || '(unnamed)'))
         }
-
-        const shapes = SVGLoader.createShapes(path)
-        shapes.forEach((shape) => {
-          // Slimmer, cleaner extrusion (no bloated bevels)
-          const geometry = new ExtrudeGeometry(shape, {
-            depth: isIcon ? 14 : 6,
-            bevelEnabled: true,
-            bevelThickness: isIcon ? 1.5 : 0.5,
-            bevelSize: isIcon ? 1.5 : 0.5,
-            bevelSegments: 4,
-            curveSegments: 12,
-          })
-          geometry.computeVertexNormals()
-
-          const mesh = new Mesh(geometry, material)
-          mesh.position.z = isIcon ? -13 : 0
-          
-          // Cast/Receive soft shadows
-          mesh.castShadow = true
-          mesh.receiveShadow = true
-          
-          logoGroup.add(mesh)
-
-          // Add crisp glowing edges to the icon elements
-          if (isIcon) {
-            const edgeGeo = new EdgesGeometry(geometry, 20)
-            const edgeMat = new LineBasicMaterial({
-              color: isCyan ? 0x00b7ff : 0x7be7ff, // Much brighter neon cyan edges
-              transparent: true,
-              opacity: isCyan ? 1.0 : 0.6,
-              blending: AdditiveBlending,
-              depthWrite: false,
-              linewidth: 2 // Has no effect in WebGL natively, but standard definition
-            })
-            const edges = new LineSegments(edgeGeo, edgeMat)
-            edges.position.copy(mesh.position)
-            logoGroup.add(edges)
-          }
-        })
       })
-
-      // Center and scale
-      const box = new Box3().setFromObject(logoGroup)
+      wrapper.dataset.mats = matNames.join('|')
+      logoGroup.add(model)
+      const box = new Box3().setFromObject(model)
       const center = new Vector3()
       const size = new Vector3()
-      box.getCenter(center)
-      box.getSize(size)
-      
-      logoGroup.children.forEach(child => child.position.sub(center))
-      // Fix SVG inversion FIRST
-      logoGroup.rotation.x = Math.PI
-      
-      // Massive scale up to be sure we see it and it dominates the space
-      const targetScale = 6.8 / Math.max(size.x, 1) 
-      logoGroup.scale.setScalar(targetScale)
-      
+      box.getCenter(center); box.getSize(size)
+      model.position.sub(center)
+      // Slightly larger so mark dominates hero stage
+      logoGroup.scale.setScalar(7.4 / Math.max(size.x, size.y, size.z, 1))
       setLoading(false)
-      if (wrapper) wrapper.dataset.ready = 'true'
-    }, undefined, (error) => {
-      console.error("SVG Load Error:", error)
-      setWebglFailed(true)
-    })
+      // One-shot interaction hint; auto-hide if unused
+      const hintTimer = window.setTimeout(() => {
+        if (wrapRef.current === wrapper) setShowDragHint(false)
+      }, 4200)
+      ;(wrapper as HTMLElement & { __hintTimer?: number }).__hintTimer = hintTimer; wrapper.dataset.ready = 'true'
+    }, undefined, () => setWebglFailed(true))
 
     // SOTA Interactive Drag & Inertia (Spring Physics Feel)
     let isDragging = false
@@ -263,6 +266,7 @@ export default function Hero3DLogo({ fallbackSrc, alt = 'ivo-tech WebGL Logo' }:
       pointerDelta.set(0, 0)
       wrapper.setPointerCapture(e.pointerId)
       wrapper.style.cursor = 'grabbing'
+      setShowDragHint(false)
     }
 
     const onPointerMove = (e: PointerEvent) => {
@@ -334,6 +338,8 @@ export default function Hero3DLogo({ fallbackSrc, alt = 'ivo-tech WebGL Logo' }:
     return () => {
       disposed = true
       cancelAnimationFrame(frameId)
+      const ht = (wrapper as HTMLElement & { __hintTimer?: number }).__hintTimer
+      if (ht) window.clearTimeout(ht)
       observer.disconnect()
       wrapper.removeEventListener('pointerdown', onPointerDown)
       wrapper.removeEventListener('pointermove', onPointerMove)
@@ -356,7 +362,7 @@ export default function Hero3DLogo({ fallbackSrc, alt = 'ivo-tech WebGL Logo' }:
     }
   }, [reducedMotion, webglOk, webglFailed])
 
-  if (!webglOk || webglFailed) {
+  if (!webglOk || webglFailed || reducedMotion) {
     return <img className="hv-emblem hero-3d-fallback-image" src={fallbackSrc} alt={alt} />
   }
 
@@ -368,6 +374,11 @@ export default function Hero3DLogo({ fallbackSrc, alt = 'ivo-tech WebGL Logo' }:
         style={{ width: '100%', height: '100%', touchAction: 'none' }}
         aria-hidden="true"
       />
+      {!loading && showDragHint ? (
+        <span className="hero-3d-drag-hint" aria-hidden="true">
+          Ziehen
+        </span>
+      ) : null}
     </div>
   )
 }

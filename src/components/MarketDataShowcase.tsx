@@ -14,6 +14,7 @@ import {
   AlertTriangle,
 } from 'lucide-react'
 import './market-data-showcase.css'
+import { SectionTitle } from './ui/SectionTitle'
 
 // ── Types ────────────────────────────────────────────────────
 interface Candle {
@@ -256,7 +257,7 @@ function RadialGauge({ value, label, color }: { value: number; label: string; co
 
   return (
     <div className="cis-gauge-wrap">
-      <svg viewBox="0 0 120 110" width="120" height="110" aria-label={`${label}: ${value} von 100`}>
+      <svg viewBox="0 0 120 110" width="96" height="88" aria-label={`${label}: ${value} von 100`}>
         {/* Track */}
         <path d={trackPath} fill="none" stroke="rgba(220,230,242,0.07)" strokeWidth={strokeW} strokeLinecap="round" />
         {/* Fill */}
@@ -288,13 +289,13 @@ function CandlestickChart({ candles, ema21, ema55, ema89, coin }: {
 
   if (candles.length < 2) {
     return (
-      <div style={{ height: 340, display: 'grid', placeItems: 'center', color: 'rgba(220,230,242,0.35)', fontSize: '0.85rem' }}>
+      <div style={{ height: 200, display: 'grid', placeItems: 'center', color: 'rgba(220,230,242,0.35)', fontSize: '0.85rem' }}>
         Verbinde mit Binance API…
       </div>
     )
   }
   const display = candles.slice(-60)
-  const w = 800, h = 340
+  const w = 800, h = 200
   const pad = { top: 16, right: 64, bottom: 28, left: 8 }
   const chartW = w - pad.left - pad.right
   const chartH = h - pad.top - pad.bottom
@@ -658,55 +659,55 @@ export function MarketDataShowcase() {
             <span className="sec-label">Eigenes Projekt</span>
             <span className="sec-num">— 04</span>
           </div>
-          <h2 id="cis-h">
-            Realtime Market<br /><em>Data Interface</em>
-          </h2>
+          <SectionTitle
+            id="cis-h"
+            lines={[
+              { text: 'Realtime Market' },
+              { text: 'Data Interface', em: true },
+            ]}
+          />
           <p>
-            Technische Case Study für Echtzeitdaten, Chart-UI und gewichtete Signallogik:
-            Binance-Marktdaten werden geladen, normalisiert und als interaktives Dashboard
-            visualisiert. Kein Finanzprodukt.
+            Case Study: Binance-Marktdaten → Chart-UI + gewichtete Signale. Kein Finanzprodukt.
           </p>
         </div>
 
-        {/* ── Origin Story ── */}
-        <div className="cis-origin">
-          <div className="cis-origin-text">
+        {/* ── Origin Story (compact / collapsible) ── */}
+        <details className="cis-origin">
+          <summary className="cis-origin-summary">
             <span className="cis-origin-label">Warum diese Case Study relevant ist</span>
-            <h3>Viele Datenpunkte werden erst nützlich, wenn das Interface sie erklärt.</h3>
-            <p>
-              Das Projekt zeigt, wie ein Frontend rohe Marktdaten in eine lesbare Produktoberfläche übersetzt:
-              Live-Fetching, Fallback-Daten, SVG-Charts, Score-Berechnung, responsive Tabs und klare Zustände
-              für Loading, Simulation und aktive Signale.
-            </p>
-            <p>
-              Die fachliche Domäne ist Marktanalyse, der eigentliche Showcase ist aber die UI-Architektur:
-              mehrere technische Indikatoren laufen in einen gewichteten Score, ohne dass die Oberfläche
-              Nutzer mit Rohdaten allein lässt.
-            </p>
-            <p>
-              Wichtig war, die Demo nicht als Trading-Versprechen zu bauen, sondern als robuste Datenvisualisierung
-              mit verständlicher Risiko-/Disclaimer-Schicht.
-            </p>
-          </div>
-          <div className="cis-origin-meta">
-            <div className="cis-origin-stat">
-              <span className="cis-origin-stat-val">2</span>
-              <span className="cis-origin-stat-label">Daten- und Signal-Layer</span>
+            <span className="cis-origin-summary-title">Rohdaten → lesbare Produktoberfläche</span>
+            <span className="cis-origin-chips" aria-label="Kennzahlen">
+              <span>2 Layer</span>
+              <span>8 Signale</span>
+              <span>0 Lookahead</span>
+            </span>
+          </summary>
+          <div className="cis-origin-body">
+            <div className="cis-origin-text">
+              <p>
+                Frontend übersetzt Binance-Marktdaten in Chart-UI, Score-Logik und klare Zustände
+                (Loading, Simulation, aktive Signale) — kein Finanzprodukt.
+              </p>
+              <p>
+                Fokus: gewichtete Indikatoren in eine verständliche Oberfläche, nicht Rohdaten-Listen.
+              </p>
             </div>
-            <div className="cis-origin-stat">
-              <span className="cis-origin-stat-val">8</span>
-              <span className="cis-origin-stat-label">Signal-Komponenten</span>
-            </div>
-            <div className="cis-origin-stat">
-              <span className="cis-origin-stat-val">0</span>
-              <span className="cis-origin-stat-label">Future-Lookahead in der Demo-Logik</span>
-            </div>
-            <div className="cis-origin-stat">
-              <span className="cis-origin-stat-val">∞</span>
-              <span className="cis-origin-stat-label">Responsive UI-Zustände</span>
+            <div className="cis-origin-meta">
+              <div className="cis-origin-stat">
+                <span className="cis-origin-stat-val">2</span>
+                <span className="cis-origin-stat-label">Daten- und Signal-Layer</span>
+              </div>
+              <div className="cis-origin-stat">
+                <span className="cis-origin-stat-val">8</span>
+                <span className="cis-origin-stat-label">Signal-Komponenten</span>
+              </div>
+              <div className="cis-origin-stat">
+                <span className="cis-origin-stat-val">0</span>
+                <span className="cis-origin-stat-label">Future-Lookahead in der Demo-Logik</span>
+              </div>
             </div>
           </div>
-        </div>
+        </details>
 
         {/* ── Coin Switcher ── */}
         <div className="cis-coin-switcher">
@@ -816,7 +817,7 @@ export function MarketDataShowcase() {
             />
           </div>
 
-          {/* Metrics Grid */}
+          {/* Metrics Grid — primary 4; extra metrics collapsible */}
           <div className="cis-metrics">
             <MetricCard
               label="Trend"
@@ -833,12 +834,17 @@ export function MarketDataShowcase() {
             <MetricCard label="MACD" value={dm.macdBull ? 'BULLISH' : 'BEARISH'}
               color={dm.macdBull ? '#00C88C' : '#FF4141'}
               sub="EMA 12 vs EMA 26" />
-            <MetricCard label="Volatilität" value={dm.volatility} unit="%"
-              color="rgba(123,231,255,0.8)" sub={`ATR: ${dm.atr.toLocaleString('en-US', { maximumFractionDigits: 0 })}`} />
-            <MetricCard label="OBV Trend" value={dm.obv >= 0 ? '↑ Positiv' : '↓ Negativ'}
-              color={dm.obv >= 0 ? '#00C88C' : '#FF4141'}
-              sub="On-Balance Volume" />
           </div>
+          <details className="cis-metrics-more">
+            <summary>Mehr Metriken</summary>
+            <div className="cis-metrics">
+              <MetricCard label="Volatilität" value={dm.volatility} unit="%"
+                color="rgba(123,231,255,0.8)" sub={`ATR: ${dm.atr.toLocaleString('en-US', { maximumFractionDigits: 0 })}`} />
+              <MetricCard label="OBV Trend" value={dm.obv >= 0 ? '↑ Positiv' : '↓ Negativ'}
+                color={dm.obv >= 0 ? '#00C88C' : '#FF4141'}
+                sub="On-Balance Volume" />
+            </div>
+          </details>
 
           {/* Signal Status */}
           <div className={`cis-signal-status ${dm.lastSignal !== 'none' ? 'cis-signal-active' : ''}`}>
@@ -863,36 +869,38 @@ export function MarketDataShowcase() {
           </div>
         </div>
 
-        {/* ── Architektur Breakdown ── */}
-        <div className="cis-arch">
-          <div className="cis-arch-head">
+        {/* ── Architektur Breakdown (collapsed by default — height budget) ── */}
+        <details className="cis-arch">
+          <summary className="cis-arch-summary">
             <span className="cis-arch-label">Wie es funktioniert</span>
-            <h3>8 Signal-Schichten. Ein gewichteter Score.</h3>
-            <p>
-              Jede Komponente liefert Punkte — das System gibt erst dann ein Signal,
-              wenn mehrere Schichten gleichzeitig ausschlagen.
+            <span className="cis-arch-summary-title">8 Signal-Schichten · gewichteter Score</span>
+            <span className="cis-arch-summary-hint">Details</span>
+          </summary>
+          <div className="cis-arch-body-wrap">
+            <p className="cis-arch-intro">
+              Jede Komponente liefert Punkte — Signal erst bei Mehrschicht-Bestätigung.
             </p>
-          </div>
-          <div className="cis-arch-grid">
-            {SIGNAL_COMPONENTS.map((comp) => {
-              const Icon = comp.icon
-              return (
-                <div key={comp.label} className="cis-arch-card">
-                  <div className="cis-arch-icon" style={{ color: comp.color }}>
-                    <Icon size={16} strokeWidth={1.6} />
-                  </div>
-                  <div className="cis-arch-body">
-                    <div className="cis-arch-top">
-                      <strong>{comp.label}</strong>
-                      <span className="cis-arch-weight" style={{ color: comp.color }}>{comp.weight}</span>
+            <div className="cis-arch-grid">
+              {SIGNAL_COMPONENTS.map((comp) => {
+                const Icon = comp.icon
+                return (
+                  <div key={comp.label} className="cis-arch-card">
+                    <div className="cis-arch-icon" style={{ color: comp.color }}>
+                      <Icon size={16} strokeWidth={1.6} />
                     </div>
-                    <p>{comp.desc}</p>
+                    <div className="cis-arch-body">
+                      <div className="cis-arch-top">
+                        <strong>{comp.label}</strong>
+                        <span className="cis-arch-weight" style={{ color: comp.color }}>{comp.weight}</span>
+                      </div>
+                      <p>{comp.desc}</p>
+                    </div>
                   </div>
-                </div>
-              )
-            })}
+                )
+              })}
+            </div>
           </div>
-        </div>
+        </details>
 
         {/* ── CTA ── */}
         <div className="cis-cta">
@@ -902,11 +910,7 @@ export function MarketDataShowcase() {
             <div>
               <h3>Realtime-Dashboard oder Daten-UI geplant?</h3>
               <p>
-                Wenn ein Produkt Live-Daten, komplexe Zustände oder erklärende Dashboards braucht,
-                kann ich Datenlogik, UI und Betriebsschicht sauber zusammenbringen.
-              </p>
-              <p className="cis-cta-disclaimer">
-                Diese Sektion ist eine technische Research-Demo — kein Finanzprodukt und keine Anlageberatung.
+                Live-Daten, Zustände, erklärende Dashboards — Datenlogik + UI + Betrieb.
               </p>
             </div>
           </div>

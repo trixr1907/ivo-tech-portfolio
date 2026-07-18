@@ -23,6 +23,7 @@ import { ScrollBar } from './components/ui/ScrollBar'
 import { MagButton } from './components/ui/MagButton'
 import { Reveal } from './components/ui/Reveal'
 import { SplitTitle } from './components/ui/SplitTitle'
+import { SectionTitle } from './components/ui/SectionTitle'
 import { Marquee } from './components/ui/Marquee'
 import { LabCard } from './components/home/LabCard'
 import { AboutSection } from './components/home/AboutSection'
@@ -423,7 +424,7 @@ function App() {
                     <span className="sec-label">Lab Notes</span>
                     <span className="sec-num">— 02</span>
                   </div>
-                  <h2 id="lab-h">Woran ich gern tüftle</h2>
+                  <SectionTitle id="lab-h" lines={[{ text: 'Woran ich gern tüftle' }]} />
                 </Reveal>
 
                 <Reveal delay={0.08}>

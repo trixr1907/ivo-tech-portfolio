@@ -877,6 +877,38 @@ body::before {
   animation: float 8s ease-in-out infinite;
 }
 
+
+/* One-shot drag hint for hero 3D */
+.hero-3d-drag-hint {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(0.75rem, 2.5vw, 1.4rem);
+  transform: translateX(-50%);
+  z-index: 3;
+  pointer-events: none;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid rgba(123, 231, 255, 0.28);
+  background: rgba(5, 7, 11, 0.55);
+  color: rgba(220, 230, 242, 0.78);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  backdrop-filter: blur(8px);
+  animation: hero-drag-hint-in 0.5s ease both, hero-drag-hint-pulse 2.2s ease-in-out 0.5s infinite;
+}
+@keyframes hero-drag-hint-in {
+  from { opacity: 0; transform: translateX(-50%) translateY(6px); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+@keyframes hero-drag-hint-pulse {
+  0%, 100% { opacity: 0.72; }
+  50% { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-3d-drag-hint { animation: none; }
+}
 .hero-3d-logo {
   position: relative;
   z-index: 3;
@@ -909,8 +941,8 @@ body::before {
   transition: opacity 0.5s ease;
   overflow: visible;
   /* Soft radial fade to avoid hard canvas clipping edge */
-  mask-image: radial-gradient(ellipse 78% 72% at 50% 48%, black 52%, transparent 100%);
-  -webkit-mask-image: radial-gradient(ellipse 78% 72% at 50% 48%, black 52%, transparent 100%);
+  mask-image: radial-gradient(ellipse 88% 84% at 50% 48%, black 62%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 88% 84% at 50% 48%, black 62%, transparent 100%);
 }
 
 .hero-3d-logo[data-ready='true'] .hero-3d-canvas {
@@ -1741,6 +1773,50 @@ body::before {
 
 /* ── HOBBY SECTION ────────────────────────────────────────── */
 
+
+/* Hobby collapsible details — default closed for page rhythm */
+.hobby-details {
+  margin-top: 0.85rem;
+  border: 1px solid rgba(123, 231, 255, 0.1);
+  border-radius: 14px;
+  background: rgba(5, 7, 11, 0.4);
+  overflow: hidden;
+}
+.hobby-details > summary {
+  list-style: none;
+  cursor: pointer;
+}
+.hobby-details > summary::-webkit-details-marker { display: none; }
+.hobby-details-summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  padding: 0.8rem 1.1rem;
+  font-size: 0.88rem;
+  font-weight: 650;
+  color: rgba(220, 230, 242, 0.82);
+}
+.hobby-details-hint {
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(123, 231, 255, 0.78);
+  border: 1px solid rgba(123, 231, 255, 0.28);
+  border-radius: 999px;
+  padding: 0.26rem 0.65rem;
+}
+.hobby-details:not([open]) .hobby-details-hint::after { content: ' öffnen'; }
+.hobby-details[open] .hobby-details-hint::after { content: ' schließen'; }
+.hobby-details-body {
+  padding: 0 1rem 1rem;
+  border-top: 1px solid rgba(123, 231, 255, 0.08);
+}
+.hobby-section .hobby-block + .hobby-block {
+  margin-top: clamp(1.4rem, 3vw, 2.2rem);
+}
 .hobby-block {
   border: 1px solid rgba(220, 230, 242, 0.08);
   border-radius: 22px;
@@ -3505,14 +3581,16 @@ body::before {
     display: block;
   }
   .hv-webgl-stage {
-    /* Mobile hero fix: was clamp(-18rem,-34vw,-12rem) which pushed canvas too far
-       and competed aggressively with text at 960px. Now less negative + dimmed. */
-    right: clamp(-10rem, -22vw, -6rem);
+    /* Mobile hero: centered, visible, no off-canvas negative right */
+    left: 50%;
+    right: auto;
+    transform: translate(-50%, -50%);
     top: 62%;
     width: min(72vw, 520px);
     height: min(52svh, 460px);
     min-height: 320px;
-    opacity: 0.7;
+    opacity: 0.9;
+    pointer-events: none;
   }
   .signal-deck {
     grid-template-columns: 1fr;
@@ -3588,13 +3666,17 @@ body::before {
   .timeline-strip,
 
   .hv-webgl-stage {
-    /* Mobile fix ≤680px: reduced negative offset, contained width, further dimmed */
-    right: -5rem;
-    top: 65%;
-    width: min(100vw, 420px);
-    height: min(38svh, 320px);
-    min-height: 240px;
-    opacity: 0.32;
+    /* Mobile ≤680px: centered + visible, keep transform with left:50% */
+    left: 50%;
+    right: auto;
+    top: auto;
+    bottom: 0.5rem;
+    transform: translateX(-50%);
+    width: min(92vw, 360px);
+    height: min(34svh, 280px);
+    min-height: 200px;
+    opacity: 0.92;
+    pointer-events: none;
   }
   .site-header {
     padding-inline: 1rem;
@@ -3659,6 +3741,35 @@ body::before {
   white-space: nowrap;
   border: 0;
 }
+
+/* Section H2 word/line stagger */
+.sec-title-line {
+  display: block;
+  overflow: hidden;
+}
+.sec-title-line + .sec-title-line {
+  margin-top: 0.02em;
+}
+.sec-title-word {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  margin-right: 0.28em;
+}
+.sec-title-word:last-child {
+  margin-right: 0;
+}
+.sec-title-word-inner {
+  display: inline-block;
+  will-change: transform, opacity;
+}
+.sec-title-em,
+.sec-title-line em,
+.sec-title-line .sec-title-em {
+  font-style: normal;
+  color: var(--cyan);
+}
+
 
 /* ── HARDWARE-ACCELERATED CSS MARQUEE ────────────────────── */
 /* Replaces RAF-driven JS animation — runs entirely on the   */

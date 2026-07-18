@@ -1,4 +1,5 @@
 import { Reveal } from '../ui/Reveal'
+import { SectionTitle } from '../ui/SectionTitle'
 import { AboutPortrait } from './AboutPortrait'
 import { craftPrinciples, timeline } from '../../data/homeData'
 import { useGsapReveal } from '../../hooks/useGsapReveal'
@@ -22,13 +23,15 @@ export function AboutSection() {
         <div className="about-split">
           <div className="about-text-col">
             <Reveal>
-              <h2 id="about-h" className="about-headline">
-                Neue Probleme.
-                <br />
-                Klare erste Schritte.
-                <br />
-                <em>Echter Output.</em>
-              </h2>
+              <SectionTitle
+                id="about-h"
+                className="about-headline"
+                lines={[
+                  { text: 'Neue Probleme.' },
+                  { text: 'Klare erste Schritte.' },
+                  { text: 'Echter Output.', em: true },
+                ]}
+              />
             </Reveal>
 
             <Reveal delay={0.1}>
