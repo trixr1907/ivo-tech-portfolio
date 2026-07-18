@@ -37,7 +37,7 @@ export function AboutSection() {
             <Reveal delay={0.1}>
               <div className="about-copy">
                 <p>
-                  Ich bin Ivo, Full-Stack Developer aus Mannheim. Ich entwickle Webapplikationen, 3D-Interfaces
+                  Ich bin Ivo, Full-Stack Developer mit Frontend-Fokus aus Mannheim. Ich entwickle Webapplikationen, 3D-Interfaces
                   und produktnahe Workflows mit Fokus auf Architektur, Bedienbarkeit und Live-Betrieb.
                 </p>
                 <p>

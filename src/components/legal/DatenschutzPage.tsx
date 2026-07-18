@@ -11,7 +11,10 @@ export function DatenschutzPage() {
           <h2>1. Verantwortlicher</h2>
           <p>
             Verantwortlich für die Datenverarbeitung auf dieser Website ist:<br />
-            Ivo, Mannheim — E-Mail: <a href="mailto:contact@ivo-tech.com">contact@ivo-tech.com</a>
+            Yves Simon Schenker<br />
+            Lange Rötterstraße 56<br />
+            68167 Mannheim, Deutschland<br />
+            E-Mail: <a href="mailto:contact@ivo-tech.com">contact@ivo-tech.com</a>
           </p>
         </section>
 

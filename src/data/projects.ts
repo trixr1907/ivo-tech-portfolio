@@ -75,7 +75,7 @@ export const projects: Project[] = [
     screenshots: [{ src: goalsImages.cover, caption: 'GOALS Optimizer mit Squad-Import und zentralem Kader-Überblick' }, { src: goalsImages.squad, caption: 'Squad-Ansicht mit Position-Fit und Spielerinformationen' }, { src: goalsImages.lineup, caption: 'Formation und Pitch für die Lineup-Optimierung' }],
     impact: [{ value: '371', label: 'Tests' }, { value: 'Live', label: 'goals.ivo-tech.com' }, { value: 'Mobile', label: 'Mobile-first' }],
     result: 'Aus verteilten Community-Daten wird ein nutzbares Entscheidungs-Tool: Import, Fit, Formation, Matchup und Development in einer App.',
-    links: { demo: 'https://goals.ivo-tech.com', repo: '' },
+    links: { demo: 'https://goals.ivo-tech.com', repo: 'https://github.com/trixr1907/goals-optimizer' },
   },
   {
     id: 'event-hub',

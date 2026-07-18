@@ -33,6 +33,9 @@ export function ContactButtons({
         <MagButton className="btn-ghost" href="mailto:contact@ivo-tech.com">
           Kontakt aufnehmen
         </MagButton>
+        <MagButton className="btn-ghost" href="/yves-simon-schenker-cv.pdf" download>
+          Lebenslauf
+        </MagButton>
         <button
           className="btn-copy"
           onClick={copyEmail}

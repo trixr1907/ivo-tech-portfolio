@@ -10,4 +10,8 @@ test('App Component renders heading', async ({ mount }) => {
   // Allow time for the artificial loading animation (up to 15 seconds).
   await expect(heading).toBeVisible({ timeout: 15000 })
   await expect(heading).toContainText(/Ich baue/i)
+  await expect(component).toContainText("Offen für Remote-Festanstellung")
+  const cvLink = component.locator("a[href=\"/yves-simon-schenker-cv.pdf\"]")
+  await expect(cvLink.first()).toBeVisible()
+  await expect(cvLink.first()).toHaveAttribute("download", "")
 })

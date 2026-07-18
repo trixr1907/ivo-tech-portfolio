@@ -2,15 +2,16 @@
 
 **Live:** [https://ivo-tech.com](https://ivo-tech.com)
 
-Personal portfolio and project showcase for Ivo — Full-Stack Engineer from Mannheim.
+Personal portfolio and project showcase for Ivo — Full-Stack Developer mit Frontend-Fokus aus Mannheim.
 Focused on production-ready web applications, interactive UI, 3D interfaces and practical developer tooling.
 
 ---
 
 ## Featured Projects
 
-- **[Event Management Hub](https://eventhub.ivo-tech.com)** — Full-Stack platform with Supabase RLS, Audit Trail, DSGVO export, HCP compliance
-- **[DLD 3D-Konfigurator](https://deinlieblingsdruck.de/3d-konfigurator/)** — Live WooCommerce plugin with Three.js STL viewer, pricing engine, admin panel
+- **[GOALS Optimizer](https://goals.ivo-tech.com)** — Live Next.js optimizer with squad import, fit scores, formations and 371 tests
+- **[Event Management Hub](https://eventhub.ivo-tech.com)** — Full-Stack platform with Supabase RLS, audit trail, DSGVO export and HCP compliance
+- **[DLD 3D-Konfigurator](https://deinlieblingsdruck.de/3d-konfigurator/)** — Live WooCommerce plugin with Three.js STL viewer, pricing engine and admin panel
 
 ## Stack
 

@@ -11,8 +11,9 @@ export function ImpressumPage() {
         <section>
           <h2>Verantwortlicher</h2>
           <p>
-            Ivo<br />
-            Mannheim, Deutschland<br />
+            Yves Simon Schenker<br />
+            Lange Rötterstraße 56<br />
+            68167 Mannheim, Deutschland<br />
             E-Mail: <a href="mailto:contact@ivo-tech.com">contact@ivo-tech.com</a>
           </p>
         </section>

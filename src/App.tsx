@@ -343,9 +343,9 @@ function App() {
                   transition={{ duration: 0.6, delay: 0.2 }}
                 >
                   <MapPin size={12} aria-hidden="true" />
-                  <span>Remote Frontend / Full-Stack · Mannheim, DE</span>
+                  <span>Full-Stack Developer mit Frontend-Fokus · Mannheim, DE</span>
                   <span className="eyebrow-div" />
-                  <span>Full-Stack Engineer</span>
+                  <span>Remote-Festanstellung</span>
                 </motion.div>
 
                 <SplitTitle line1="Ich baue" line2="was" line3="bleibt." />
@@ -368,6 +368,7 @@ function App() {
                   transition={{ duration: 0.65, delay: 0.86, ease: [0.16, 1, 0.3, 1] }}
                 >
                   <ContactButtons onNavigate={handleAnchorClick} />
+                  <span className="hero-employment-note">Offen für Remote-Festanstellung</span>
                 </motion.div>
 
                 <motion.div

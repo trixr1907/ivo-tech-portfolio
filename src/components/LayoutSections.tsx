@@ -24,6 +24,7 @@ function MagButton({
   href,
   target,
   rel,
+  download,
   onClick,
 }: {
   children: ReactNode
@@ -31,6 +32,7 @@ function MagButton({
   href?: string
   target?: string
   rel?: string
+  download?: boolean
   onClick?: () => void
 }) {
   const ref = useRef<HTMLAnchorElement & HTMLButtonElement>(null)
@@ -60,6 +62,7 @@ function MagButton({
         href={href}
         target={target}
         rel={rel}
+        download={download}
         onMouseMove={handleMove}
         onMouseLeave={handleLeave}
         onClick={onClick}
@@ -100,7 +103,7 @@ export function ContactSection() {
             ]}
           />
           <p className="cw-body">
-            Offen für Festanstellung als Frontend-/Full-Stack Developer und ausgewählte Freelance-Projekte.
+            Offen für eine Remote-Festanstellung als Full-Stack Developer mit Frontend-Fokus. Ausgewählte Freelance-Projekte sind nachrangig ebenfalls möglich.
             Schreib mir mit Rolle, Projekt oder Frage — ich antworte.
           </p>
           <div className="cw-ctas">
@@ -109,6 +112,9 @@ export function ContactSection() {
             </MagButton>
             <MagButton className="btn-ghost" href="https://github.com/trixr1907" target="_blank" rel="noreferrer">
               GitHub ansehen
+            </MagButton>
+            <MagButton className="btn-ghost" href="/yves-simon-schenker-cv.pdf" download>
+              Lebenslauf herunterladen
             </MagButton>
           </div>
         </div>
@@ -124,7 +130,7 @@ export function SiteFooter() {
         <div className="ft-left">
           <img src="/brand/logos/ivo-tech-logo-master.svg" alt="ivo-tech" loading="lazy" decoding="async" width={118} height={26} />
         </div>
-        <p className="ft-copy">Full-Stack Engineer · Mannheim · {new Date().getFullYear()}</p>
+        <p className="ft-copy">Full-Stack Developer mit Frontend-Fokus · Mannheim · {new Date().getFullYear()}</p>
         <div className="ft-links">
           <a href="#top">Top</a>
           <a href="#selected-work">Projekte</a>

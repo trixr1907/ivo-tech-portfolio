@@ -7,6 +7,7 @@ export function MagButton({
   href,
   target,
   rel,
+  download,
   onClick,
 }: {
   children: ReactNode
@@ -14,6 +15,7 @@ export function MagButton({
   href?: string
   target?: string
   rel?: string
+  download?: boolean
   onClick?: (event: MouseEvent<HTMLAnchorElement | HTMLButtonElement>) => void
 }) {
   const ref = useRef<HTMLAnchorElement & HTMLButtonElement>(null)
@@ -43,6 +45,7 @@ export function MagButton({
         href={href}
         target={target}
         rel={rel}
+        download={download}
         onMouseMove={handleMove}
         onMouseLeave={handleLeave}
         onClick={onClick}
