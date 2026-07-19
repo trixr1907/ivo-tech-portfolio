@@ -41,9 +41,10 @@ export function AboutSection() {
                   und produktnahe Workflows mit Fokus auf Architektur, Bedienbarkeit und Live-Betrieb.
                 </p>
                 <p>
-                  Ich komme schnell in neue Themen rein, finde erste tragfähige Schritte und arbeite mich mit
-                  viel Ehrgeiz durch die Details. Was hier liegt, sind keine reinen Sandkasten-Projekte — wie z.B. 
-                  der DLD Konfigurator, der aktiv Live-Kundenbestellungen verarbeitet.
+                  Ich zerlege unklare Anforderungen in tragfähige erste Schritte, priorisiere die relevanten Risiken
+                  und bringe Lösungen bis in den Live-Betrieb — nicht den lautesten oder teuersten Weg, sondern
+                  den sinnvollsten. Was hier liegt, sind keine reinen Sandkasten-Projekte — wie z.B. der DLD
+                  Konfigurator, der aktiv Live-Kundenbestellungen verarbeitet.
                 </p>
               </div>
             </Reveal>
@@ -51,10 +52,10 @@ export function AboutSection() {
             <Reveal delay={0.16}>
               <div className="about-stats" aria-label="Kurzprofil">
                 {[
-                  { label: 'Location', val: 'Mannheim' },
-                  { label: 'Focus', val: 'Web · Automation · Motion' },
-                  { label: 'Signal', val: 'Cyan' },
-                  { label: 'Status', val: 'Aktiv' },
+                  { label: 'Live-Produkte', val: '3' },
+                  { label: 'Automatisierte Tests', val: '394' },
+                  { label: 'WooCommerce-Produktion', val: 'Live' },
+                  { label: 'Verfügbarkeit', val: 'Remote · DACH' },
                 ].map((s) => (
                   <div key={s.label} className="stat-box">
                     <span className="stat-label">{s.label}</span>

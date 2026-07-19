@@ -1,6 +1,6 @@
 import { motion, useReducedMotion } from 'motion/react'
 
-export function SplitTitle({ line1, line2, line3 }: { line1: string; line2: string; line3: string }) {
+export function SplitTitle({ line1, line2, line3, immediate = false }: { line1: string; line2: string; line3: string; immediate?: boolean }) {
   const reduceMotion = useReducedMotion()
   const lines = [line1, line2, line3]
 
@@ -10,7 +10,7 @@ export function SplitTitle({ line1, line2, line3 }: { line1: string; line2: stri
       {lines.map((line, li) => (
         <span key={li} className="title-line" aria-hidden="true">
           <motion.span
-            initial={reduceMotion ? false : { y: '115%', opacity: 0 }}
+            initial={reduceMotion || immediate ? false : { y: '115%', opacity: 0 }}
             animate={{ y: '0%', opacity: 1 }}
             transition={{ duration: 0.88, delay: 0.3 + li * 0.14, ease: [0.16, 1, 0.3, 1] }}
           >

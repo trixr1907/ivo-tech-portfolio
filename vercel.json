@@ -1,23 +1,57 @@
 {
   "redirects": [
-    {"source": "/about", "destination": "/#about", "permanent": true},
-    {"source": "/projects", "destination": "/#selected-work", "permanent": true},
-    {"source": "/contact", "destination": "/#kontakt", "permanent": true},
-    {"source": "/resume", "destination": "/yves-simon-schenker-cv.pdf", "permanent": true},
-    {"source": "/hiring", "destination": "/#kontakt", "permanent": true},
-    {"source": "/case-studies", "destination": "/#selected-work", "permanent": true},
-    {"source": "/case-studies/configurator-live", "destination": "/#selected-work", "permanent": true},
-    {"source": "/case-studies/portfolio-authority-relaunch", "destination": "/#selected-work", "permanent": true}
-  ],
-  "rewrites": [
     {
       "source": "/goals",
-      "destination": "https://goals-optimizer.vercel.app/goals"
+      "destination": "https://goals.ivo-tech.com",
+      "permanent": true
     },
     {
       "source": "/goals/:path*",
-      "destination": "https://goals-optimizer.vercel.app/goals/:path*"
+      "destination": "https://goals.ivo-tech.com/:path*",
+      "permanent": true
     },
+    {
+      "source": "/about",
+      "destination": "/#about",
+      "permanent": true
+    },
+    {
+      "source": "/projects",
+      "destination": "/#selected-work",
+      "permanent": true
+    },
+    {
+      "source": "/contact",
+      "destination": "/#kontakt",
+      "permanent": true
+    },
+    {
+      "source": "/resume",
+      "destination": "/yves-simon-schenker-cv.pdf",
+      "permanent": true
+    },
+    {
+      "source": "/hiring",
+      "destination": "/#kontakt",
+      "permanent": true
+    },
+    {
+      "source": "/case-studies",
+      "destination": "/#selected-work",
+      "permanent": true
+    },
+    {
+      "source": "/case-studies/configurator-live",
+      "destination": "/#selected-work",
+      "permanent": true
+    },
+    {
+      "source": "/case-studies/portfolio-authority-relaunch",
+      "destination": "/#selected-work",
+      "permanent": true
+    }
+  ],
+  "rewrites": [
     {
       "source": "/impressum",
       "destination": "/index.html"
@@ -25,41 +59,72 @@
     {
       "source": "/datenschutz",
       "destination": "/index.html"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ],
   "headers": [
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "X-Frame-Options", "value": "DENY" },
-        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
-        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=(), payment=(), usb=()" },
-        { "key": "Content-Security-Policy", "value": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self' https://api.binance.com; worker-src 'none'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'" }
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+        },
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self' https://api.binance.com; worker-src 'none'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'"
+        }
       ]
     },
     {
       "source": "/assets/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
       ]
     },
     {
       "source": "/fonts/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
       ]
     },
     {
       "source": "/images/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=604800, stale-while-revalidate=86400" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=604800, stale-while-revalidate=86400"
+        }
       ]
     },
     {
       "source": "/brand/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=604800, stale-while-revalidate=86400" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=604800, stale-while-revalidate=86400"
+        }
       ]
     }
   ]

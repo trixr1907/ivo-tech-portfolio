@@ -35,7 +35,7 @@ export const labItems: LabItem[] = [
     num: '02',
     title: 'Homelab & Smart Home',
     kicker: 'Proxmox · Home Assistant · Docker',
-    text: 'Infrastruktur, Automationen, Dashboards — nicht als Business, sondern weil es Spaß macht.',
+    text: 'Eigenbetriebene Infrastruktur für Automatisierung, Monitoring und lokale Dienste.',
     tag: 'Lab',
   },
   {
@@ -51,7 +51,7 @@ export const labItems: LabItem[] = [
     num: '04',
     title: 'Websites & Tools',
     kicker: 'React · TypeScript · UI Craft',
-    text: 'Kleine Tools, Websites, Interfaces und Prototypen — um etwas zu lernen oder eine Idee sichtbar zu machen.',
+    text: 'Kleine Werkzeuge, Websites und Prototypen, die konkrete Abläufe vereinfachen oder Produktideen überprüfbar machen.',
     tag: 'Dev',
   },
 ]
@@ -120,8 +120,8 @@ export const marqueeBottom = [
   'Mannheim',
   'Brand System',
   'Precision Design',
-  'Hobby Lab',
-  'Cyan Signal',
-  'Electric Blue',
+  'Systems Design',
+  'Clean Codebase',
+  'Live Production',
   'Dark-First',
 ]

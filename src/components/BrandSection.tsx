@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { motion, useReducedMotion } from 'motion/react'
 import { SectionTitle } from './ui/SectionTitle'
 
@@ -28,6 +28,40 @@ const motionReveals = [
     desc: 'Die 9 Facetten setzen sich mechanisch präzise zusammen — kein Shatter-Chaos.',
   },
 ]
+
+function LazyMotionVideo({ src, label }: { src: string; label: string }) {
+  const videoRef = useRef<HTMLVideoElement>(null)
+  const [enabled, setEnabled] = useState(false)
+
+  useEffect(() => {
+    const video = videoRef.current
+    if (!video || enabled) return
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return
+        setEnabled(true)
+        observer.disconnect()
+      },
+      { rootMargin: '320px 0px' },
+    )
+    observer.observe(video)
+    return () => observer.disconnect()
+  }, [enabled])
+
+  return (
+    <video
+      ref={videoRef}
+      src={enabled ? src : undefined}
+      autoPlay
+      muted
+      loop
+      playsInline
+      preload="none"
+      aria-label={label}
+    />
+  )
+}
 
 function Reveal({ children, delay = 0, className }: { children: ReactNode; delay?: number; className?: string }) {
   const reduceMotion = useReducedMotion()
@@ -189,15 +223,7 @@ export function BrandSection() {
             {motionReveals.map((item) => (
               <article key={item.name} className="reveal-card rv-card-full">
                 <div className="rv-wrap">
-                  <video
-                    src={item.file}
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
-                    preload="metadata"
-                    aria-label={item.name}
-                  />
+                  <LazyMotionVideo src={item.file} label={item.name} />
                   <div className="rv-badges">
                     <span className="rv-tag">{item.tag}</span>
                     <span className="rv-dur">{item.duration}</span>

@@ -110,8 +110,11 @@ export function ContactSection() {
             <MagButton className="btn-primary" href="mailto:contact@ivo-tech.com">
               <ExternalLink size={15} /> Schreib mir
             </MagButton>
-            <MagButton className="btn-ghost" href="https://github.com/trixr1907" target="_blank" rel="noreferrer">
+            <MagButton className="btn-ghost" href="https://github.com/trixr1907" target="_blank" rel="noreferrer" aria-label="GitHub-Profil">
               GitHub ansehen
+            </MagButton>
+            <MagButton className="btn-ghost" href="https://www.linkedin.com/in/ivo-tech" target="_blank" rel="noreferrer" aria-label="LinkedIn-Profil">
+              LinkedIn
             </MagButton>
             <MagButton className="btn-ghost" href="/yves-simon-schenker-cv.pdf" download>
               Lebenslauf herunterladen
@@ -136,6 +139,7 @@ export function SiteFooter() {
           <a href="#selected-work">Projekte</a>
           <a href="mailto:contact@ivo-tech.com">Kontakt</a>
           <a href="https://github.com/trixr1907" target="_blank" rel="noreferrer">GitHub</a>
+          <a href="https://www.linkedin.com/in/ivo-tech" target="_blank" rel="noreferrer">LinkedIn</a>
           <a href="/impressum">Impressum</a>
           <a href="/datenschutz">Datenschutz</a>
         </div>

@@ -56,6 +56,7 @@ dist/
 playwright-report/
 test-results/
 qa-screenshots/
+.preview-shots/
 *.log
 .agents_tmp/
 

@@ -9,7 +9,7 @@ Focused on production-ready web applications, interactive UI, 3D interfaces and 
 
 ## Featured Projects
 
-- **[GOALS Optimizer](https://goals.ivo-tech.com)** — Live Next.js optimizer with squad import, fit scores, formations and 371 tests
+- **[GOALS Optimizer](https://goals.ivo-tech.com)** — Live Next.js optimizer with squad import, fit scores, formations and 408 tests
 - **[Event Management Hub](https://eventhub.ivo-tech.com)** — Full-Stack platform with Supabase RLS, audit trail, DSGVO export and HCP compliance
 - **[DLD 3D-Konfigurator](https://deinlieblingsdruck.de/3d-konfigurator/)** — Live WooCommerce plugin with Three.js STL viewer, pricing engine and admin panel
 
@@ -70,12 +70,13 @@ npm run test
 
 ## Deployment
 
-Production deployment runs through Vercel (connected to this repo).
-Manual deploy:
+Production runs on Vercel. Releases are deployed manually after linting, component tests and the production build pass:
 
 ```bash
+npm run lint
+npm test
 npm run build
-npx vercel --prod
+npx vercel --prod --yes
 ```
 
 ## Project Structure

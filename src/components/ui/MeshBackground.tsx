@@ -1,7 +1,7 @@
 import { useRef, useEffect } from 'react'
 import { useReducedMotion } from 'motion/react'
 
-const HERO_3D_FALLBACK_SRC = '/brand/3d/ivo-tech-3d-master-dark.webp'
+const HERO_3D_FALLBACK_SRC = '/brand/logos/ivo-tech-logo-icon.svg'
 
 export function MeshBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null)

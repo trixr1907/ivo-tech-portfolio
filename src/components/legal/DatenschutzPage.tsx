@@ -46,7 +46,16 @@ export function DatenschutzPage() {
           <h2>4. Externe Datenquellen</h2>
           <p>
             Die Website ruft öffentlich verfügbare Marktdaten von der Binance-API
-            (<code>api.binance.com</code>) ab. Es werden keine personenbezogenen Daten an Binance übermittelt.
+            (<code>api.binance.com</code>) ab, um Echtzeit-Kursinformationen im Realtime-Dashboard anzuzeigen.
+            Binance-Server sind außerhalb der Europäischen Union verortet; bei jedem Abruf überträgt der Browser
+            automatisch die IP-Adresse sowie die angeforderten Endpunkte an Binance. Diese Übermittlung erfolgt
+            im Browser des Besuchers, ist für die Funktion des Dashboards erforderlich und kann nicht
+            deaktiviert werden, solange das Dashboard sichtbar ist. Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO
+            (berechtigtes Interesse an der Darstellung aktueller Marktdaten). Weitere Informationen zur
+            Datenverarbeitung bei Binance finden Sie in der{' '}
+            <a href="https://www.binance.com/en/privacy" target="_blank" rel="noreferrer">
+              Datenschutzerklärung von Binance
+            </a>.
           </p>
         </section>
 

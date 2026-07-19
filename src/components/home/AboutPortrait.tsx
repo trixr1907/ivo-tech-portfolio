@@ -61,10 +61,11 @@ export const AboutPortrait = memo(function AboutPortrait() {
           style={{ y: imgY, transform: 'translateZ(20px)' }}
         >
           <img
-            src="/images/about/ivo-portrait-cutout.png"
+            src="/images/about/ivo-portrait-cutout.webp"
             alt="Portrait von Ivo"
-            loading="eager"
+            loading="lazy"
             decoding="async"
+            fetchPriority="low"
             width={600}
             height={600}
             className="about-clean-img"

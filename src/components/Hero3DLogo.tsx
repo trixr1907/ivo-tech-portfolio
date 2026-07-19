@@ -1,24 +1,72 @@
 import { useEffect, useRef, useState } from 'react'
 import { useReducedMotion } from 'motion/react'
 import {
-  WebGLRenderer, Scene, PerspectiveCamera, Group, Mesh,
-  MeshPhysicalMaterial, MeshStandardMaterial,
-  DirectionalLight, AmbientLight, HemisphereLight, RectAreaLight,
-  Vector2, Vector3, Box3, Color, PMREMGenerator,
-  MathUtils, BufferGeometry,
-  ACESFilmicToneMapping, SRGBColorSpace, AdditiveBlending,
-  Float32BufferAttribute, Points, PointsMaterial
+  ACESFilmicToneMapping,
+  AmbientLight,
+  Box3,
+  Color,
+  DirectionalLight,
+  Group,
+  HemisphereLight,
+  MathUtils,
+  Mesh,
+  MeshPhysicalMaterial,
+  MeshStandardMaterial,
+  PerspectiveCamera,
+  PMREMGenerator,
+  PointLight,
+  RectAreaLight,
+  Scene,
+  SRGBColorSpace,
+  Vector2,
+  Vector3,
+  WebGLRenderer,
 } from 'three'
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
-import { RectAreaLightUniformsLib } from 'three/addons/lights/RectAreaLightUniformsLib.js'
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js'
+import { RectAreaLightUniformsLib } from 'three/addons/lights/RectAreaLightUniformsLib.js'
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 
 type Hero3DLogoProps = {
   fallbackSrc?: string
   alt?: string
 }
 
-const LOGO_GLB_URL = '/brand/3d/ivo-tech-logo-icon-3d-master.glb'
+type FacetState = {
+  mesh: Mesh
+  materials: MeshStandardMaterial[]
+  targetPosition: Vector3
+  targetRotation: Vector3
+  offset: Vector3
+  rotationOffset: Vector3
+  explodedOffset: Vector3
+  explodedRotation: Vector3
+  delay: number
+}
+
+const LOGO_GLB_URL = '/brand/3d/ivo-tech-logo-icon-3d-emblem.glb'
+const ASSEMBLY_OFFSETS = [
+  [-24, 14, -26],
+  [-16, -18, -18],
+  [-10, 22, 20],
+  [18, 18, -24],
+  [25, -13, 18],
+  [12, -22, -16],
+  [-21, -10, 22],
+  [20, 9, 28],
+  [28, -4, 34],
+] as const
+const FINAL_DEPTH_OFFSETS_SCENE = [-0.18, -0.12, 0.08, -0.06, 0.14, -0.1, 0.18, 0.22, 0.28] as const
+const EXPLODED_OFFSETS = [
+  [-0.72, 0.42, -0.9],
+  [0.62, -0.5, -0.58],
+  [-0.46, 0.68, 0.72],
+  [0.76, 0.48, -0.74],
+  [0.88, -0.4, 0.68],
+  [0.4, -0.72, -0.52],
+  [-0.78, -0.34, 0.7],
+  [0.68, 0.28, 0.92],
+  [-0.58, 0.04, 1.05],
+] as const
 
 function supportsWebGL() {
   if (typeof document === 'undefined') return false
@@ -33,112 +81,129 @@ function supportsWebGL() {
   }
 }
 
-// Minimalistic ambient dust field to replace the heavy particle rings
-function createDustField() {
-  const geo = new BufferGeometry()
-  const pos = []
-  for (let i = 0; i < 80; i++) {
-    pos.push(
-      (Math.random() - 0.5) * 8,
-      (Math.random() - 0.5) * 6,
-      (Math.random() - 0.5) * 4 - 2
-    )
-  }
-  geo.setAttribute('position', new Float32BufferAttribute(pos, 3))
-  const mat = new PointsMaterial({
-    color: 0x7be7ff,
-    size: 0.015,
-    transparent: true,
-    opacity: 0.4,
-    blending: AdditiveBlending,
-    depthWrite: false
-  })
-  return new Points(geo, mat)
+function easeOutExpo(value: number) {
+  return value === 1 ? 1 : 1 - 2 ** (-10 * value)
 }
 
+function smoothPulse(value: number) {
+  if (value <= 0 || value >= 1) return 0
+  return Math.sin(value * Math.PI) ** 2
+}
 
-/** Keep multi-material brand facets; only boost cyan + lift silver so the mark reads. */
-function enhanceBrandMaterials(root: Group) {
+function styleMaterial(material: MeshStandardMaterial) {
+  const name = material.name.toLowerCase()
+
+  if (name.includes('ice')) {
+    material.color.set(0x7be7ff)
+    material.emissive = new Color(0x46cdea)
+    material.emissiveIntensity = 0.42
+    material.metalness = 0
+    material.roughness = 0.2
+    material.envMapIntensity = 0.32
+  } else if (name.includes('cyan') || name.includes('energy')) {
+    material.color.set(0x00b7ff)
+    material.emissive = new Color(0x007eb8)
+    material.emissiveIntensity = 0.62
+    material.metalness = 0
+    material.roughness = 0.24
+    material.envMapIntensity = 0.3
+  } else if (name.includes('black') || name.includes('recess')) {
+    material.color.set(0x111720)
+    material.metalness = 0.96
+    material.roughness = 0.42
+    material.envMapIntensity = 0.22
+  } else if (name.includes('dark') || name.includes('fold')) {
+    material.color.set(0x596573)
+    material.metalness = 0.94
+    material.roughness = 0.38
+    material.envMapIntensity = 0.48
+  } else if (name.includes('bright')) {
+    material.color.set(0xf2f7fb)
+    material.metalness = 1
+    material.roughness = 0.18
+    material.envMapIntensity = 0.72
+  } else if (name.includes('brushed') || name.includes('steel')) {
+    material.color.set(0xbec8d3)
+    material.metalness = 0.98
+    material.roughness = 0.29
+    material.envMapIntensity = 0.88
+  } else {
+    material.color.set(0xdce6f2)
+    material.metalness = 1
+    material.roughness = 0.21
+    material.envMapIntensity = 0.96
+  }
+
+  if (material instanceof MeshPhysicalMaterial) {
+    material.clearcoat = 0.06
+    material.clearcoatRoughness = 0.38
+    material.transmission = 0
+  }
+
+  material.transparent = true
+  material.opacity = 0
+  material.depthWrite = true
+  material.needsUpdate = true
+}
+
+function prepareFacets(root: Group) {
+  const facets: FacetState[] = []
+
   root.traverse((object) => {
     const mesh = object as Mesh
     if (!mesh.isMesh) return
 
-    const list = Array.isArray(mesh.material) ? mesh.material : [mesh.material]
-    for (const raw of list) {
-      if (!(raw instanceof MeshStandardMaterial || raw instanceof MeshPhysicalMaterial)) continue
-      const mat = raw as MeshPhysicalMaterial
-      const name = (mat.name || '').toLowerCase()
-
-      if (
-        name.includes('cyan') ||
-        name.includes('ice') ||
-        name.includes('energy') ||
-        name.includes('glass')
-      ) {
-        // Brand core — emissive cyan so the right wing always reads
-        mat.color.set(0x00b7ff)
-        mat.emissive = new Color(0x00b7ff)
-        mat.emissiveIntensity = 1.85
-        mat.metalness = 0
-        mat.roughness = 0.12
-        mat.transparent = false
-        mat.opacity = 1
-        if ('clearcoat' in mat) mat.clearcoat = 0.15
-        if ('transmission' in mat) mat.transmission = 0
-        mat.envMapIntensity = 0.25
-      } else if (name.includes('black') || name.includes('recess')) {
-        // Deep folds — keep contrast, not pure void
-        mat.color.set(0x121820)
-        mat.metalness = 0.85
-        mat.roughness = 0.42
-        if ('clearcoat' in mat) mat.clearcoat = 0
-        mat.envMapIntensity = 0.15
-        mat.emissiveIntensity = 0
-      } else if (name.includes('dark') || name.includes('fold') || name.includes('smoked')) {
-        mat.color.set(0x4a5563)
-        mat.metalness = 0.82
-        mat.roughness = 0.34
-        if ('clearcoat' in mat) mat.clearcoat = 0
-        mat.envMapIntensity = 0.4
-      } else {
-        // Silver / chrome facets — need front light + soft env to read as metal
-        mat.color.set(0xe8eef6)
-        mat.metalness = 0.88
-        mat.roughness = 0.28
-        if ('clearcoat' in mat) mat.clearcoat = 0.08
-        mat.envMapIntensity = 0.65
-        mat.emissiveIntensity = 0
-      }
-      mat.needsUpdate = true
-    }
-
-    // Floating hero mark — shadows add cost without brand value
+    const sourceMaterials = Array.isArray(mesh.material) ? mesh.material : [mesh.material]
+    const materials = sourceMaterials.map((source) => {
+      const material = source.clone() as MeshStandardMaterial
+      styleMaterial(material)
+      return material
+    })
+    mesh.material = Array.isArray(mesh.material) ? materials : materials[0]
     mesh.castShadow = false
     mesh.receiveShadow = false
+
+    const index = facets.length
+    const offsetValues = ASSEMBLY_OFFSETS[index % ASSEMBLY_OFFSETS.length]
+    const direction = index % 2 === 0 ? 1 : -1
+    facets.push({
+      mesh,
+      materials,
+      targetPosition: mesh.position.clone(),
+      targetRotation: new Vector3(mesh.rotation.x, mesh.rotation.y, mesh.rotation.z),
+      offset: new Vector3(...offsetValues),
+      rotationOffset: new Vector3(0.08 * direction, -0.12 * direction, 0.1 * direction),
+      explodedOffset: new Vector3(...EXPLODED_OFFSETS[index % EXPLODED_OFFSETS.length]),
+      explodedRotation: new Vector3(0.045 * direction, -0.06 * direction, 0.055 * direction),
+      delay: 0.18 + index * 0.065,
+    })
   })
+
+  return facets
 }
 
-export default function Hero3DLogo({ fallbackSrc, alt = 'ivo-tech WebGL Logo' }: Hero3DLogoProps) {
+export default function Hero3DLogo({ fallbackSrc, alt = 'ivo-tech 3D Logo' }: Hero3DLogoProps) {
   const wrapRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const reducedMotion = useReducedMotion()
   const [webglOk] = useState(supportsWebGL)
   const [webglFailed, setWebglFailed] = useState(false)
-  const [showDragHint, setShowDragHint] = useState(true)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const wrapper = wrapRef.current
     const canvas = canvasRef.current
-    if (!wrapper || !canvas || reducedMotion || !webglOk || webglFailed) {
-      return undefined
-    }
+    if (!wrapper || !canvas || reducedMotion || !webglOk || webglFailed) return undefined
 
     let frameId = 0
     let disposed = false
-
-    // SOTA Renderer Setup
+    let visible = true
+    let modelReadyAt = 0
+    let scrollCurrent = 0
+    let scrollTarget = 0
+    let facets: FacetState[] = []
     let renderer: WebGLRenderer
+
     try {
       renderer = new WebGLRenderer({
         canvas,
@@ -146,190 +211,210 @@ export default function Hero3DLogo({ fallbackSrc, alt = 'ivo-tech WebGL Logo' }:
         alpha: true,
         powerPreference: 'high-performance',
         precision: 'highp',
-        preserveDrawingBuffer: true,
       })
-    } catch (e) {
-      console.error("WebGL Setup Failed:", e)
+    } catch {
       queueMicrotask(() => {
         if (wrapRef.current === wrapper) setWebglFailed(true)
       })
       return undefined
     }
 
-    // Bump pixel ratio up to 2 for crispness, but cap it so 4K monitors don't melt
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+    const isCompact = window.matchMedia('(max-width: 767px)').matches
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, isCompact ? 1.35 : 1.75))
     renderer.outputColorSpace = SRGBColorSpace
     renderer.toneMapping = ACESFilmicToneMapping
-    renderer.toneMappingExposure = 1.32
+    renderer.toneMappingExposure = 1.04
     renderer.shadowMap.enabled = false
+    renderer.setClearColor(0x000000, 0)
 
     const scene = new Scene()
-    const camera = new PerspectiveCamera(35, 1, 0.1, 100)
-    camera.position.set(0, 0, 15) // Move camera back so we don't clip the depth
+    const camera = new PerspectiveCamera(42, 1, 0.1, 100)
+    camera.position.set(0, 0, 9.6)
 
-    // Base Assembly Group
     const root = new Group()
-    // Initial hero stance
-    root.rotation.x = MathUtils.degToRad(-6)
-    root.rotation.y = MathUtils.degToRad(-22)  // cyan right-wing toward camera
-    root.rotation.z = MathUtils.degToRad(2)
+    root.rotation.set(MathUtils.degToRad(-8), MathUtils.degToRad(-20), MathUtils.degToRad(1.5))
     scene.add(root)
 
     const logoGroup = new Group()
     root.add(logoGroup)
 
-    // Soft studio env — chrome facets need reflections; keep intensity low (no white-out)
     const pmrem = new PMREMGenerator(renderer)
-    const envTex = pmrem.fromScene(new RoomEnvironment(), 0.04).texture
-    scene.environment = envTex
-    // r163+: scales all material env reflections without white-out
+    const environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture
+    scene.environment = environment
     if ('environmentIntensity' in scene) {
-      ;(scene as Scene & { environmentIntensity: number }).environmentIntensity = 0.28
+      ;(scene as Scene & { environmentIntensity: number }).environmentIntensity = 0.46
     }
     pmrem.dispose()
 
-    // Readable brand lighting: front key + soft fill + cyan rim (not pure stealth blackout)
-    const ambient = new AmbientLight(0x2a3a50, 0.75)
-    scene.add(ambient)
+    scene.add(new AmbientLight(0x182432, 0.13))
+    scene.add(new HemisphereLight(0xc8e6f5, 0x030507, 0.23))
 
-    const hemi = new HemisphereLight(0xa8d8ff, 0x101820, 0.85)
-    scene.add(hemi)
-
-    // Front key — silver facets must catch light or brand dies
-    const keyLight = new DirectionalLight(0xffffff, 2.2)
-    keyLight.position.set(-3.2, 4.2, 9.5)
+    const keyLight = new DirectionalLight(0xd9edff, 1.35)
+    keyLight.position.set(-4.5, 5.2, 8.4)
     scene.add(keyLight)
 
-    // Soft fill from right (cyan wing side)
-    const fillLight = new DirectionalLight(0x7be7ff, 0.55)
-    fillLight.position.set(5.5, 1.5, 6)
-    scene.add(fillLight)
+    const edgeLight = new DirectionalLight(0x8adfff, 2.2)
+    edgeLight.position.set(5.5, 2.4, -6.8)
+    scene.add(edgeLight)
 
-    // Cyan rim from back-right — silhouette without crushing front faces
-    const backLight = new DirectionalLight(0x00b7ff, 2.1)
-    backLight.position.set(4.5, 3.5, -9)
-    scene.add(backLight)
+    const cyanCoreLight = new PointLight(0x00b7ff, 0.78, 7.5, 2)
+    cyanCoreLight.position.set(1.2, -0.1, 2.2)
+    scene.add(cyanCoreLight)
 
     RectAreaLightUniformsLib.init()
-    const rimLight = new RectAreaLight(0x00b7ff, 5.5, 9, 2.2)
-    rimLight.position.set(-2.5, -1.5, -3)
-    rimLight.lookAt(0, 0, 0)
-    scene.add(rimLight)
+    const lightSweep = new RectAreaLight(0xf0f9ff, 0, 0.72, 6.2)
+    lightSweep.position.set(-7, 1.1, 5.4)
+    lightSweep.lookAt(0, 0, 0)
+    scene.add(lightSweep)
 
-    const dust = createDustField()
-    root.add(dust)
+    new GLTFLoader().load(
+      LOGO_GLB_URL,
+      (gltf) => {
+        if (disposed) return
+        const model = gltf.scene
+        facets = prepareFacets(model)
 
-    const loader = new GLTFLoader()
-    loader.load(LOGO_GLB_URL, (gltf) => {
-      if (disposed) return
-      const model = gltf.scene
-      // CRITICAL: keep multi-material brand facets (silver left / cyan right)
-      enhanceBrandMaterials(model)
-      const matNames: string[] = []
-      model.traverse((o) => {
-        const m = o as Mesh
-        if (!m.isMesh) return
-        const mats = Array.isArray(m.material) ? m.material : [m.material]
-        for (const mat of mats) {
-          if (mat && 'name' in mat) matNames.push(String((mat as { name?: string }).name || '(unnamed)'))
+        const box = new Box3().setFromObject(model)
+        const center = box.getCenter(new Vector3())
+        const size = box.getSize(new Vector3())
+        model.position.sub(center)
+        const sceneScale = 7.05 / Math.max(size.x, size.y, 1)
+        logoGroup.scale.setScalar(sceneScale)
+        logoGroup.add(model)
+
+        for (const [index, facet] of facets.entries()) {
+          facet.targetPosition.z += FINAL_DEPTH_OFFSETS_SCENE[index] / sceneScale
+          facet.mesh.position.copy(facet.targetPosition).add(facet.offset)
+          facet.mesh.rotation.set(
+            facet.targetRotation.x + facet.rotationOffset.x,
+            facet.targetRotation.y + facet.rotationOffset.y,
+            facet.targetRotation.z + facet.rotationOffset.z,
+          )
         }
-      })
-      wrapper.dataset.mats = matNames.join('|')
-      logoGroup.add(model)
-      const box = new Box3().setFromObject(model)
-      const center = new Vector3()
-      const size = new Vector3()
-      box.getCenter(center); box.getSize(size)
-      model.position.sub(center)
-      // Slightly larger so mark dominates hero stage
-      logoGroup.scale.setScalar(7.4 / Math.max(size.x, size.y, size.z, 1))
-      setLoading(false)
-      // One-shot interaction hint; auto-hide if unused
-      const hintTimer = window.setTimeout(() => {
-        if (wrapRef.current === wrapper) setShowDragHint(false)
-      }, 4200)
-      ;(wrapper as HTMLElement & { __hintTimer?: number }).__hintTimer = hintTimer; wrapper.dataset.ready = 'true'
-    }, undefined, () => setWebglFailed(true))
 
-    // SOTA Interactive Drag & Inertia (Spring Physics Feel)
-    let isDragging = false
-    const targetRotation = new Vector2(root.rotation.y, root.rotation.x)
-    const currentRotation = new Vector2(root.rotation.y, root.rotation.x)
-    
-    // Inertia variables
-    const pointerDelta = new Vector2()
-    const lastPointer = new Vector2()
+        modelReadyAt = performance.now()
+        wrapper.dataset.ready = 'true'
+        wrapper.dataset.asset = 'emblem-9-facet'
+        setLoading(false)
+      },
+      undefined,
+      () => {
+        if (!disposed) setWebglFailed(true)
+      },
+    )
 
-    const onPointerDown = (e: PointerEvent) => {
-      isDragging = true
-      lastPointer.set(e.clientX, e.clientY)
-      pointerDelta.set(0, 0)
-      wrapper.setPointerCapture(e.pointerId)
-      wrapper.style.cursor = 'grabbing'
-      setShowDragHint(false)
+    const hero = wrapper.closest<HTMLElement>('.hero')
+    const onSequenceProgress = (event: Event) => {
+      const value = (event as CustomEvent<number>).detail
+      if (typeof value === 'number' && Number.isFinite(value)) {
+        scrollTarget = MathUtils.clamp(value, 0, 1)
+      }
+    }
+    hero?.addEventListener('hero-sequence-progress', onSequenceProgress)
+
+    const pointerTarget = new Vector2()
+    const pointerCurrent = new Vector2()
+    const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches
+
+    const onPointerMove = (event: PointerEvent) => {
+      if (!finePointer) return
+      const rect = wrapper.getBoundingClientRect()
+      pointerTarget.set(
+        MathUtils.clamp(((event.clientX - rect.left) / rect.width - 0.5) * 2, -1, 1),
+        MathUtils.clamp(((event.clientY - rect.top) / rect.height - 0.5) * 2, -1, 1),
+      )
+    }
+    const onPointerLeave = () => pointerTarget.set(0, 0)
+    const onContextLost = (event: Event) => {
+      event.preventDefault()
+      if (!disposed) setWebglFailed(true)
+    }
+    const onVisibilityChange = () => {
+      visible = document.visibilityState === 'visible' && wrapper.getBoundingClientRect().bottom > 0
     }
 
-    const onPointerMove = (e: PointerEvent) => {
-      if (!isDragging) return
-      const dx = e.clientX - lastPointer.x
-      const dy = e.clientY - lastPointer.y
-      
-      pointerDelta.set(dx, dy)
-      targetRotation.x += dx * 0.008
-      targetRotation.y += dy * 0.008
-      
-      // Clamp vertical rotation so it doesn't flip upside down
-      targetRotation.y = MathUtils.clamp(targetRotation.y, -0.6, 0.4)
-      
-      lastPointer.set(e.clientX, e.clientY)
-    }
-
-    const onPointerUp = (e: PointerEvent) => {
-      isDragging = false
-      wrapper.releasePointerCapture(e.pointerId)
-      wrapper.style.cursor = 'grab'
-      
-      // Apply remaining inertia to target
-      targetRotation.x += pointerDelta.x * 0.05
-      targetRotation.y += pointerDelta.y * 0.05
-    }
-
-    wrapper.style.cursor = 'grab'
-    wrapper.addEventListener('pointerdown', onPointerDown)
-    wrapper.addEventListener('pointermove', onPointerMove)
-    wrapper.addEventListener('pointerup', onPointerUp)
-    wrapper.addEventListener('pointerleave', onPointerUp)
+    wrapper.addEventListener('pointermove', onPointerMove, { passive: true })
+    wrapper.addEventListener('pointerleave', onPointerLeave, { passive: true })
+    canvas.addEventListener('webglcontextlost', onContextLost)
+    document.addEventListener('visibilitychange', onVisibilityChange)
 
     const resize = () => {
       const rect = wrapper.getBoundingClientRect()
+      if (rect.width === 0 || rect.height === 0) return
       camera.aspect = rect.width / rect.height
       camera.updateProjectionMatrix()
       renderer.setSize(rect.width, rect.height, false)
     }
-    const observer = new ResizeObserver(resize)
-    observer.observe(wrapper)
+    const resizeObserver = new ResizeObserver(resize)
+    resizeObserver.observe(wrapper)
     resize()
 
+    const visibilityObserver = new IntersectionObserver(
+      ([entry]) => {
+        visible = entry.isIntersecting && document.visibilityState === 'visible'
+      },
+      { rootMargin: '12%' },
+    )
+    visibilityObserver.observe(wrapper)
+
+    const startedAt = performance.now()
+    let previousFrameAt = startedAt
     const animate = () => {
       frameId = requestAnimationFrame(animate)
+      if (!visible) return
 
-      // Smooth Spring interpolation (lerp)
-      currentRotation.x += (targetRotation.x - currentRotation.x) * 0.08
-      currentRotation.y += (targetRotation.y - currentRotation.y) * 0.08
+      const now = performance.now()
+      const deltaTime = Math.min((now - previousFrameAt) * 0.001, 0.05)
+      previousFrameAt = now
+      const time = (now - startedAt) * 0.001
+      const assemblyTime = modelReadyAt ? (now - modelReadyAt) * 0.001 : 0
+      const scrollResponse = scrollTarget < scrollCurrent ? 18 : 11
+      scrollCurrent = MathUtils.damp(scrollCurrent, scrollTarget, scrollResponse, deltaTime)
+      const scrollProgress = MathUtils.clamp(scrollCurrent, 0, 1)
+      const explodedProgress = MathUtils.smoothstep(scrollProgress, 0.08, 0.78)
+      pointerCurrent.lerp(pointerTarget, 0.04)
 
-      root.rotation.y = currentRotation.x
-      root.rotation.x = currentRotation.y
-
-      // Very subtle idle floating when not dragging
-      if (!isDragging) {
-        const time = performance.now() * 0.001
-        targetRotation.x += Math.sin(time * 0.5) * 0.0003
-        targetRotation.y += Math.cos(time * 0.4) * 0.0002
+      for (const facet of facets) {
+        const linearProgress = MathUtils.clamp((assemblyTime - facet.delay) / 0.82, 0, 1)
+        const progress = easeOutExpo(linearProgress)
+        facet.mesh.position.copy(facet.targetPosition).addScaledVector(facet.offset, 1 - progress)
+        facet.mesh.position.addScaledVector(facet.explodedOffset, explodedProgress)
+        facet.mesh.rotation.set(
+          facet.targetRotation.x +
+            facet.rotationOffset.x * (1 - progress) +
+            facet.explodedRotation.x * explodedProgress,
+          facet.targetRotation.y +
+            facet.rotationOffset.y * (1 - progress) +
+            facet.explodedRotation.y * explodedProgress,
+          facet.targetRotation.z +
+            facet.rotationOffset.z * (1 - progress) +
+            facet.explodedRotation.z * explodedProgress,
+        )
+        for (const material of facet.materials) material.opacity = progress
       }
 
-      // Rotate dust slowly
-      dust.rotation.y += 0.001
-      dust.rotation.x += 0.0005
+      const settled = MathUtils.clamp((assemblyTime - 1.15) / 0.8, 0, 1)
+      root.rotation.x = MathUtils.degToRad(-8) - pointerCurrent.y * 0.052 + scrollProgress * 0.08
+      root.rotation.y =
+        MathUtils.degToRad(-20) + pointerCurrent.x * 0.087 + Math.sin(time * 0.33) * 0.025 + scrollProgress * 0.38
+      root.rotation.z = MathUtils.degToRad(1.5) + Math.sin(time * 0.27) * 0.012 - scrollProgress * 0.06
+      root.position.y = Math.sin(time * 0.52) * 0.045 * settled - scrollProgress * 0.18
+      root.position.x = Math.sin(scrollProgress * Math.PI) * 0.12
+      root.scale.setScalar(0.965 + settled * 0.035 - scrollProgress * 0.025)
+
+      camera.position.x = pointerCurrent.x * 0.15 + scrollProgress * 0.34
+      camera.position.y = -pointerCurrent.y * 0.1 - scrollProgress * 0.12
+      camera.position.z = 9.6 + scrollProgress * 0.62
+      camera.lookAt(0, -scrollProgress * 0.06, 0)
+
+      const sweepPhase = ((time - 0.35) % 8.8) / 8.8
+      const sweepProgress = MathUtils.clamp((sweepPhase - 0.04) / 0.28, 0, 1)
+      lightSweep.position.x = MathUtils.lerp(-7, 7, easeOutExpo(sweepProgress))
+      lightSweep.position.y = 1.2 - sweepProgress * 0.65
+      lightSweep.intensity = (1.5 + 2.3 * smoothPulse(scrollProgress)) * (0.3 + 0.7 * settled)
+      lightSweep.position.z = 5.4 + scrollProgress * 1.2
+      lightSweep.lookAt(0, 0, 0)
+      cyanCoreLight.intensity = 0.72 + Math.sin(time * 0.7) * 0.08
 
       renderer.render(scene, camera)
     }
@@ -338,26 +423,21 @@ export default function Hero3DLogo({ fallbackSrc, alt = 'ivo-tech WebGL Logo' }:
     return () => {
       disposed = true
       cancelAnimationFrame(frameId)
-      const ht = (wrapper as HTMLElement & { __hintTimer?: number }).__hintTimer
-      if (ht) window.clearTimeout(ht)
-      observer.disconnect()
-      wrapper.removeEventListener('pointerdown', onPointerDown)
+      resizeObserver.disconnect()
+      visibilityObserver.disconnect()
+      hero?.removeEventListener('hero-sequence-progress', onSequenceProgress)
       wrapper.removeEventListener('pointermove', onPointerMove)
-      wrapper.removeEventListener('pointerup', onPointerUp)
-      wrapper.removeEventListener('pointerleave', onPointerUp)
+      wrapper.removeEventListener('pointerleave', onPointerLeave)
+      canvas.removeEventListener('webglcontextlost', onContextLost)
+      document.removeEventListener('visibilitychange', onVisibilityChange)
 
-      // Brutal memory leak prevention (dispose everything)
-      scene.traverse((obj) => {
-        const mesh = obj as Mesh
-        if (mesh.geometry) mesh.geometry.dispose()
-        if (mesh.material) {
-          if (Array.isArray(mesh.material)) {
-            mesh.material.forEach(m => m.dispose())
-          } else {
-            mesh.material.dispose()
-          }
-        }
+      scene.traverse((object) => {
+        const mesh = object as Mesh
+        mesh.geometry?.dispose()
+        if (Array.isArray(mesh.material)) mesh.material.forEach((material) => material.dispose())
+        else mesh.material?.dispose()
       })
+      environment.dispose()
       renderer.dispose()
     }
   }, [reducedMotion, webglOk, webglFailed])
@@ -367,18 +447,12 @@ export default function Hero3DLogo({ fallbackSrc, alt = 'ivo-tech WebGL Logo' }:
   }
 
   return (
-    <div ref={wrapRef} className="hero-3d-logo" role="img" aria-label={alt} style={{ width: '100%', height: '100%' }}>
-      <canvas
-        ref={canvasRef}
-        className={`hero-3d-canvas ${loading ? 'loading' : 'ready'}`}
-        style={{ width: '100%', height: '100%', touchAction: 'none' }}
-        aria-hidden="true"
-      />
-      {!loading && showDragHint ? (
-        <span className="hero-3d-drag-hint" aria-hidden="true">
-          Ziehen
-        </span>
+    <div ref={wrapRef} className="hero-3d-logo" role="img" aria-label={alt}>
+      {loading ? (
+        <img className="hv-emblem hero-3d-fallback-image" src={fallbackSrc} alt="" aria-hidden="true" />
       ) : null}
+      <span className="hero-3d-contact-shadow" aria-hidden="true" />
+      <canvas ref={canvasRef} className="hero-3d-canvas" aria-hidden="true" />
     </div>
   )
 }

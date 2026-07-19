@@ -26,14 +26,14 @@ export function HobbySection() {
 
     <Reveal className="sec-head">
       <div>
-        <span className="sec-label">Hobby Lab</span>
+        <span className="sec-label">Side Projects</span>
         <span className="sec-num">— 06</span>
       </div>
       <SectionTitle
         id="hobby-h"
         lines={[
-          { text: 'Dinge, die ich tue,' },
-          { text: 'weil ich es kann.', em: true },
+          { text: 'Was ich baue,' },
+          { text: 'wenn es nicht im Ticket steht.', em: true },
         ]}
       />
     </Reveal>
@@ -225,9 +225,8 @@ export function HobbySection() {
         <div className="helium-humor">
           <span className="helium-humor-icon">💡</span>
           <p>
-            <strong>Disclaimer:</strong> Early Adopter, gute Coverage — Tokenomics und HNT-Preis
-            haben den ROI beendet. Technisch spannend, finanziell Lernprojekt.
-            <em> 10/10 würde wieder früh dabei sein.</em>
+            <strong>Hinweis:</strong> Early Adopter, gute Coverage — Tokenomics und HNT-Preis
+            haben den ROI beendet. Spannend als technisches Setup, nicht als Investment-Story.
           </p>
         </div>
           </div>

@@ -1,5 +1,5 @@
 import { lazy, Suspense, useCallback, useEffect, useRef, useState, type MouseEvent as ReactMouseEvent } from 'react'
-import { motion, useScroll, useTransform, AnimatePresence } from 'motion/react'
+import { motion, useReducedMotion, useScroll, useTransform, AnimatePresence } from 'motion/react'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import {
   ArrowUpRight,
@@ -39,7 +39,7 @@ const loadHobbySection = () => import('./components/HobbySection')
 const loadLayoutSections = () => import('./components/LayoutSections')
 const loadSkillGraphSection = () => import('./components/SkillGraphSection')
 
-const Hero3DLogo = lazy(() => import('./components/Hero3DLogo'))
+const EpicHero3D = lazy(() => import('./components/EpicHero3D'))
 const Showcase = lazy(() => loadShowcase().then((module) => ({ default: module.Showcase })))
 const MarketDataShowcase = lazy(() =>
   loadMarketDataShowcase().then((module) => ({ default: module.MarketDataShowcase })),
@@ -53,13 +53,17 @@ const ContactSection = lazy(() => loadLayoutSections().then((module) => ({ defau
 const SiteFooter = lazy(() => loadLayoutSections().then((module) => ({ default: module.SiteFooter })))
 
 function App() {
-  const [loaded, setLoaded] = useState(false)
+  const reduceMotion = useReducedMotion()
+  const [compactHero, setCompactHero] = useState(() => window.matchMedia('(max-width: 960px)').matches)
+  const [loaded, setLoaded] = useState(compactHero)
   const [scrolled, setScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [canvasReady, setCanvasReady] = useState(false)
   const { scrollY } = useScroll()
   const heroRef = useRef<HTMLDivElement>(null)
   const webglStageRef = useRef<HTMLDivElement>(null)
+  const burgerRef = useRef<HTMLButtonElement>(null)
+  const mobileMenuRef = useRef<HTMLDivElement>(null)
   // Lenis has no stable public type across installed versions in this project.
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const lenisRef = useRef<any>(null)
@@ -68,6 +72,14 @@ function App() {
   const heroOpacity = useTransform(heroProgress, [0, 0.7], [1, 0])
 
   const activeSectionId = useScrollspy(['about', 'lab', 'selected-work', 'brand'], 150)
+  const enableHero3D = !compactHero && !reduceMotion
+
+  useEffect(() => {
+    const query = window.matchMedia('(max-width: 960px)')
+    const update = () => setCompactHero(query.matches)
+    query.addEventListener('change', update)
+    return () => query.removeEventListener('change', update)
+  }, [])
 
   const scrollToSection = useCallback((hash: string) => {
     const targetId = hash.replace('#', '')
@@ -124,25 +136,57 @@ function App() {
   }, [scrollY])
 
   useEffect(() => {
-    if (mobileMenuOpen) {
-      const close = () => setMobileMenuOpen(false)
-      window.addEventListener('scroll', close, { once: true })
-      return () => window.removeEventListener('scroll', close)
+    if (!mobileMenuOpen) return
+
+    const previousBodyOverflow = document.body.style.overflow
+    const previousHtmlOverflow = document.documentElement.style.overflow
+    document.body.style.overflow = 'hidden'
+    document.documentElement.style.overflow = 'hidden'
+
+    const burgerButton = burgerRef.current
+    const focusable = mobileMenuRef.current?.querySelectorAll<HTMLElement>('a[href], button:not([disabled])')
+    focusable?.[0]?.focus()
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        event.preventDefault()
+        setMobileMenuOpen(false)
+        return
+      }
+      if (event.key !== 'Tab' || !focusable?.length) return
+
+      const first = focusable[0]
+      const last = focusable[focusable.length - 1]
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault()
+        last.focus()
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault()
+        first.focus()
+      }
+    }
+
+    document.addEventListener('keydown', onKeyDown)
+    return () => {
+      document.removeEventListener('keydown', onKeyDown)
+      document.body.style.overflow = previousBodyOverflow
+      document.documentElement.style.overflow = previousHtmlOverflow
+      burgerButton?.focus()
     }
   }, [mobileMenuOpen])
 
-  // Load three-vendor only when the WebGL stage enters the viewport
+  // Never import the Three.js scene on compact or reduced-motion layouts.
   useEffect(() => {
-    if (!loaded || canvasReady) return
+    if (!loaded || !enableHero3D || canvasReady) return
     const el = webglStageRef.current
     if (!el) return
     const observer = new IntersectionObserver(
       ([entry]) => { if (entry.isIntersecting) { setCanvasReady(true); observer.disconnect() } },
-      { threshold: 0.01 }
+      { threshold: 0.01 },
     )
     observer.observe(el)
     return () => observer.disconnect()
-  }, [loaded, canvasReady])
+  }, [loaded, enableHero3D, canvasReady])
 
   useEffect(() => {
     if (!loaded || !heroRef.current) return
@@ -284,6 +328,7 @@ function App() {
                 Kontakt <ArrowUpRight size={14} />
               </MagButton>
               <button
+                ref={burgerRef}
                 className="h-burger"
                 aria-label={mobileMenuOpen ? 'Menü schließen' : 'Menü öffnen'}
                 aria-expanded={mobileMenuOpen}
@@ -300,12 +345,15 @@ function App() {
           <AnimatePresence>
             {mobileMenuOpen && (
               <motion.div
+                ref={mobileMenuRef}
                 id="mobile-menu"
                 className="mobile-menu"
                 initial={{ opacity: 0, y: -16 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -16 }}
                 transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+                role="dialog"
+                aria-modal="true"
                 aria-label="Mobile Navigation"
               >
                 <nav>
@@ -338,7 +386,7 @@ function App() {
               <motion.div className="hero-inner" style={{ y: heroY, opacity: heroOpacity }}>
                 <motion.div
                   className="hero-eyebrow"
-                  initial={{ opacity: 0, x: -16 }}
+                  initial={compactHero ? false : { opacity: 0, x: -16 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.6, delay: 0.2 }}
                 >
@@ -348,22 +396,24 @@ function App() {
                   <span>Remote-Festanstellung</span>
                 </motion.div>
 
-                <SplitTitle line1="Ich baue" line2="was" line3="bleibt." />
+                <SplitTitle line1="Ich baue" line2="was" line3="bleibt." immediate={compactHero} />
 
                 <motion.p
                   className="hero-sub"
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={compactHero ? false : { opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.7, delay: 0.72, ease: [0.16, 1, 0.3, 1] }}
                 >
-                  React · TypeScript · Node.js · Three.js · Supabase ·<br />
-                  Ich entwickle produktionsreife Webapplikationen — remote-first, mit React/TypeScript,
-                  sauberer Architektur und echtem Live-Betrieb.
+                  <span className="hero-stack">React · TypeScript · Node.js · Three.js · Supabase</span>
+                  <span className="hero-description">
+                    Ich entwickle produktionsreife Webapplikationen — remote-first, mit React/TypeScript,
+                    sauberer Architektur und echtem Live-Betrieb.
+                  </span>
                 </motion.p>
 
                 <motion.div
                   className="hero-ctas"
-                  initial={{ opacity: 0, y: 16 }}
+                  initial={compactHero ? false : { opacity: 0, y: 16 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.65, delay: 0.86, ease: [0.16, 1, 0.3, 1] }}
                 >
@@ -373,39 +423,61 @@ function App() {
 
                 <motion.div
                   className="hero-scroll-hint"
-                  initial={{ opacity: 0 }}
+                  initial={compactHero ? false : { opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 1.4, duration: 0.6 }}
                 >
                   <ArrowDown size={14} aria-hidden="true" />
-                  <span>Scroll</span>
+                  <span>Scrollen zum Zerlegen</span>
                 </motion.div>
               </motion.div>
 
               <motion.div
                 className="hero-visual"
-                initial={{ opacity: 0, scale: 0.9, rotateY: 12 }}
+                initial={compactHero ? false : { opacity: 0, scale: 0.9, rotateY: 12 }}
                 animate={{ opacity: 1, scale: 1, rotateY: 0 }}
                 transition={{ duration: 1.1, delay: 0.28, ease: [0.16, 1, 0.3, 1] }}
                 aria-label="ivo-tech Brand Visual"
               >
                 <div className="hv-webgl-stage" ref={webglStageRef}>
                   <ErrorBoundary
-                    fallback={<img src={HERO_3D_FALLBACK_SRC} alt="ivo-tech Logo" className="hv-fallback" decoding="async" />}
+                    fallback={<img src={HERO_3D_FALLBACK_SRC} alt="ivo-tech Logo" className="hv-fallback" decoding="async" width={246} height={149} />}
                   >
-                    <Suspense
-                      fallback={
+                    {enableHero3D ? (
+                      <Suspense
+                        fallback={
+                          <img
+                            className="hv-emblem hero-3d-fallback-image"
+                            width={246}
+                            height={149}
+                            src={HERO_3D_FALLBACK_SRC}
+                            alt="ivo-tech WebGL Logo"
+                            decoding="async"
+                            fetchPriority="high"
+                          />
+                        }
+                      >
+                        {canvasReady && <EpicHero3D fallbackSrc={HERO_3D_FALLBACK_SRC} alt="ivo-tech Logo als cineatische 3D-Skulptur" />}
+                      </Suspense>
+                    ) : (
+                      <div
+                        className="epic-hero-3d epic-hero-3d--fallback"
+                        role="img"
+                        aria-label="ivo-tech Logo"
+                        data-mode="fallback"
+                      >
                         <img
                           className="hv-emblem hero-3d-fallback-image"
+                          width={246}
+                          height={149}
                           src={HERO_3D_FALLBACK_SRC}
-                          alt="ivo-tech WebGL Logo"
+                          alt=""
+                          aria-hidden="true"
                           decoding="async"
                           fetchPriority="high"
                         />
-                      }
-                    >
-                      {canvasReady && <Hero3DLogo fallbackSrc={HERO_3D_FALLBACK_SRC} alt="ivo-tech WebGL Logo — Ziehen zum Drehen" />}
-                    </Suspense>
+                      </div>
+                    )}
                   </ErrorBoundary>
                 </div>
               </motion.div>
@@ -425,13 +497,14 @@ function App() {
                     <span className="sec-label">Lab Notes</span>
                     <span className="sec-num">— 02</span>
                   </div>
-                  <SectionTitle id="lab-h" lines={[{ text: 'Woran ich gern tüftle' }]} />
+                  <SectionTitle id="lab-h" lines={[{ text: 'Woran ich arbeite' }]} />
                 </Reveal>
 
                 <Reveal delay={0.08}>
                   <p className="lab-intro">
-                    Vier Felder, ein roter Faden: Automation, robuste Heim-Infrastruktur, Brand-Systeme und Interfaces,
-                    die sich wie echte Produkte anfühlen. Kein Claim, sondern laufende Werkbank.
+                    Vier Felder, ein roter Faden: Automation, eigens betriebene Infrastruktur, Brand-Systeme und
+                    Interfaces, die sich wie echte Produkte anfühlen. Parallel zu den Kundenprojekten laufend
+                    in Betrieb und Weiterentwicklung.
                   </p>
                 </Reveal>
 
@@ -484,7 +557,7 @@ function App() {
               <BrandSection />
             </Suspense>
 
-            <Suspense fallback={<LazySectionFallback label="Hobby Lab" />}>
+            <Suspense fallback={<LazySectionFallback label="Operating Layer" />}>
               <HobbySection />
             </Suspense>
 
