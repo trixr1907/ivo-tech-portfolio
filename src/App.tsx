@@ -1,12 +1,7 @@
 import { lazy, Suspense, useCallback, useEffect, useRef, useState, type MouseEvent as ReactMouseEvent } from 'react'
 import { motion, useReducedMotion, useScroll, useTransform, AnimatePresence } from 'motion/react'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import {
-  ArrowUpRight,
-  MapPin,
-  ArrowDown,
-  Gauge,
-} from 'lucide-react'
+import { ArrowUpRight, MapPin, ArrowDown, Gauge } from 'lucide-react'
 import './App.css'
 
 import { ErrorBoundary } from './components/ErrorBoundary'
@@ -46,9 +41,7 @@ const MarketDataShowcase = lazy(() =>
 )
 const BrandSection = lazy(() => loadBrandSection().then((module) => ({ default: module.BrandSection })))
 const HobbySection = lazy(() => loadHobbySection().then((module) => ({ default: module.HobbySection })))
-const SkillGraphSection = lazy(() =>
-  loadSkillGraphSection().then((module) => ({ default: module.SkillGraphSection })),
-)
+const SkillGraphSection = lazy(() => loadSkillGraphSection().then((module) => ({ default: module.SkillGraphSection })))
 const ContactSection = lazy(() => loadLayoutSections().then((module) => ({ default: module.ContactSection })))
 const SiteFooter = lazy(() => loadLayoutSections().then((module) => ({ default: module.SiteFooter })))
 
@@ -106,12 +99,15 @@ function App() {
     window.scrollTo({ top, behavior: 'smooth' })
   }, [])
 
-  const handleAnchorClick = useCallback((event: ReactMouseEvent<HTMLAnchorElement | HTMLButtonElement>, hash: string) => {
-    event.preventDefault()
-    scrollToSection(hash)
-  }, [scrollToSection])
+  const handleAnchorClick = useCallback(
+    (event: ReactMouseEvent<HTMLAnchorElement | HTMLButtonElement>, hash: string) => {
+      event.preventDefault()
+      scrollToSection(hash)
+    },
+    [scrollToSection],
+  )
 
-  useGsapReveal("#lab", "h2, .reveal-gsap", loaded)
+  useGsapReveal('#lab', 'h2, .reveal-gsap', loaded)
   useGsapPinHero(heroRef, loaded)
 
   useEffect(() => {
@@ -183,7 +179,12 @@ function App() {
     const el = webglStageRef.current
     if (!el) return
     const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) { setCanvasReady(true); observer.disconnect() } },
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setCanvasReady(true)
+          observer.disconnect()
+        }
+      },
       { threshold: 0.01 },
     )
     observer.observe(el)
@@ -208,9 +209,14 @@ function App() {
       el.style.setProperty('--hero-tilt-y', `${current.y}px`)
       raf = requestAnimationFrame(tick)
     }
-    const stop = () => { cancelAnimationFrame(raf); raf = 0 }
-    const start = () => { if (!document.hidden && !raf) raf = requestAnimationFrame(tick) }
-    const onVisibilityChange = () => document.hidden ? stop() : start()
+    const stop = () => {
+      cancelAnimationFrame(raf)
+      raf = 0
+    }
+    const start = () => {
+      if (!document.hidden && !raf) raf = requestAnimationFrame(tick)
+    }
+    const onVisibilityChange = () => (document.hidden ? stop() : start())
     window.addEventListener('mousemove', onMove, { passive: true })
     document.addEventListener('visibilitychange', onVisibilityChange)
     start()
@@ -313,7 +319,14 @@ function App() {
             aria-label="Navigation"
           >
             <a className="h-brand" href="#top" aria-label="ivo-tech">
-              <img src="/brand/logos/ivo-tech-logo-master.svg" alt="ivo-tech" decoding="async" fetchPriority="high" width={140} height={31} />
+              <img
+                src="/brand/logos/ivo-tech-logo-master.svg"
+                alt="ivo-tech"
+                decoding="async"
+                fetchPriority="high"
+                width={140}
+                height={31}
+              />
             </a>
 
             <nav className="h-nav">
@@ -325,7 +338,12 @@ function App() {
               ].map(({ label, href }) => {
                 const isActive = activeSectionId === href.replace('#', '')
                 return (
-                  <a key={label} href={href} className={`h-link ${isActive ? 'active' : ''}`} onClick={(event) => handleAnchorClick(event, href)}>
+                  <a
+                    key={label}
+                    href={href}
+                    className={`h-link ${isActive ? 'active' : ''}`}
+                    onClick={(event) => handleAnchorClick(event, href)}
+                  >
                     <span>{label}</span>
                   </a>
                 )
@@ -346,7 +364,7 @@ function App() {
                 aria-label={mobileMenuOpen ? 'Menü schließen' : 'Menü öffnen'}
                 aria-expanded={mobileMenuOpen}
                 aria-controls="mobile-menu"
-                onClick={() => setMobileMenuOpen(prev => !prev)}
+                onClick={() => setMobileMenuOpen((prev) => !prev)}
               >
                 <span className="h-burger-bar" />
                 <span className="h-burger-bar" />
@@ -404,9 +422,9 @@ function App() {
                   transition={{ duration: 0.6, delay: 0.2 }}
                 >
                   <MapPin size={12} aria-hidden="true" />
-                  <span>Full-Stack Developer mit Frontend-Fokus · Mannheim, DE</span>
+                  <span>Full-Stack · Frontend-Fokus · Mannheim</span>
                   <span className="eyebrow-div" />
-                  <span>Remote-Festanstellung</span>
+                  <span>Remote</span>
                 </motion.div>
 
                 <SplitTitle line1="Ich baue" line2="was" line3="bleibt." immediate={compactHero} />
@@ -419,8 +437,8 @@ function App() {
                 >
                   <span className="hero-stack">React · TypeScript · Node.js · Three.js · Supabase</span>
                   <span className="hero-description">
-                    Ich entwickle produktionsreife Webapplikationen — remote-first, mit React/TypeScript,
-                    sauberer Architektur und echtem Live-Betrieb.
+                    Ich entwickle produktionsreife Webapplikationen mit React/TypeScript — von sauberer Architektur und
+                    klaren Interfaces bis zum echten Live-Betrieb.
                   </span>
                 </motion.p>
 
@@ -441,7 +459,7 @@ function App() {
                   transition={{ delay: 1.4, duration: 0.6 }}
                 >
                   <ArrowDown size={14} aria-hidden="true" />
-                  <span>Scrollen zum Zerlegen</span>
+                  <span>System zerlegen</span>
                 </motion.div>
               </motion.div>
 
@@ -452,9 +470,23 @@ function App() {
                 transition={{ duration: 1.1, delay: 0.28, ease: [0.16, 1, 0.3, 1] }}
                 aria-label="ivo-tech Brand Visual"
               >
+                <div className="hero-callouts" aria-hidden="true">
+                  <span className="hero-callout hero-callout--architecture">Architektur</span>
+                  <span className="hero-callout hero-callout--interface">Interface</span>
+                  <span className="hero-callout hero-callout--live">Live-Betrieb</span>
+                </div>
                 <div className="hv-webgl-stage" ref={webglStageRef}>
                   <ErrorBoundary
-                    fallback={<img src={HERO_3D_FALLBACK_SRC} alt="ivo-tech Logo" className="hv-fallback" decoding="async" width={246} height={149} />}
+                    fallback={
+                      <img
+                        src={HERO_3D_FALLBACK_SRC}
+                        alt="ivo-tech Logo"
+                        className="hv-fallback"
+                        decoding="async"
+                        width={246}
+                        height={149}
+                      />
+                    }
                   >
                     {enableHero3D ? (
                       <Suspense
@@ -470,7 +502,12 @@ function App() {
                           />
                         }
                       >
-                        {canvasReady && <EpicHero3D fallbackSrc={HERO_3D_FALLBACK_SRC} alt="ivo-tech Logo als cineatische 3D-Skulptur" />}
+                        {canvasReady && (
+                          <EpicHero3D
+                            fallbackSrc={HERO_3D_FALLBACK_SRC}
+                            alt="ivo-tech Logo als cineatische 3D-Skulptur"
+                          />
+                        )}
                       </Suspense>
                     ) : (
                       <div
@@ -516,8 +553,8 @@ function App() {
                 <Reveal delay={0.08}>
                   <p className="lab-intro">
                     Vier Felder, ein roter Faden: Automation, eigens betriebene Infrastruktur, Brand-Systeme und
-                    Interfaces, die sich wie echte Produkte anfühlen. Parallel zu den Kundenprojekten laufend
-                    in Betrieb und Weiterentwicklung.
+                    Interfaces, die sich wie echte Produkte anfühlen. Parallel zu den Kundenprojekten laufend in Betrieb
+                    und Weiterentwicklung.
                   </p>
                 </Reveal>
 
