@@ -68,6 +68,22 @@ Run component tests:
 npm run test
 ```
 
+Run the production accessibility and Lighthouse QA gates after building:
+
+```bash
+npm run qa:a11y
+npm run qa:lighthouse:mobile
+npm run qa:lighthouse:desktop
+```
+
+Or build once and run all three gates serially:
+
+```bash
+npm run qa:quality
+```
+
+Pa11y requires zero WCAG2AA issues. Both Lighthouse modes require Performance >= 90 and Accessibility, Best Practices and SEO scores of 100. Reports stay local in `.lighthouseci/`. The QA commands reserve `127.0.0.1:4174` and fail before testing if that port is already occupied.
+
 ## Deployment
 
 Production runs on Vercel. Releases are deployed manually after linting, component tests and the production build pass:

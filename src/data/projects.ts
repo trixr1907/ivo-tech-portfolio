@@ -59,7 +59,7 @@ const goalsImages = {
 const dldImages = {
   cover: '/brand/projects/dld-cover.webp',
   calculated: '/brand/projects/dld-dev-portfolio.webp',
-  mobile: '/brand/projects/dld-mobile.webp',
+  mobile: '/brand/projects/dld-mobile.avif',
 }
 
 export const projects: Project[] = [

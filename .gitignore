@@ -40,6 +40,8 @@ undefined*/
 *:Zone.Identifier
 _quarantine_path_artifacts/
 lighthouse.*
+!lighthouserc.mobile.json
+!lighthouserc.desktop.json
 lighthouse-report*.md
 audit/
 audit-report.md
@@ -74,3 +76,6 @@ LIGHTHOUSE_*.md
 PORTFOLIO_*.md
 docs/
 public/llms.txt
+
+# Lighthouse CI generated reports
+.lighthouseci/

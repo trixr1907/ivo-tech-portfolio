@@ -9,9 +9,14 @@
     "lint": "eslint .",
     "format": "prettier --write \"src/**/*.{ts,tsx,css}\" \"*.{ts,js,json,html}\"",
     "preview": "vite preview",
+    "preview:qa": "vite preview --host 127.0.0.1 --port 4174 --strictPort",
     "test": "playwright test -c playwright-ct.config.ts",
     "test:ui": "playwright test -c playwright-ct.config.ts --ui",
-    "test:debug": "playwright test -c playwright-ct.config.ts --debug"
+    "test:debug": "playwright test -c playwright-ct.config.ts --debug",
+    "qa:a11y": "node scripts/assert-port-free.mjs && start-server-and-test preview:qa http://127.0.0.1:4174 \"pa11y --config pa11y.config.cjs http://127.0.0.1:4174/\"",
+    "qa:lighthouse:mobile": "node scripts/assert-port-free.mjs && start-server-and-test preview:qa http://127.0.0.1:4174 \"lhci autorun --config=lighthouserc.mobile.json\"",
+    "qa:lighthouse:desktop": "node scripts/assert-port-free.mjs && start-server-and-test preview:qa http://127.0.0.1:4174 \"lhci autorun --config=lighthouserc.desktop.json\"",
+    "qa:quality": "npm run build && npm run qa:a11y && npm run qa:lighthouse:mobile && npm run qa:lighthouse:desktop"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.7",
@@ -27,6 +32,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@lhci/cli": "^0.15.1",
     "@playwright/experimental-ct-react": "^1.61.1",
     "@playwright/test": "^1.61.1",
     "@types/node": "^24.13.0",
@@ -40,12 +46,16 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.6.0",
+    "pa11y": "^9.1.1",
     "prettier": "^3.8.4",
+    "start-server-and-test": "^3.0.11",
     "typescript": "~6.0.2",
     "typescript-eslint": "^8.59.2",
     "vite": "^8.1.0"
   },
   "overrides": {
-    "esbuild": ">=0.28.1"
+    "esbuild": ">=0.28.1",
+    "tmp": "^0.2.6",
+    "uuid": "^11.1.1"
   }
 }

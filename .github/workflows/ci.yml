@@ -33,6 +33,9 @@ jobs:
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
 
+      - name: Expose Chromium to Lighthouse CI
+        run: node -e 'console.log(`CHROME_PATH=${require("@playwright/test").chromium.executablePath()}`)' >> "$GITHUB_ENV"
+
       - name: Lint
         run: npm run lint
 
@@ -41,3 +44,12 @@ jobs:
 
       - name: Build production bundle
         run: npm run build
+
+      - name: Run Pa11y accessibility gate
+        run: npm run qa:a11y
+
+      - name: Run Lighthouse CI (mobile)
+        run: npm run qa:lighthouse:mobile
+
+      - name: Run Lighthouse CI (desktop)
+        run: npm run qa:lighthouse:desktop
