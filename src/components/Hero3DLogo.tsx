@@ -371,7 +371,9 @@ export default function Hero3DLogo({ fallbackSrc, alt = 'ivo-tech 3D Logo' }: He
       const scrollResponse = scrollTarget < scrollCurrent ? 18 : 11
       scrollCurrent = MathUtils.damp(scrollCurrent, scrollTarget, scrollResponse, deltaTime)
       const scrollProgress = MathUtils.clamp(scrollCurrent, 0, 1)
-      const explodedProgress = MathUtils.smoothstep(scrollProgress, 0.08, 0.78)
+      const disassemble = MathUtils.smoothstep(scrollProgress, 0.12, 0.42)
+      const reassemble = MathUtils.smoothstep(scrollProgress, 0.58, 0.9)
+      const explodedProgress = disassemble * (1 - reassemble)
       pointerCurrent.lerp(pointerTarget, 0.04)
 
       for (const facet of facets) {
@@ -447,7 +449,15 @@ export default function Hero3DLogo({ fallbackSrc, alt = 'ivo-tech 3D Logo' }: He
   }
 
   return (
-    <div ref={wrapRef} className="hero-3d-logo" role="img" aria-label={alt}>
+    <div
+      ref={wrapRef}
+      className="hero-3d-logo"
+      role="img"
+      aria-label={alt}
+      data-ready="false"
+      data-asset="emblem-9-facet"
+      data-mode="webgl"
+    >
       {loading ? (
         <img className="hv-emblem hero-3d-fallback-image" src={fallbackSrc} alt="" aria-hidden="true" />
       ) : null}

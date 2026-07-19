@@ -7,6 +7,43 @@ test.describe('mobile UX', () => {
     await page.setViewportSize({ width: 390, height: 844 })
   })
 
+  test('mobile hero fallback has no pin or overflow', async ({ mount, page }) => {
+    await mount(<App />)
+    await expect(page.locator('.loader')).toBeHidden({ timeout: 15_000 })
+    const fallback = page.locator('.hero-3d-logo[data-mode="fallback"]')
+    const fallbackImage = fallback.locator('.hero-3d-fallback-image')
+    await expect(fallback).toBeVisible()
+    await expect(fallbackImage).toBeVisible()
+    await expect(fallbackImage).toHaveCSS('opacity', '0.72')
+    await expect
+      .poll(() => fallbackImage.evaluate((image) => (image as HTMLImageElement).naturalWidth))
+      .toBeGreaterThan(0)
+    await expect(page.locator('.pin-spacer')).toHaveCount(0)
+    await expect(page.locator('.hero canvas')).toHaveCount(0)
+    await expect
+      .poll(() => page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth))
+      .toBe(true)
+    const [hero, visual, actions, primary] = await Promise.all([
+      page.locator('.hero').boundingBox(),
+      page.locator('.hero-visual').boundingBox(),
+      page.locator('.hero-ctas').boundingBox(),
+      page.locator('.hero-ctas .btn-primary').boundingBox(),
+    ])
+    expect(hero && visual && actions && primary).toBeTruthy()
+    expect(primary!.y + primary!.height).toBeLessThanOrEqual(hero!.y + hero!.height)
+    expect(visual!.y).toBeGreaterThanOrEqual(actions!.y + actions!.height)
+    const secondary = await page.locator('.hero-secondary-actions').boundingBox()
+    expect(secondary).not.toBeNull()
+    expect(primary!.y + primary!.height).toBeLessThanOrEqual(secondary!.y)
+    await expect
+      .poll(() =>
+        page
+          .locator('.hero-secondary-actions .btn-ghost')
+          .evaluateAll((links) => links.every((link) => link.getBoundingClientRect().height >= 44)),
+      )
+      .toBe(true)
+  })
+
   test('mobile menu behaves as a keyboard modal', async ({ mount, page }) => {
     await mount(<App />)
     await expect(page.locator('.loader')).toBeHidden({ timeout: 15_000 })
@@ -28,7 +65,9 @@ test.describe('mobile UX', () => {
     await expect(burger).toHaveAttribute('aria-expanded', 'true')
     await expect(burger).toHaveAccessibleName('Menü schließen')
     await expect(firstLink).toBeFocused()
-    await expect.poll(() => page.evaluate(() => [document.body.style.overflow, document.documentElement.style.overflow])).toEqual(['hidden', 'hidden'])
+    await expect
+      .poll(() => page.evaluate(() => [document.body.style.overflow, document.documentElement.style.overflow]))
+      .toEqual(['hidden', 'hidden'])
 
     await page.keyboard.press('Shift+Tab')
     await expect(lastLink).toBeFocused()
@@ -40,7 +79,9 @@ test.describe('mobile UX', () => {
     await expect(burger).toHaveAttribute('aria-expanded', 'false')
     await expect(burger).toHaveAccessibleName('Menü öffnen')
     await expect(burger).toBeFocused()
-    await expect.poll(() => page.evaluate(() => [document.body.style.overflow, document.documentElement.style.overflow])).toEqual(['visible', 'clip'])
+    await expect
+      .poll(() => page.evaluate(() => [document.body.style.overflow, document.documentElement.style.overflow]))
+      .toEqual(['visible', 'clip'])
   })
 
   for (const width of [320, 390]) {
@@ -52,7 +93,9 @@ test.describe('mobile UX', () => {
       const footer = page.locator('.site-footer')
       await footer.scrollIntoViewIfNeeded()
       await expect(footer).toBeVisible({ timeout: 15_000 })
-      await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true)
+      await expect
+        .poll(() => page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth))
+        .toBe(true)
 
       for (const name of ['Impressum', 'Datenschutz']) {
         const box = await footer.getByRole('link', { name }).boundingBox()
@@ -69,15 +112,27 @@ test.describe('mobile UX', () => {
     await expect(page.locator('.loader')).toBeHidden({ timeout: 15_000 })
     await page.locator('.site-footer').scrollIntoViewIfNeeded()
     await expect.poll(() => page.locator('.cis-tab, .skill-matrix-tech, .ft-links a').count()).toBeGreaterThanOrEqual(5)
-    const controls = page.locator('.h-burger, .hero-ctas .btn-ghost, .btn-copy, .cis-tab, .skill-matrix-tech, .ft-links a')
-    await expect.poll(async () => {
-      const sizes = await controls.evaluateAll((elements) => elements.filter((element) => getComputedStyle(element).display !== 'none').map((element) => element.getBoundingClientRect()))
-      return sizes.length > 0 && sizes.every((size) => size.height >= 44)
-    }).toBe(true)
-    for (const selector of ['.h-burger', '.btn-copy']) {
-      await expect.poll(async () => (await page.locator(selector).first().boundingBox())?.width ?? 0).toBeGreaterThanOrEqual(44)
+    const controls = page.locator(
+      '.h-burger, .hero-ctas .btn-primary, .hero-ctas .btn-ghost, .cis-tab, .skill-matrix-tech, .ft-links a',
+    )
+    await expect
+      .poll(async () => {
+        const sizes = await controls.evaluateAll((elements) =>
+          elements
+            .filter((element) => getComputedStyle(element).display !== 'none')
+            .map((element) => element.getBoundingClientRect()),
+        )
+        return sizes.length > 0 && sizes.every((size) => size.height >= 44)
+      })
+      .toBe(true)
+    for (const selector of ['.h-burger', '.hero-ctas .btn-primary']) {
+      await expect
+        .poll(async () => (await page.locator(selector).first().boundingBox())?.width ?? 0)
+        .toBeGreaterThanOrEqual(44)
     }
-    await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true)
+    await expect
+      .poll(() => page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth))
+      .toBe(true)
   })
 
   test('768px uses only mobile navigation without overflow', async ({ mount, page }) => {
@@ -86,7 +141,9 @@ test.describe('mobile UX', () => {
     await expect(page.locator('.loader')).toBeHidden({ timeout: 15_000 })
     await expect(page.locator('.h-burger')).toBeVisible()
     await expect(page.locator('.h-nav')).toBeHidden()
-    await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true)
+    await expect
+      .poll(() => page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth))
+      .toBe(true)
   })
 })
 

@@ -4,7 +4,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 gsap.registerPlugin(ScrollTrigger)
 
-const SCROLL_DISTANCE_VH = 320
+const SCROLL_DISTANCE_VH = 160
 
 export function useGsapPinHero(heroRef: RefObject<HTMLElement | null>, ready = true) {
   useEffect(() => {
@@ -34,7 +34,11 @@ export function useGsapPinHero(heroRef: RefObject<HTMLElement | null>, ready = t
         },
       })
       if (heroInner) {
-        tl.to(heroInner, { opacity: 0.12, xPercent: -5, duration: 0.25, ease: 'none' }, 0.25)
+        tl.to(heroInner, { opacity: 0.24, xPercent: -3, duration: 0.5, ease: 'none' }, 0).to(
+          heroInner,
+          { opacity: 1, xPercent: 0, duration: 0.5, ease: 'none' },
+          0.5,
+        )
       }
 
       return () => {

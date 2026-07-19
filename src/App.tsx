@@ -1,7 +1,7 @@
 import { lazy, Suspense, useCallback, useEffect, useRef, useState, type MouseEvent as ReactMouseEvent } from 'react'
 import { motion, useReducedMotion, useScroll, useTransform, AnimatePresence } from 'motion/react'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { ArrowUpRight, MapPin, ArrowDown, Gauge } from 'lucide-react'
+import { ArrowDown, ArrowUpRight, Gauge } from 'lucide-react'
 import './App.css'
 
 import { ErrorBoundary } from './components/ErrorBoundary'
@@ -34,7 +34,7 @@ const loadHobbySection = () => import('./components/HobbySection')
 const loadLayoutSections = () => import('./components/LayoutSections')
 const loadSkillGraphSection = () => import('./components/SkillGraphSection')
 
-const EpicHero3D = lazy(() => import('./components/EpicHero3D'))
+const Hero3DLogo = lazy(() => import('./components/Hero3DLogo'))
 const Showcase = lazy(() => loadShowcase().then((module) => ({ default: module.Showcase })))
 const MarketDataShowcase = lazy(() =>
   loadMarketDataShowcase().then((module) => ({ default: module.MarketDataShowcase })),
@@ -421,13 +421,11 @@ function App() {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.6, delay: 0.2 }}
                 >
-                  <MapPin size={12} aria-hidden="true" />
-                  <span>Full-Stack · Frontend-Fokus · Mannheim</span>
-                  <span className="eyebrow-div" />
-                  <span>Remote</span>
+                  <span>Full-Stack Developer · Frontend-Fokus</span>
+                  <span className="hero-eyebrow-location">Mannheim / Remote</span>
                 </motion.div>
 
-                <SplitTitle line1="Ich baue" line2="was" line3="bleibt." immediate={compactHero} />
+                <SplitTitle lines={['Ich baue,', 'was bleibt.']} immediate={compactHero} />
 
                 <motion.p
                   className="hero-sub"
@@ -435,10 +433,9 @@ function App() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.7, delay: 0.72, ease: [0.16, 1, 0.3, 1] }}
                 >
-                  <span className="hero-stack">React · TypeScript · Node.js · Three.js · Supabase</span>
                   <span className="hero-description">
-                    Ich entwickle produktionsreife Webapplikationen mit React/TypeScript — von sauberer Architektur und
-                    klaren Interfaces bis zum echten Live-Betrieb.
+                    Produktionsreife React/TypeScript-Webapplikationen. Von klarer Architektur bis zum stabilen
+                    Live-Betrieb.
                   </span>
                 </motion.p>
 
@@ -459,7 +456,7 @@ function App() {
                   transition={{ delay: 1.4, duration: 0.6 }}
                 >
                   <ArrowDown size={14} aria-hidden="true" />
-                  <span>System zerlegen</span>
+                  <span>Scrollen · System zerlegen</span>
                 </motion.div>
               </motion.div>
 
@@ -470,11 +467,6 @@ function App() {
                 transition={{ duration: 1.1, delay: 0.28, ease: [0.16, 1, 0.3, 1] }}
                 aria-label="ivo-tech Brand Visual"
               >
-                <div className="hero-callouts" aria-hidden="true">
-                  <span className="hero-callout hero-callout--architecture">Architektur</span>
-                  <span className="hero-callout hero-callout--interface">Interface</span>
-                  <span className="hero-callout hero-callout--live">Live-Betrieb</span>
-                </div>
                 <div className="hv-webgl-stage" ref={webglStageRef}>
                   <ErrorBoundary
                     fallback={
@@ -503,17 +495,19 @@ function App() {
                         }
                       >
                         {canvasReady && (
-                          <EpicHero3D
+                          <Hero3DLogo
                             fallbackSrc={HERO_3D_FALLBACK_SRC}
-                            alt="ivo-tech Logo als cineatische 3D-Skulptur"
+                            alt="ivo-tech 9-Facet-Emblem aus Werkzeugstahl"
                           />
                         )}
                       </Suspense>
                     ) : (
                       <div
-                        className="epic-hero-3d epic-hero-3d--fallback"
+                        className="hero-3d-logo hero-3d-logo--fallback"
                         role="img"
                         aria-label="ivo-tech Logo"
+                        data-ready="true"
+                        data-asset="emblem-9-facet"
                         data-mode="fallback"
                       >
                         <img
@@ -530,6 +524,17 @@ function App() {
                     )}
                   </ErrorBoundary>
                 </div>
+                <ol className="hero-process" aria-label="Vom System zum Live-Betrieb">
+                  <li>
+                    <span>01</span> Architektur
+                  </li>
+                  <li>
+                    <span>02</span> Interface
+                  </li>
+                  <li>
+                    <span>03</span> Live-Betrieb
+                  </li>
+                </ol>
               </motion.div>
             </section>
 
