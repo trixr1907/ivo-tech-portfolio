@@ -10,7 +10,7 @@ export function MeshBackground() {
   const reduceMotion = useReducedMotion()
 
   useEffect(() => {
-    if (reduceMotion) return
+    if (reduceMotion || window.matchMedia('(pointer: coarse), (max-width: 960px), (hover: none)').matches) return
     const onMove = (e: MouseEvent) => {
       mouseRef.current = {
         x: e.clientX / window.innerWidth,
@@ -71,12 +71,19 @@ export function MeshBackground() {
 
       rafRef.current = requestAnimationFrame(draw)
     }
-    draw()
+    const onVisibilityChange = () => {
+      cancelAnimationFrame(rafRef.current)
+      rafRef.current = 0
+      if (!document.hidden) rafRef.current = requestAnimationFrame(draw)
+    }
+    document.addEventListener('visibilitychange', onVisibilityChange)
+    rafRef.current = requestAnimationFrame(draw)
 
     return () => {
       cancelAnimationFrame(rafRef.current)
       window.removeEventListener('mousemove', onMove)
       window.removeEventListener('resize', resize)
+      document.removeEventListener('visibilitychange', onVisibilityChange)
     }
   }, [reduceMotion])
 

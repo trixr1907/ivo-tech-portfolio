@@ -62,6 +62,32 @@ test.describe('mobile UX', () => {
       }
     })
   }
+
+  test('touch controls meet sizing at 320px', async ({ mount, page }) => {
+    await page.setViewportSize({ width: 320, height: 844 })
+    await mount(<App />)
+    await expect(page.locator('.loader')).toBeHidden({ timeout: 15_000 })
+    await page.locator('.site-footer').scrollIntoViewIfNeeded()
+    await expect.poll(() => page.locator('.cis-tab, .skill-matrix-tech, .ft-links a').count()).toBeGreaterThanOrEqual(5)
+    const controls = page.locator('.h-burger, .hero-ctas .btn-ghost, .btn-copy, .cis-tab, .skill-matrix-tech, .ft-links a')
+    await expect.poll(async () => {
+      const sizes = await controls.evaluateAll((elements) => elements.filter((element) => getComputedStyle(element).display !== 'none').map((element) => element.getBoundingClientRect()))
+      return sizes.length > 0 && sizes.every((size) => size.height >= 44)
+    }).toBe(true)
+    for (const selector of ['.h-burger', '.btn-copy']) {
+      await expect.poll(async () => (await page.locator(selector).first().boundingBox())?.width ?? 0).toBeGreaterThanOrEqual(44)
+    }
+    await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true)
+  })
+
+  test('768px uses only mobile navigation without overflow', async ({ mount, page }) => {
+    await page.setViewportSize({ width: 768, height: 900 })
+    await mount(<App />)
+    await expect(page.locator('.loader')).toBeHidden({ timeout: 15_000 })
+    await expect(page.locator('.h-burger')).toBeVisible()
+    await expect(page.locator('.h-nav')).toBeHidden()
+    await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true)
+  })
 })
 
 test('not found page exposes branded recovery navigation', async ({ mount, page }) => {

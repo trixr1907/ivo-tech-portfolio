@@ -52,9 +52,11 @@ const SkillGraphSection = lazy(() =>
 const ContactSection = lazy(() => loadLayoutSections().then((module) => ({ default: module.ContactSection })))
 const SiteFooter = lazy(() => loadLayoutSections().then((module) => ({ default: module.SiteFooter })))
 
+const COMPACT_HERO_QUERY = '(max-width: 960px), (hover: none), (pointer: coarse)'
+
 function App() {
   const reduceMotion = useReducedMotion()
-  const [compactHero, setCompactHero] = useState(() => window.matchMedia('(max-width: 960px)').matches)
+  const [compactHero, setCompactHero] = useState(() => window.matchMedia(COMPACT_HERO_QUERY).matches)
   const [loaded, setLoaded] = useState(compactHero)
   const [scrolled, setScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -75,7 +77,7 @@ function App() {
   const enableHero3D = !compactHero && !reduceMotion
 
   useEffect(() => {
-    const query = window.matchMedia('(max-width: 960px)')
+    const query = window.matchMedia(COMPACT_HERO_QUERY)
     const update = () => setCompactHero(query.matches)
     query.addEventListener('change', update)
     return () => query.removeEventListener('change', update)
@@ -189,17 +191,16 @@ function App() {
   }, [loaded, enableHero3D, canvasReady])
 
   useEffect(() => {
-    if (!loaded || !heroRef.current) return
+    if (!loaded || !heroRef.current || reduceMotion) return
+    if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return
     const el = heroRef.current
     let raf = 0
     const target = { x: 0, y: 0 }
     const current = { x: 0, y: 0 }
-
     const onMove = (e: MouseEvent) => {
       target.x = (e.clientX / window.innerWidth - 0.5) * 16
       target.y = (e.clientY / window.innerHeight - 0.5) * 10
     }
-
     const tick = () => {
       current.x += (target.x - current.x) * 0.08
       current.y += (target.y - current.y) * 0.08
@@ -207,32 +208,44 @@ function App() {
       el.style.setProperty('--hero-tilt-y', `${current.y}px`)
       raf = requestAnimationFrame(tick)
     }
-
+    const stop = () => { cancelAnimationFrame(raf); raf = 0 }
+    const start = () => { if (!document.hidden && !raf) raf = requestAnimationFrame(tick) }
+    const onVisibilityChange = () => document.hidden ? stop() : start()
     window.addEventListener('mousemove', onMove, { passive: true })
-    raf = requestAnimationFrame(tick)
+    document.addEventListener('visibilitychange', onVisibilityChange)
+    start()
     return () => {
       window.removeEventListener('mousemove', onMove)
-      cancelAnimationFrame(raf)
+      document.removeEventListener('visibilitychange', onVisibilityChange)
+      stop()
+      el.style.removeProperty('--hero-tilt-x')
+      el.style.removeProperty('--hero-tilt-y')
     }
-  }, [loaded])
+  }, [loaded, reduceMotion])
 
   useEffect(() => {
-    if (!loaded) return
+    if (!loaded || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) return
+    let disposed = false
+    let rafId = 0
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let lenis: any = null
-    import('lenis').then((mod) => {
+    void import('lenis').then((mod) => {
+      if (disposed) return
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const LenisClass = (mod as any).default ?? (mod as any).Lenis ?? mod
       lenis = new LenisClass({ lerp: 0.1, smoothWheel: true })
       lenisRef.current = lenis
       bridgeGsapLenis(lenis)
       const raf = (time: number) => {
+        if (disposed) return
         lenis.raf(time)
-        requestAnimationFrame(raf)
+        rafId = requestAnimationFrame(raf)
       }
-      requestAnimationFrame(raf)
+      rafId = requestAnimationFrame(raf)
     })
     return () => {
+      disposed = true
+      cancelAnimationFrame(rafId)
       lenisRef.current = null
       lenis?.destroy()
     }

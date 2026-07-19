@@ -1268,3 +1268,17 @@
     margin-top: 0.35rem;
   }
 }
+
+/* Targeted touch sizing for audited dashboard controls. */
+.cis-tab,
+.cis-coin-pill,
+.cis-cta-btn {
+  min-height: 44px;
+}
+
+@media (max-width: 720px) {
+  .cis-tab,
+  .cis-coin-pill {
+    min-height: 44px;
+  }
+}
