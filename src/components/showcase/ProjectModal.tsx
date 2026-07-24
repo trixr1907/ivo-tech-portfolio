@@ -254,7 +254,7 @@ export function ProjectModal({ project, onClose }: ProjectModalProps) {
   const hasLinks = Boolean(project.links.demo || project.links.repo)
 
   return (
-    <div ref={modalRef} className="project-modal" role="presentation" data-lenis-prevent onMouseDown={onClose}>
+    <div ref={modalRef} className="project-modal" role="presentation" onMouseDown={onClose}>
       <style>{modalReviewFixStyles}</style>
       <div
         ref={dialogRef}
@@ -262,9 +262,6 @@ export function ProjectModal({ project, onClose }: ProjectModalProps) {
         role="dialog"
         aria-modal="true"
         aria-labelledby={`${project.id}-modal-title`}
-        data-lenis-prevent
-        data-lenis-prevent-wheel
-        data-lenis-prevent-touch
         onMouseDown={(event) => event.stopPropagation()}
       >
         <button ref={closeButtonRef} type="button" className="project-modal__close" onClick={onClose} aria-label="Schliessen">

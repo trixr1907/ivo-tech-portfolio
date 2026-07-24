@@ -43,24 +43,7 @@ export function DatenschutzPage() {
         </section>
 
         <section>
-          <h2>4. Externe Datenquellen</h2>
-          <p>
-            Die Website ruft öffentlich verfügbare Marktdaten von der Binance-API
-            (<code>api.binance.com</code>) ab, um Echtzeit-Kursinformationen im Realtime-Dashboard anzuzeigen.
-            Binance-Server sind außerhalb der Europäischen Union verortet; bei jedem Abruf überträgt der Browser
-            automatisch die IP-Adresse sowie die angeforderten Endpunkte an Binance. Diese Übermittlung erfolgt
-            im Browser des Besuchers, ist für die Funktion des Dashboards erforderlich und kann nicht
-            deaktiviert werden, solange das Dashboard sichtbar ist. Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO
-            (berechtigtes Interesse an der Darstellung aktueller Marktdaten). Weitere Informationen zur
-            Datenverarbeitung bei Binance finden Sie in der{' '}
-            <a href="https://www.binance.com/en/privacy" target="_blank" rel="noreferrer">
-              Datenschutzerklärung von Binance
-            </a>.
-          </p>
-        </section>
-
-        <section>
-          <h2>5. Kontakt per E-Mail</h2>
+          <h2>4. Kontakt per E-Mail</h2>
           <p>
             Wenn Sie mir per E-Mail schreiben, werden Ihre Angaben zwecks Bearbeitung der Anfrage und für den
             Fall von Anschlussfragen bei mir gespeichert. Diese Daten werden nicht ohne Ihre Einwilligung
@@ -69,7 +52,7 @@ export function DatenschutzPage() {
         </section>
 
         <section>
-          <h2>6. Keine Cookies, kein Tracking</h2>
+          <h2>5. Keine Cookies, kein Tracking</h2>
           <p>
             Diese Website verwendet keine Tracking-Cookies, keine Analytics-Dienste (Google Analytics o.ä.)
             und keine Social-Media-Plugins. Es werden keine personenbezogenen Daten für Werbezwecke
@@ -78,7 +61,7 @@ export function DatenschutzPage() {
         </section>
 
         <section>
-          <h2>7. Schriftarten</h2>
+          <h2>6. Schriftarten</h2>
           <p>
             Diese Website verwendet selbst gehostete Schriftarten (Syne). Es findet kein Laden von
             Google Fonts oder anderen externen Schriftdiensten statt.
@@ -86,7 +69,7 @@ export function DatenschutzPage() {
         </section>
 
         <section>
-          <h2>8. Ihre Rechte</h2>
+          <h2>7. Ihre Rechte</h2>
           <p>
             Sie haben das Recht auf Auskunft (Art. 15 DSGVO), Berichtigung (Art. 16 DSGVO), Löschung
             (Art. 17 DSGVO), Einschränkung der Verarbeitung (Art. 18 DSGVO) und Datenübertragbarkeit

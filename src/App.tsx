@@ -1,51 +1,28 @@
-import { lazy, Suspense, useCallback, useEffect, useRef, useState, type MouseEvent as ReactMouseEvent } from 'react'
-import { motion, useReducedMotion, useScroll, useTransform, AnimatePresence } from 'motion/react'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { ArrowDown, ArrowUpRight, Gauge } from 'lucide-react'
+import { lazy, Suspense, useEffect, useRef, useState, type MouseEvent as ReactMouseEvent } from 'react'
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
+import { ArrowDown, ArrowUpRight } from 'lucide-react'
 import './App.css'
+import './relaunch.css'
 
 import { ErrorBoundary } from './components/ErrorBoundary'
-import { bridgeGsapLenis } from './lib/gsap-lenis-bridge'
-import { useGsapPinHero } from './hooks/useGsapPinHero'
-import { useGsapReveal } from './hooks/useGsapReveal'
-import { useScrollspy } from './hooks/useScrollspy'
-
 import { Loader } from './components/ui/Loader'
-import { LazySectionFallback } from './components/ui/LazySectionFallback'
+import { MagButton } from './components/ui/MagButton'
 import { MeshBackground, HERO_3D_FALLBACK_SRC } from './components/ui/MeshBackground'
 import { CustomCursor } from './components/ui/CustomCursor'
 import { ScrollBar } from './components/ui/ScrollBar'
-import { MagButton } from './components/ui/MagButton'
-import { Reveal } from './components/ui/Reveal'
 import { SplitTitle } from './components/ui/SplitTitle'
-import { SectionTitle } from './components/ui/SectionTitle'
-import { Marquee } from './components/ui/Marquee'
-import { LabCard } from './components/home/LabCard'
-import { AboutSection } from './components/home/AboutSection'
-import { ContactButtons } from './components/ui/ContactButtons'
-import { labItems, signalCards, marqueeTop, marqueeBottom } from './data/homeData'
-
-// const HeroOrbitSystem = lazy(() => import('./components/HeroOrbitSystem'))
-
-const loadShowcase = () => import('./components/showcase/Showcase')
-const loadMarketDataShowcase = () => import('./components/MarketDataShowcase')
-const loadBrandSection = () => import('./components/BrandSection')
-const loadHobbySection = () => import('./components/HobbySection')
-const loadLayoutSections = () => import('./components/LayoutSections')
-const loadSkillGraphSection = () => import('./components/SkillGraphSection')
+import { Showcase } from './components/showcase/Showcase'
+import { CraftSection, LabSection, ContactSection, RelaunchFooter } from './components/relaunch/RelaunchSections'
 
 const Hero3DLogo = lazy(() => import('./components/Hero3DLogo'))
-const Showcase = lazy(() => loadShowcase().then((module) => ({ default: module.Showcase })))
-const MarketDataShowcase = lazy(() =>
-  loadMarketDataShowcase().then((module) => ({ default: module.MarketDataShowcase })),
-)
-const BrandSection = lazy(() => loadBrandSection().then((module) => ({ default: module.BrandSection })))
-const HobbySection = lazy(() => loadHobbySection().then((module) => ({ default: module.HobbySection })))
-const SkillGraphSection = lazy(() => loadSkillGraphSection().then((module) => ({ default: module.SkillGraphSection })))
-const ContactSection = lazy(() => loadLayoutSections().then((module) => ({ default: module.ContactSection })))
-const SiteFooter = lazy(() => loadLayoutSections().then((module) => ({ default: module.SiteFooter })))
-
 const COMPACT_HERO_QUERY = '(max-width: 960px), (hover: none), (pointer: coarse)'
+
+const navItems = [
+  { label: 'Work', href: '#selected-work' },
+  { label: 'Craft', href: '#craft' },
+  { label: 'Lab', href: '#lab' },
+  { label: 'Kontakt', href: '#kontakt' },
+]
 
 function App() {
   const reduceMotion = useReducedMotion()
@@ -54,19 +31,9 @@ function App() {
   const [scrolled, setScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [canvasReady, setCanvasReady] = useState(false)
-  const { scrollY } = useScroll()
-  const heroRef = useRef<HTMLDivElement>(null)
-  const webglStageRef = useRef<HTMLDivElement>(null)
+  const heroStageRef = useRef<HTMLDivElement>(null)
   const burgerRef = useRef<HTMLButtonElement>(null)
   const mobileMenuRef = useRef<HTMLDivElement>(null)
-  // Lenis has no stable public type across installed versions in this project.
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const lenisRef = useRef<any>(null)
-  const { scrollYProgress: heroProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] })
-  const heroY = useTransform(heroProgress, [0, 1], ['0%', '18%'])
-  const heroOpacity = useTransform(heroProgress, [0, 0.7], [1, 0])
-
-  const activeSectionId = useScrollspy(['about', 'lab', 'selected-work', 'brand'], 150)
   const enableHero3D = !compactHero && !reduceMotion
 
   useEffect(() => {
@@ -76,75 +43,37 @@ function App() {
     return () => query.removeEventListener('change', update)
   }, [])
 
-  const scrollToSection = useCallback((hash: string) => {
-    const targetId = hash.replace('#', '')
-    const target = document.getElementById(targetId)
-    if (!target) return
-
-    setMobileMenuOpen(false)
-    ScrollTrigger.refresh()
-
-    const headerHeight = document.querySelector<HTMLElement>('.site-header')?.offsetHeight ?? 72
-    const extraOffset = window.matchMedia('(max-width: 680px)').matches ? 28 : 20
-    const targetY = target.getBoundingClientRect().top + window.scrollY - headerHeight - extraOffset
-
-    const top = Math.max(0, targetY)
-    window.history.pushState(null, '', `#${targetId}`)
-
-    if (lenisRef.current?.scrollTo) {
-      lenisRef.current.scrollTo(top, { duration: 1.05, easing: (t: number) => 1 - Math.pow(1 - t, 3) })
-      return
-    }
-
-    window.scrollTo({ top, behavior: 'smooth' })
-  }, [])
-
-  const handleAnchorClick = useCallback(
-    (event: ReactMouseEvent<HTMLAnchorElement | HTMLButtonElement>, hash: string) => {
-      event.preventDefault()
-      scrollToSection(hash)
-    },
-    [scrollToSection],
-  )
-
-  useGsapReveal('#lab', 'h2, .reveal-gsap', loaded)
-  useGsapPinHero(heroRef, loaded)
+  useEffect(() => {
+    if (!loaded) return
+    const onScroll = () => setScrolled(window.scrollY > 48)
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [loaded])
 
   useEffect(() => {
-    if (!loaded) return undefined
-
-    const onDocumentClick = (event: globalThis.MouseEvent) => {
-      if (event.defaultPrevented) return
-
-      const anchor = (event.target as Element | null)?.closest<HTMLAnchorElement>('a[href^="#"]')
-      const hash = anchor?.getAttribute('href')
-      if (!hash || hash === '#') return
-
-      event.preventDefault()
-      scrollToSection(hash)
-    }
-
-    document.addEventListener('click', onDocumentClick)
-    return () => document.removeEventListener('click', onDocumentClick)
-  }, [loaded, scrollToSection])
-
-  useEffect(() => {
-    const unsub = scrollY.on('change', (v) => setScrolled(v > 48))
-    return unsub
-  }, [scrollY])
+    if (!loaded || !enableHero3D || canvasReady) return
+    const stage = heroStageRef.current
+    if (!stage) return
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) return
+      setCanvasReady(true)
+      observer.disconnect()
+    }, { threshold: 0.01 })
+    observer.observe(stage)
+    return () => observer.disconnect()
+  }, [loaded, enableHero3D, canvasReady])
 
   useEffect(() => {
     if (!mobileMenuOpen) return
-
     const previousBodyOverflow = document.body.style.overflow
     const previousHtmlOverflow = document.documentElement.style.overflow
+    const menuTrigger = burgerRef.current
     document.body.style.overflow = 'hidden'
     document.documentElement.style.overflow = 'hidden'
 
-    const burgerButton = burgerRef.current
     const focusable = mobileMenuRef.current?.querySelectorAll<HTMLElement>('a[href], button:not([disabled])')
     focusable?.[0]?.focus()
-
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         event.preventDefault()
@@ -152,7 +81,6 @@ function App() {
         return
       }
       if (event.key !== 'Tab' || !focusable?.length) return
-
       const first = focusable[0]
       const last = focusable[focusable.length - 1]
       if (event.shiftKey && document.activeElement === first) {
@@ -163,153 +91,36 @@ function App() {
         first.focus()
       }
     }
-
     document.addEventListener('keydown', onKeyDown)
     return () => {
       document.removeEventListener('keydown', onKeyDown)
       document.body.style.overflow = previousBodyOverflow
       document.documentElement.style.overflow = previousHtmlOverflow
-      burgerButton?.focus()
+      menuTrigger?.focus()
     }
   }, [mobileMenuOpen])
 
-  // Never import the Three.js scene on compact or reduced-motion layouts.
-  useEffect(() => {
-    if (!loaded || !enableHero3D || canvasReady) return
-    const el = webglStageRef.current
-    if (!el) return
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setCanvasReady(true)
-          observer.disconnect()
-        }
-      },
-      { threshold: 0.01 },
-    )
-    observer.observe(el)
-    return () => observer.disconnect()
-  }, [loaded, enableHero3D, canvasReady])
+  const scrollTo = (href: string) => {
+    const id = href.slice(1)
+    document.getElementById(id)?.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' })
+    setMobileMenuOpen(false)
+    window.history.pushState(null, '', href)
+  }
 
-  useEffect(() => {
-    if (!loaded || !heroRef.current || reduceMotion) return
-    if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return
-    const el = heroRef.current
-    let raf = 0
-    const target = { x: 0, y: 0 }
-    const current = { x: 0, y: 0 }
-    const onMove = (e: MouseEvent) => {
-      target.x = (e.clientX / window.innerWidth - 0.5) * 16
-      target.y = (e.clientY / window.innerHeight - 0.5) * 10
-    }
-    const tick = () => {
-      current.x += (target.x - current.x) * 0.08
-      current.y += (target.y - current.y) * 0.08
-      el.style.setProperty('--hero-tilt-x', `${current.x}px`)
-      el.style.setProperty('--hero-tilt-y', `${current.y}px`)
-      raf = requestAnimationFrame(tick)
-    }
-    const stop = () => {
-      cancelAnimationFrame(raf)
-      raf = 0
-    }
-    const start = () => {
-      if (!document.hidden && !raf) raf = requestAnimationFrame(tick)
-    }
-    const onVisibilityChange = () => (document.hidden ? stop() : start())
-    window.addEventListener('mousemove', onMove, { passive: true })
-    document.addEventListener('visibilitychange', onVisibilityChange)
-    start()
-    return () => {
-      window.removeEventListener('mousemove', onMove)
-      document.removeEventListener('visibilitychange', onVisibilityChange)
-      stop()
-      el.style.removeProperty('--hero-tilt-x')
-      el.style.removeProperty('--hero-tilt-y')
-    }
-  }, [loaded, reduceMotion])
-
-  useEffect(() => {
-    if (!loaded || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) return
-    let disposed = false
-    let rafId = 0
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let lenis: any = null
-    void import('lenis').then((mod) => {
-      if (disposed) return
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const LenisClass = (mod as any).default ?? (mod as any).Lenis ?? mod
-      lenis = new LenisClass({ lerp: 0.1, smoothWheel: true })
-      lenisRef.current = lenis
-      bridgeGsapLenis(lenis)
-      const raf = (time: number) => {
-        if (disposed) return
-        lenis.raf(time)
-        rafId = requestAnimationFrame(raf)
-      }
-      rafId = requestAnimationFrame(raf)
-    })
-    return () => {
-      disposed = true
-      cancelAnimationFrame(rafId)
-      lenisRef.current = null
-      lenis?.destroy()
-    }
-  }, [loaded])
-
-  useEffect(() => {
-    if (!loaded) return
-
-    const scrollToHashTarget = () => {
-      const targetId = window.location.hash.slice(1)
-      if (!targetId) return
-
-      const delays = [0, 160, 520, 1200]
-      delays.forEach((delay) => {
-        globalThis.setTimeout(() => {
-          scrollToSection(`#${targetId}`)
-        }, delay)
-      })
-    }
-
-    const preloadLowerSections = () => {
-      void Promise.all([
-        loadShowcase(),
-        loadMarketDataShowcase(),
-        loadBrandSection(),
-        loadHobbySection(),
-        loadLayoutSections(),
-        loadSkillGraphSection(),
-      ]).then(scrollToHashTarget)
-    }
-
-    if (window.location.hash) {
-      preloadLowerSections()
-      return undefined
-    }
-
-    if ('requestIdleCallback' in window) {
-      const idleId = window.requestIdleCallback(preloadLowerSections, { timeout: 2500 })
-      return () => window.cancelIdleCallback(idleId)
-    }
-
-    const timeoutId = globalThis.setTimeout(preloadLowerSections, 1200)
-    return () => globalThis.clearTimeout(timeoutId)
-  }, [loaded, scrollToSection])
+  const handleNavClick = (event: ReactMouseEvent<HTMLAnchorElement | HTMLButtonElement>, href: string) => {
+    event.preventDefault()
+    scrollTo(href)
+  }
 
   return (
     <>
       <AnimatePresence mode="wait">{!loaded && <Loader key="loader" onDone={() => setLoaded(true)} />}</AnimatePresence>
-
       {loaded && (
         <>
           <CustomCursor />
           <ScrollBar />
           <MeshBackground />
-
-          <a className="skip-link" href="#content">
-            Direkt zum Inhalt
-          </a>
+          <a className="skip-link" href="#content">Direkt zum Inhalt</a>
 
           <motion.header
             className={`site-header ${scrolled ? 'scrolled' : ''}`}
@@ -318,57 +129,26 @@ function App() {
             transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
             aria-label="Navigation"
           >
-            <a className="h-brand" href="#top" aria-label="ivo-tech">
-              <img
-                src="/brand/logos/ivo-tech-logo-master.svg"
-                alt="ivo-tech"
-                decoding="async"
-                fetchPriority="high"
-                width={140}
-                height={31}
-              />
+            <a className="h-brand" href="#top" aria-label="ivo-tech" onClick={(event) => handleNavClick(event, '#top')}>
+              <img src="/brand/logos/ivo-tech-logo-master.svg" alt="ivo-tech" width={140} height={31} fetchPriority="high" />
             </a>
-
-            <nav className="h-nav">
-              {[
-                { label: 'About', href: '#about' },
-                { label: 'Lab', href: '#lab' },
-                { label: 'Work', href: '#selected-work' },
-                { label: 'Brand', href: '#brand' },
-              ].map(({ label, href }) => {
-                const isActive = activeSectionId === href.replace('#', '')
-                return (
-                  <a
-                    key={label}
-                    href={href}
-                    className={`h-link ${isActive ? 'active' : ''}`}
-                    onClick={(event) => handleAnchorClick(event, href)}
-                  >
-                    <span>{label}</span>
-                  </a>
-                )
-              })}
+            <nav className="h-nav" aria-label="Hauptnavigation">
+              {navItems.map(({ label, href }) => (
+                <a key={href} href={href} className="h-link" onClick={(event) => handleNavClick(event, href)}>{label}</a>
+              ))}
             </nav>
-
             <div className="h-right">
-              <span className="h-status">
-                <span className="pulse-dot" />
-                Online
-              </span>
-              <MagButton className="h-btn" href="mailto:contact@ivo-tech.com">
-                Kontakt <ArrowUpRight size={14} />
-              </MagButton>
+              <span className="h-status"><span className="pulse-dot" /> Online</span>
+              <MagButton className="h-btn" href="mailto:contact@ivo-tech.com">Kontakt <ArrowUpRight size={14} /></MagButton>
               <button
                 ref={burgerRef}
                 className="h-burger"
                 aria-label={mobileMenuOpen ? 'Menü schließen' : 'Menü öffnen'}
                 aria-expanded={mobileMenuOpen}
                 aria-controls="mobile-menu"
-                onClick={() => setMobileMenuOpen((prev) => !prev)}
+                onClick={() => setMobileMenuOpen((value) => !value)}
               >
-                <span className="h-burger-bar" />
-                <span className="h-burger-bar" />
-                <span className="h-burger-bar" />
+                <span className="h-burger-bar" /><span className="h-burger-bar" /><span className="h-burger-bar" />
               </button>
             </div>
           </motion.header>
@@ -382,252 +162,64 @@ function App() {
                 initial={{ opacity: 0, y: -16 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -16 }}
-                transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
                 role="dialog"
                 aria-modal="true"
                 aria-label="Mobile Navigation"
               >
                 <nav>
-                  {[
-                    { label: 'About', href: '#about' },
-                    { label: 'Lab', href: '#lab' },
-                    { label: 'Work', href: '#selected-work' },
-                    { label: 'Brand', href: '#brand' },
-                    { label: 'Kontakt', href: 'mailto:contact@ivo-tech.com' },
-                  ].map(({ label, href }) => (
-                    <a
-                      key={label}
-                      href={href}
-                      className="mobile-menu-link"
-                      onClick={(event) => {
-                        if (href.startsWith('#')) handleAnchorClick(event, href)
-                        else setMobileMenuOpen(false)
-                      }}
-                    >
-                      {label}
-                    </a>
+                  {navItems.map(({ label, href }) => (
+                    <a key={href} href={href} className="mobile-menu-link" onClick={(event) => handleNavClick(event, href)}>{label}</a>
                   ))}
+                  <a href="mailto:contact@ivo-tech.com" className="mobile-menu-link" onClick={() => setMobileMenuOpen(false)}>Kontakt aufnehmen</a>
                 </nav>
               </motion.div>
             )}
           </AnimatePresence>
 
           <main id="content">
-            <section className="hero" ref={heroRef} id="top" aria-labelledby="hero-h">
-              <motion.div className="hero-inner" style={{ y: heroY, opacity: heroOpacity }}>
-                <motion.div
-                  className="hero-eyebrow"
-                  initial={compactHero ? false : { opacity: 0, x: -16 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.6, delay: 0.2 }}
-                >
-                  <span>Full-Stack Developer · Frontend-Fokus</span>
-                  <span className="hero-eyebrow-location">Mannheim / Remote</span>
-                </motion.div>
-
-                <SplitTitle lines={['Ich baue,', 'was bleibt.']} immediate={compactHero} />
-
-                <motion.p
-                  className="hero-sub"
-                  initial={compactHero ? false : { opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.7, delay: 0.72, ease: [0.16, 1, 0.3, 1] }}
-                >
-                  <span className="hero-description">
-                    Produktionsreife React/TypeScript-Webapplikationen. Von klarer Architektur bis zum stabilen
-                    Live-Betrieb.
-                  </span>
-                </motion.p>
-
-                <motion.div
-                  className="hero-ctas"
-                  initial={compactHero ? false : { opacity: 0, y: 16 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.65, delay: 0.86, ease: [0.16, 1, 0.3, 1] }}
-                >
-                  <ContactButtons onNavigate={handleAnchorClick} />
-                  <span className="hero-employment-note">Offen für Remote-Festanstellung</span>
-                </motion.div>
-
-                <motion.div
-                  className="hero-scroll-hint"
-                  initial={compactHero ? false : { opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 1.4, duration: 0.6 }}
-                >
-                  <ArrowDown size={14} aria-hidden="true" />
-                  <span>Scrollen · System zerlegen</span>
-                </motion.div>
-              </motion.div>
-
-              <motion.div
-                className="hero-visual"
-                initial={compactHero ? false : { opacity: 0, scale: 0.9, rotateY: 12 }}
-                animate={{ opacity: 1, scale: 1, rotateY: 0 }}
-                transition={{ duration: 1.1, delay: 0.28, ease: [0.16, 1, 0.3, 1] }}
-                aria-label="ivo-tech Brand Visual"
-              >
-                <div className="hv-webgl-stage" ref={webglStageRef}>
-                  <ErrorBoundary
-                    fallback={
-                      <img
-                        src={HERO_3D_FALLBACK_SRC}
-                        alt="ivo-tech Logo"
-                        className="hv-fallback"
-                        decoding="async"
-                        width={246}
-                        height={149}
-                      />
-                    }
-                  >
-                    {enableHero3D ? (
-                      <Suspense
-                        fallback={
-                          <img
-                            className="hv-emblem hero-3d-fallback-image"
-                            width={246}
-                            height={149}
-                            src={HERO_3D_FALLBACK_SRC}
-                            alt="ivo-tech WebGL Logo"
-                            decoding="async"
-                            fetchPriority="high"
-                          />
-                        }
-                      >
-                        {canvasReady && (
-                          <Hero3DLogo
-                            fallbackSrc={HERO_3D_FALLBACK_SRC}
-                            alt="ivo-tech 9-Facet-Emblem aus Werkzeugstahl"
-                          />
-                        )}
-                      </Suspense>
-                    ) : (
-                      <div
-                        className="hero-3d-logo hero-3d-logo--fallback"
-                        role="img"
-                        aria-label="ivo-tech Logo"
-                        data-ready="true"
-                        data-asset="emblem-9-facet"
-                        data-mode="fallback"
-                      >
-                        <img
-                          className="hv-emblem hero-3d-fallback-image"
-                          width={246}
-                          height={149}
-                          src={HERO_3D_FALLBACK_SRC}
-                          alt=""
-                          aria-hidden="true"
-                          decoding="async"
-                          fetchPriority="high"
-                        />
-                      </div>
-                    )}
-                  </ErrorBoundary>
-                </div>
-                <ol className="hero-process" aria-label="Vom System zum Live-Betrieb">
-                  <li>
-                    <span>01</span> Architektur
-                  </li>
-                  <li>
-                    <span>02</span> Interface
-                  </li>
-                  <li>
-                    <span>03</span> Live-Betrieb
-                  </li>
-                </ol>
-              </motion.div>
-            </section>
-
-            <div className="mq-band">
-              <Marquee items={marqueeTop} />
-              <Marquee items={marqueeBottom} reverse />
-            </div>
-
-            <AboutSection />
-
-            <section id="lab" className="section lab-section" aria-labelledby="lab-h">
-              <div className="section-inner">
-                <Reveal className="sec-head">
-                  <div>
-                    <span className="sec-label">Lab Notes</span>
-                    <span className="sec-num">— 02</span>
+            <section className="hero relaunch-hero" id="top" aria-labelledby="hero-h">
+              <div className="relaunch-shell hero-grid">
+                <motion.div className="hero-copy" initial={compactHero ? false : { opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.15 }}>
+                  <div className="hero-eyebrow"><span>Full-Stack Development / Frontend Craft</span><span className="hero-eyebrow-location">Mannheim · Remote</span></div>
+                  <SplitTitle lines={['Ich baue,', 'was bleibt.']} immediate={compactHero} />
+                  <p className="hero-sub">Ich entwickle produktionsreife Webapplikationen — vom belastbaren System bis zum präzisen Interface und stabilen Live-Betrieb.</p>
+                  <div className="hero-ctas">
+                    <MagButton className="btn-primary" href="#selected-work" onClick={(event) => handleNavClick(event, '#selected-work')}>Projekte ansehen <ArrowUpRight size={16} /></MagButton>
+                    <MagButton className="btn-ghost" href="/yves-simon-schenker-cv.pdf" download>Lebenslauf</MagButton>
+                    <MagButton className="btn-ghost" href="mailto:contact@ivo-tech.com">Kontakt</MagButton>
                   </div>
-                  <SectionTitle id="lab-h" lines={[{ text: 'Woran ich arbeite' }]} />
-                </Reveal>
+                  <div className="hero-meta"><span>Offen für passende Remote- und Hybrid-Rollen</span><span><ArrowDown size={14} aria-hidden="true" /> Scrollen</span></div>
+                </motion.div>
 
-                <Reveal delay={0.08}>
-                  <p className="lab-intro">
-                    Vier Felder, ein roter Faden: Automation, eigens betriebene Infrastruktur, Brand-Systeme und
-                    Interfaces, die sich wie echte Produkte anfühlen. Parallel zu den Kundenprojekten laufend in Betrieb
-                    und Weiterentwicklung.
-                  </p>
-                </Reveal>
-
-                <div className="lab-grid">
-                  {labItems.map((item, i) => (
-                    <LabCard key={item.num} item={item} index={i} />
-                  ))}
-                </div>
-
-                <Reveal delay={0.18}>
-                  <div className="signal-deck" aria-label="ivo-tech Operating System">
-                    <div className="signal-orb" aria-hidden="true">
-                      <div className="orb-ring r1" />
-                      <div className="orb-ring r2" />
-                      <Gauge size={34} strokeWidth={1.25} />
-                      <span>ivo-tech OS</span>
-                    </div>
-                    <div className="signal-copy">
-                      <span className="sec-label">Operating layer</span>
-                      <h3>Ein persönliches Tech-System — nicht nur eine Website.</h3>
-                      <p>
-                        Die Seite erzählt nicht „Portfolio", sondern zeigt ein Setup: Automation, Homelab, Design-Craft
-                        und Motion-Assets greifen ineinander.
-                      </p>
-                    </div>
-                    <div className="signal-cards">
-                      {signalCards.map(({ icon: Icon, label, value, text }) => (
-                        <article key={label} className="signal-card">
-                          <Icon size={18} strokeWidth={1.5} aria-hidden="true" />
-                          <span>{label}</span>
-                          <strong>{value}</strong>
-                          <p>{text}</p>
-                        </article>
-                      ))}
-                    </div>
+                <motion.div className="hero-visual" initial={compactHero ? false : { opacity: 0, scale: 0.92 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.1, delay: 0.2, ease: [0.16, 1, 0.3, 1] }} aria-label="ivo-tech 9-Facet-Emblem">
+                  <div className="hv-webgl-stage" ref={heroStageRef}>
+                    <ErrorBoundary fallback={<img className="hv-fallback" src={HERO_3D_FALLBACK_SRC} alt="ivo-tech Logo" width={246} height={149} />}>
+                      {enableHero3D ? (
+                        <Suspense fallback={<img className="hv-emblem hero-3d-fallback-image" src={HERO_3D_FALLBACK_SRC} alt="ivo-tech Logo" width={246} height={149} fetchPriority="high" />}>
+                          {canvasReady && <Hero3DLogo fallbackSrc={HERO_3D_FALLBACK_SRC} alt="ivo-tech 9-Facet-Emblem aus mattem Werkzeugstahl" />}
+                        </Suspense>
+                      ) : (
+                        <div className="hero-3d-logo hero-3d-logo--fallback" role="img" aria-label="ivo-tech 9-Facet-Emblem" data-mode="fallback">
+                          <img className="hv-emblem hero-3d-fallback-image" src={HERO_3D_FALLBACK_SRC} alt="" aria-hidden="true" width={246} height={149} fetchPriority="high" />
+                        </div>
+                      )}
+                    </ErrorBoundary>
                   </div>
-                </Reveal>
+                  <div className="hero-object-caption"><span>09 Facetten</span><span>Ein System</span></div>
+                </motion.div>
               </div>
             </section>
 
-            <Suspense fallback={<LazySectionFallback label="Selected Work" />}>
-              <Showcase />
-            </Suspense>
+            <div className="relaunch-signal-band" aria-label="Kompetenzen">
+              <span>React</span><span>TypeScript</span><span>Supabase</span><span>Three.js</span><span>Testing</span><span>Live Production</span>
+            </div>
 
-            <Suspense fallback={<LazySectionFallback label="Realtime Data" />}>
-              <MarketDataShowcase />
-            </Suspense>
-
-            <Suspense fallback={<LazySectionFallback label="Brand System" />}>
-              <BrandSection />
-            </Suspense>
-
-            <Suspense fallback={<LazySectionFallback label="Operating Layer" />}>
-              <HobbySection />
-            </Suspense>
-
-            <Suspense fallback={<LazySectionFallback label="Stack" />}>
-              <SkillGraphSection />
-            </Suspense>
-
-            <Suspense fallback={<LazySectionFallback label="Kontakt" />}>
-              <ContactSection />
-            </Suspense>
+            <Suspense fallback={<div className="section-loading">Selected Work wird geladen …</div>}><Showcase /></Suspense>
+            <CraftSection />
+            <LabSection />
+            <ContactSection />
           </main>
-
-          <Suspense fallback={null}>
-            <SiteFooter />
-          </Suspense>
+          <RelaunchFooter />
         </>
       )}
     </>
