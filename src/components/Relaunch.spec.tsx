@@ -47,6 +47,8 @@ test.describe('focused portfolio structure', () => {
     await expect(page.locator('#craft a[href="#project-dld-3d-configurator"]')).toContainText('live im produktiven Shop')
     await expect(page.locator('#lab .lab-relaunch-card')).toHaveCount(4)
     await expect(page.locator('#kontakt')).toContainText('Lass uns etwas bauen')
+    await expect(page.locator('#kontakt a[href="https://www.linkedin.com/in/ivo-tech"]')).toBeVisible()
+    await expect(page.locator('footer a[href="https://www.linkedin.com/in/ivo-tech"]')).toBeVisible()
     await expect(page.getByText('Realtime Data')).toHaveCount(0)
     await expect(page.getByText('Helium Mining')).toHaveCount(0)
   })

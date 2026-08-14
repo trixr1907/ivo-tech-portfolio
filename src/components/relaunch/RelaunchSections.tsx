@@ -225,6 +225,9 @@ export function ContactSection() {
             <MagButton className="btn-ghost" href="https://github.com/trixr1907" target="_blank" rel="noreferrer">
               GitHub
             </MagButton>
+            <MagButton className="btn-ghost" href="https://www.linkedin.com/in/ivo-tech" target="_blank" rel="noreferrer">
+              LinkedIn
+            </MagButton>
           </div>
         </Reveal>
       </div>
@@ -249,6 +252,7 @@ export function RelaunchFooter() {
           <a href="#top">Top</a>
           <a href="#selected-work">Projekte</a>
           <a href="#kontakt">Kontakt</a>
+          <a href="https://www.linkedin.com/in/ivo-tech" target="_blank" rel="noreferrer">LinkedIn</a>
           <a href="/impressum">Impressum</a>
           <a href="/datenschutz">Datenschutz</a>
         </nav>
