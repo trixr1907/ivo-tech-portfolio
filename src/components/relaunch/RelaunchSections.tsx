@@ -11,7 +11,7 @@ const principles = [
     label: '01 · Problem schneiden',
     title: 'Unklare Anforderungen werden entscheidbar.',
     text: 'Ich verdichte Daten, Risiken und Nutzerziele zu einem belastbaren ersten Produktweg.',
-    proof: 'GOALS Optimizer · live mit 371 Tests',
+    proof: 'GOALS Optimizer · live mit 408 Tests',
     href: '#project-goals-optimizer',
   },
   {
@@ -33,6 +33,51 @@ const principles = [
 ]
 
 const labIcons = [Bot, Home, Cpu, Terminal]
+
+export function AboutSection() {
+  return (
+    <section id="about" className="relaunch-section about-relaunch-section" aria-labelledby="about-heading">
+      <div className="relaunch-shell about-relaunch-grid">
+        <Reveal className="about-relaunch-portrait">
+          <img
+            src="/images/about/ivo-portrait.webp"
+            alt="Portrait von Ivo"
+            width={800}
+            height={800}
+            loading="lazy"
+            decoding="async"
+          />
+        </Reveal>
+        <Reveal className="about-relaunch-copy" delay={0.06}>
+          <div className="relaunch-kicker-row">
+            <span className="relaunch-kicker">Über mich</span>
+            <span className="relaunch-index">— 01</span>
+          </div>
+          <SectionTitle
+            id="about-heading"
+            lines={[
+              { text: 'Ich bin Ivo.' },
+              { text: 'Entwickler mit Frontend-Fokus.', em: true },
+            ]}
+          />
+          <p className="relaunch-lead">
+            Ich entwickle Webanwendungen mit einem starken Blick für Frontend-Qualität — und genug
+            Full-Stack-Tiefe, damit Datenmodell, Rechte, Fehlerfälle und Betrieb nicht an der Oberfläche enden.
+            Basis Mannheim/Rhein-Neckar, offen für passende Remote- und Hybrid-Rollen.
+          </p>
+          <div className="about-relaunch-actions">
+            <MagButton className="btn-ghost" href="/yves-simon-schenker-cv.pdf" download>
+              Lebenslauf <ArrowUpRight size={14} aria-hidden="true" />
+            </MagButton>
+            <MagButton className="btn-ghost" href="mailto:contact@ivo-tech.com">
+              Kontakt
+            </MagButton>
+          </div>
+        </Reveal>
+      </div>
+    </section>
+  )
+}
 
 export function CraftSection() {
   const reduceMotion = useReducedMotion()

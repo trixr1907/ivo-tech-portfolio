@@ -8,6 +8,19 @@ test.describe('focused portfolio structure', () => {
     await expect(page.locator('.loader')).toBeHidden({ timeout: 15_000 })
   })
 
+  test('renders personal identity and a correctly proportioned portrait', async ({ page }) => {
+    await expect(page.locator('.hero-eyebrow')).toContainText('Ivo')
+    await expect(page.locator('#about')).toContainText('Ich bin Ivo.')
+    const portrait = page.locator('#about img[alt="Portrait von Ivo"]')
+    await expect(portrait).toBeVisible()
+    await expect.poll(async () => portrait.evaluate((image) => {
+      const element = image as HTMLImageElement
+      const rect = element.getBoundingClientRect()
+      return element.complete && element.naturalWidth > 0 && Math.abs(rect.width - rect.height) < 1
+    })).toBe(true)
+    await expect(page.getByRole('link', { name: 'Über mich' }).first()).toHaveAttribute('href', '#about')
+  })
+
   test('renders three evidence-based cases and opens a case study', async ({ page }) => {
     const cards = page.locator('.relaunch-project-card')
     await expect(cards).toHaveCount(3)
@@ -21,7 +34,7 @@ test.describe('focused portfolio structure', () => {
     await cards.first().locator('button').click()
     const dialog = page.getByRole('dialog', { name: /GOALS Optimizer/ })
     await expect(dialog).toBeVisible()
-    await expect(dialog).toContainText('371 Tests')
+    await expect(dialog).toContainText('408 Tests')
     await dialog.getByRole('button', { name: 'Schliessen' }).click()
     await expect(dialog).toBeHidden()
   })
@@ -29,7 +42,7 @@ test.describe('focused portfolio structure', () => {
   test('keeps the public story focused', async ({ page }) => {
     await expect(page.locator('#craft')).toBeVisible()
     await expect(page.locator('#craft .principle-proof')).toHaveCount(3)
-    await expect(page.locator('#craft a[href="#project-goals-optimizer"]')).toContainText('371 Tests')
+    await expect(page.locator('#craft a[href="#project-goals-optimizer"]')).toContainText('408 Tests')
     await expect(page.locator('#craft a[href="#project-event-hub"]')).toContainText('RLS, Audit-Trail und Edge Functions')
     await expect(page.locator('#craft a[href="#project-dld-3d-configurator"]')).toContainText('live im produktiven Shop')
     await expect(page.locator('#lab .lab-relaunch-card')).toHaveCount(4)

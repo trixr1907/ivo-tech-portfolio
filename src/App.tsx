@@ -12,12 +12,13 @@ import { CustomCursor } from './components/ui/CustomCursor'
 import { ScrollBar } from './components/ui/ScrollBar'
 import { SplitTitle } from './components/ui/SplitTitle'
 import { Showcase } from './components/showcase/Showcase'
-import { CraftSection, LabSection, ContactSection, RelaunchFooter } from './components/relaunch/RelaunchSections'
+import { AboutSection, CraftSection, LabSection, ContactSection, RelaunchFooter } from './components/relaunch/RelaunchSections'
 
 const Hero3DLogo = lazy(() => import('./components/Hero3DLogo'))
 const COMPACT_HERO_QUERY = '(max-width: 960px), (hover: none), (pointer: coarse)'
 
 const navItems = [
+  { label: 'Über mich', href: '#about' },
   { label: 'Work', href: '#selected-work' },
   { label: 'Craft', href: '#craft' },
   { label: 'Lab', href: '#lab' },
@@ -180,7 +181,7 @@ function App() {
             <section className="hero relaunch-hero" id="top" aria-labelledby="hero-h">
               <div className="relaunch-shell hero-grid">
                 <motion.div className="hero-copy" initial={compactHero ? false : { opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.15 }}>
-                  <div className="hero-eyebrow"><span>Full-Stack Development / Frontend Craft</span><span className="hero-eyebrow-location">Mannheim · Remote</span></div>
+                  <div className="hero-eyebrow"><span>Ivo · Full-Stack Development / Frontend Craft</span><span className="hero-eyebrow-location">Mannheim · Remote</span></div>
                   <SplitTitle lines={['Ich baue,', 'was bleibt.']} immediate={compactHero} />
                   <p className="hero-sub">Ich entwickle produktionsreife Webapplikationen — vom belastbaren System bis zum präzisen Interface und stabilen Live-Betrieb.</p>
                   <div className="hero-ctas">
@@ -213,6 +214,8 @@ function App() {
             <div className="relaunch-signal-band" aria-label="Kompetenzen">
               <span>React</span><span>TypeScript</span><span>Supabase</span><span>Three.js</span><span>Testing</span><span>Live Production</span>
             </div>
+
+            <AboutSection />
 
             <Suspense fallback={<div className="section-loading">Selected Work wird geladen …</div>}><Showcase /></Suspense>
             <CraftSection />

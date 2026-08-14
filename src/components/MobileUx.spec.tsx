@@ -30,7 +30,7 @@ test.describe('mobile UX', () => {
     await burger.click()
 
     const dialog = page.getByRole('dialog', { name: 'Mobile Navigation' })
-    const firstLink = dialog.getByRole('link', { name: 'Work' })
+    const firstLink = dialog.getByRole('link', { name: 'Über mich' })
     const lastLink = dialog.getByRole('link', { name: 'Kontakt aufnehmen' })
     await expect(burger).toHaveAttribute('aria-expanded', 'true')
     await expect(firstLink).toBeFocused()
